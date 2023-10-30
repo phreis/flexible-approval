@@ -1,0 +1,36 @@
+.mainTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: left;
+  padding-left: 6%;
+  padding-right: 6%;
+  width: 100%;
+  background-color: aqua;
+}
+
+p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  color: #666666;
+  margin-bottom: 1.5rem;
+}
+
+.shopNow {
+  background-color: #171717;
+  color: white;
+  height: 2rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+.shopNow:hover {
+  color: white;
+  background-color: gray;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+}

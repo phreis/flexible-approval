@@ -1,0 +1,48 @@
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+:root {
+  --top-heigth: 15vh;
+}
+body {
+  display: flex;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: left;
+  height: 100vh;
+  width: 10vw;
+  color: #666666;
+  background-color: tomato;
+}
+
+main section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: var(--top-heigth);
+  background-color: aqua;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 300;
+  color: #333333;
+}

@@ -1,0 +1,43 @@
+.sideBarTopLogo {
+  height: var(--top-heigth);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: bisque;
+}
+.nav {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: brown;
+  height: calc(100vh - var(--top-heigth));
+  color: black;
+  padding: 1rem 1rem 1rem 1rem;
+  font-size: small;
+  a {
+    text-decoration: none;
+    color: black;
+  }
+  a:hover {
+    color: #666666;
+  }
+}
+.sideBarTop {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sideBarBottom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  border-top: 1px solid;
+  padding-top: 0.8rem;
+
+  height: 10vh;
+}

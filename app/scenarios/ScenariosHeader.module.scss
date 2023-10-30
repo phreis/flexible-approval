@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  width: 100%;
+  a {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    justify-content: center;
+    padding: 20px 0px 20px 20px;
+    color: black;
+
+    gap: 3px;
+    .subInfo {
+      color: gray;
+      font-size: small;
+    }
+  }
+  a:hover {
+    background-color: lightgray;
+    box-shadow: 5px 3px 3px lightgray;
+  }
+}
