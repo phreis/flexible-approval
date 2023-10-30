@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { createSession } from '../../database/sessions';
+import { createSession, deleteSessionByToken } from '../../database/sessions';
 import {
   createUser,
   getUserByUsername,
@@ -159,9 +159,7 @@ export async function loginUser(prevState: any, formData: FormData) {
     ...secureCookieOptions,
   });
 
-  const x = getSafeReturnToPath(
-    formData.get('returnTo')?.toString() || `/profile/${username}`,
-  );
+  const x = getSafeReturnToPath(formData.get('returnTo')?.toString() || `/`);
   if (x) {
     redirect(x);
   }
@@ -173,4 +171,18 @@ export async function loginUser(prevState: any, formData: FormData) {
   // revalidatePath() throws unnecessary error, will be used when stable
   // revalidatePath('/(auth)/login', 'page');
   //router.refresh();
+}
+export async function logout() {
+  // Get the session token from the cookie
+  const cookieStore = cookies();
+
+  const token = cookieStore.get('sessionToken');
+
+  //  Delete the session from the database based on the token
+  if (token) await deleteSessionByToken(token.value);
+
+  // Delete the session cookie from the browser
+  cookieStore.set('sessionToken', '', {
+    maxAge: -1,
+  });
 }

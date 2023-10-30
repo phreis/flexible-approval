@@ -1,8 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { getValidSessionByToken } from '../database/sessions';
 import { getUserBySessionToken } from '../database/users';
+import LoginForm from './(auth)/login/LoginForm';
 import SideBar from './SideBar';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,19 +19,23 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 1. Checking if the sessionToken cookie exists
-  const cookieStore = cookies();
-  const sessionToken = cookieStore.get('sessionToken');
+  const sessionTokenCookie = cookies().get('sessionToken');
 
-  const user =
-    sessionToken && (await getUserBySessionToken(sessionToken.value));
+  const session =
+    sessionTokenCookie &&
+    (await getValidSessionByToken(sessionTokenCookie.value));
 
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        {user?.username}
-        <SideBar />
-        <main>{children}</main>
+        {!session ? (
+          <LoginForm returnTo={headers().get('x-pathname') || '/'} />
+        ) : (
+          <>
+            <SideBar />
+            <main>{children}</main>
+          </>
+        )}
       </body>
     </html>
   );

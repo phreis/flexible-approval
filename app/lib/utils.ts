@@ -1,6 +1,7 @@
 import { Route } from 'next';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
+import { getUserBySessionToken } from '../../database/users';
 
 // nullish coalescing operator
 export function getCookie(name: string) {
@@ -39,4 +40,12 @@ export function getSafeReturnToPath(path: string | string[] | undefined) {
   const result = returnToSchema.safeParse(path);
   if (!result.success) return undefined;
   return result.data as Route;
+}
+
+export async function getUserLoggedIn() {
+  // 1. Checking if the sessionToken cookie exists
+  const cookieStore = cookies();
+  const sessionToken = cookieStore.get('sessionToken');
+
+  return sessionToken && (await getUserBySessionToken(sessionToken.value));
 }

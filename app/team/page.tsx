@@ -17,8 +17,6 @@ export default async function TeamPage({ searchParams }: Props) {
     { tabTitle: 'Tab3', tabId: 't3' },
   ];
 
-  const headersList = headers();
-
   // 1. Check if the sessionToken cookie exit
   const sessionTokenCookie = cookies().get('sessionToken');
 
@@ -28,13 +26,11 @@ export default async function TeamPage({ searchParams }: Props) {
     sessionTokenCookie &&
     (await getValidSessionByToken(sessionTokenCookie.value));
 
-  console.log('Check Xpath: ', headersList.get('x-pathname'));
-
   // User has to be an admin
   // Get user from the database that meets the admin requirements
 
   // 3. Either redirect or render the login form
-  if (!session) redirect(`/login?returnTo=/team`);
+  if (!session) redirect(`/login?returnTo=${headers().get('x-pathname')}`);
 
   return (
     <>
