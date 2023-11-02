@@ -19,24 +19,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const sessionTokenCookie = cookies().get('sessionToken');
-
-  const session =
-    sessionTokenCookie &&
-    (await getValidSessionByToken(sessionTokenCookie.value));
-
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
-        {!session ? (
-          <LoginForm returnTo={headers().get('x-pathname') || '/'} />
-        ) : (
-          <>
-            <SideBar />
-            <main>{children}</main>
-          </>
-        )}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

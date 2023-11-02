@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { WfNode } from '../ScenarioTree';
+import { WfNode } from '../../ScenarioTree';
 import styles from './Scenario.module.scss';
 
 export default function Scenario({ node }: { node: WfNode }) {

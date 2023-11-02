@@ -3,10 +3,10 @@ import React from 'react';
 import {
   getScenarioHeaderById,
   getScenarioItems,
-} from '../../../database/scenarios';
-import PageContent from '../../PageContent';
-import PageHeader from '../../PageHeader';
-import PageHeaderTabs, { TabType } from '../../PageHeaderTabs';
+} from '../../../../database/scenarios';
+import PageContent from '../../../PageContent';
+import PageHeader from '../../../PageHeader';
+import PageHeaderTabs, { TabType } from '../../../PageHeaderTabs';
 import { ScenarioDiagramm } from '../ScenarioDiagram';
 
 type Props = {

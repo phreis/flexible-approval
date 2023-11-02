@@ -5,7 +5,8 @@ export type ScenarioItemType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   stepId: number;
   parentStepId: ScenarioItemType['condStepResult'] | null;
-  task: string;
+  taskType: string;
+  taskId: number;
   condStepResult: boolean | null;
 };
 
@@ -15,7 +16,8 @@ export async function up(sql: Sql) {
       scenario_id integer NOT NULL references scenarioheader (scenario_id) ON DELETE CASCADE,
       step_id integer NOT NULL,
       parent_step_id integer,
-      task varchar(30) NOT NULL,
+      task_type varchar(30) NOT NULL,
+      task_id integer,
       cond_step_result boolean,
       PRIMARY KEY(scenario_id, step_id)
     );

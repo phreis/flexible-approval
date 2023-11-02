@@ -44,7 +44,7 @@ export async function GET(
     );
   }
  */
-  return NextResponse.json({ scenarioId: 'params.scenarioId ' });
+  return NextResponse.json({ scenarioId: 4711 });
 }
 
 export async function POST(
@@ -53,7 +53,6 @@ export async function POST(
   const body = await request.json();
 
   const result = ScenarioEntitySchema.safeParse(body);
-  console.log(result);
 
   if (!result.success) {
     // zod send you details about the error
@@ -66,7 +65,7 @@ export async function POST(
   }
 
   // Check, if result.data.scenarioId exists
-  const scenario = await getScenarioHeaderById(result.data.scenarioId);
+  const scenario = await getScenarioHeaderById(Number(result.data.scenarioId));
   if (!scenario[0]) {
     return NextResponse.json(
       {
@@ -100,6 +99,7 @@ export async function POST(
     }
   } */
 
+  // TODO: Check provided data.context JSON against the schema on the scenario header:
   const literalSchema = z.union([
     z.string(),
     z.number(),
@@ -114,9 +114,11 @@ export async function POST(
   if (result.data.context) {
     console.log(jsonSchema.parse(JSON.parse(result.data.context)));
   }
+
+  // Save event state to DB:
   const eventEntry = await createEventState({
-    scenarioId: result.data.scenarioId,
-    stepId: '1',
+    scenarioId: Number(result.data.scenarioId),
+    stepId: 1,
     eventName: result.data.eventName,
     state: 'FINISHED',
     context: result.data.context,
@@ -130,6 +132,11 @@ export async function POST(
       { status: 500 },
     );
   }
+
+  // Start the processing -->
+  // §1 get event state by scenarioEntityId, if not there create new scenarioEntity w reateEventState
+  // interate over scanario steps
+  // process, write log entry
 
   // write log table entry
 

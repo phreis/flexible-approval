@@ -14,8 +14,8 @@ export default function LoginForm(props: Props) {
       <h1>Sign in</h1>
       <form action={dispatch}>
         <span className={styles.formElement}>
-          <label htmlFor="username">Email</label>
-          <input type="email" id="username" name="username" />
+          <label htmlFor="username">Username</label>
+          <input id="username" name="username" />
         </span>
         <span className={styles.formElement}>
           <label htmlFor="pasword">Password </label>

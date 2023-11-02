@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import PageContent from '../PageContent';
-import PageHeader from '../PageHeader';
-import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
+import PageContent from '../../PageContent';
+import PageHeader from '../../PageHeader';
+import PageHeaderTabs, { TabType } from '../../PageHeaderTabs';
 import ScenariosHeader from './ScenariosHeader';
 
 type Props = {
@@ -22,7 +22,7 @@ export default function ScenariosPage({ searchParams }: Props) {
         <PageHeaderTabs tabs={tabs} activeTab={searchParams.tab} />
       </PageHeader>
       <PageContent>
-        <Link href="/scenarios/add">Add new scenario</Link>
+        <Link href="/dashboard/scenarios/add">Add new scenario</Link>
         <ScenariosHeader />
       </PageContent>
     </>

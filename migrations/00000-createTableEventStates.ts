@@ -15,11 +15,11 @@ export type EventStateType = {
 export async function up(sql: Sql) {
   await sql`
     CREATE TABLE eventstates (
-      scenario_entity_id varchar(36),
-      scenario_id varchar(30) NOT NULL,
-      step_id varchar(30) NOT NULL,
+      scenario_entity_id varchar(36) NOT NULL,
+      scenario_id integer NOT NULL,
+      step_id integer NOT NULL,
       event_name varchar(30) NOT NULL,
-      state varchar(30),
+      state varchar(30) NOT NULL,
       context varchar(1000),
       creationdate timestamp NOT NULL DEFAULT NOW(),
       PRIMARY KEY(scenario_entity_id,scenario_id,step_id)
