@@ -11,6 +11,7 @@ import {
   getUserByUsername,
   getUserWithPasswordHashByUsername,
 } from '../../database/users';
+import { processScenario } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
 export async function registerUser(prevState: any, formData: FormData) {
@@ -185,4 +186,32 @@ export async function logout() {
   cookieStore.set('sessionToken', '', {
     maxAge: -1,
   });
+}
+
+export async function processScenarioAction(
+  prevState: any,
+  formData: FormData,
+) {
+  const registerSchema = z.object({
+    scenarioId: z.string(),
+    context: z.string(),
+  });
+
+  // 1. Validate the user data
+  const validatedFields = registerSchema.safeParse({
+    scenarioId: formData.get('scenarioId'),
+    context: formData.get('context'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to register User.',
+    };
+  }
+
+  const { scenarioId, context } = validatedFields.data;
+
+  await processScenario(Number(scenarioId), context);
 }

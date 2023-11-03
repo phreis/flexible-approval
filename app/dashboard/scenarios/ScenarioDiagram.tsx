@@ -8,7 +8,7 @@ type Props = {
   items: ScenarioItemType[];
 };
 
-export function ScenarioDiagramm(props: Props) {
+export function ScenarioDiagram(props: Props) {
   const tree = new ScenarioTree();
   props.items.forEach((item: ScenarioItemType) =>
     tree.insertNode({ ...item, children: null }),

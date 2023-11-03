@@ -7,7 +7,8 @@ import {
 import PageContent from '../../../PageContent';
 import PageHeader from '../../../PageHeader';
 import PageHeaderTabs, { TabType } from '../../../PageHeaderTabs';
-import { ScenarioDiagramm } from '../ScenarioDiagram';
+import { ScenarioDiagram } from '../ScenarioDiagram';
+import ScenarioStarter from '../ScenarioStarter';
 
 type Props = {
   params: { scenarioId: string };
@@ -16,7 +17,7 @@ type Props = {
 
 export default async function ScenarioPage({ params, searchParams }: Props) {
   const tabs: TabType[] = [
-    { tabTitle: 'Diagramm', tabId: 't1' },
+    { tabTitle: 'Diagram', tabId: 't1' },
     { tabTitle: 'History', tabId: 't2' },
     { tabTitle: 'Incomplete Executions', tabId: 't3' },
   ];
@@ -24,6 +25,8 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
   const scenarioHeaderData = await getScenarioHeaderById(
     Number(params.scenarioId),
   );
+
+  const scenarioId = scenarioHeaderData[0]?.scenarioId;
 
   return (
     <>
@@ -33,7 +36,13 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
         <PageHeaderTabs tabs={tabs} activeTab={searchParams.tab} />
       </PageHeader>
       <PageContent>
-        <ScenarioDiagramm items={sceanarioItemsData} />
+        {scenarioId && (
+          <ScenarioStarter
+            scenarioId={scenarioId}
+            context={`{"amountToApprove":500}`}
+          />
+        )}
+        <ScenarioDiagram items={sceanarioItemsData} />
       </PageContent>
     </>
   );

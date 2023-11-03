@@ -17,10 +17,7 @@ export default function HomePage({ searchParams }: Props) {
   return (
     <>
       <PageHeader heading="Home">
-        <PageHeaderTabs
-          tabs={tabs}
-          activeTab={searchParams.tab || tabs[0]?.tabId}
-        />
+        <PageHeaderTabs tabs={tabs} activeTab={searchParams.tab} />
       </PageHeader>
       <PageContent>
         <h2>{searchParams.tab} some content on teams page</h2>

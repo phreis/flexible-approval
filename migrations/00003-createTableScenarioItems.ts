@@ -4,9 +4,9 @@ import { ScenarioHeaderType } from './00001-createTableScenarioHeader';
 export type ScenarioItemType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   stepId: number;
-  parentStepId: ScenarioItemType['condStepResult'] | null;
+  parentStepId: ScenarioItemType['stepId'] | null;
   taskType: string;
-  taskId: number;
+  taskId: number | null;
   condStepResult: boolean | null;
 };
 

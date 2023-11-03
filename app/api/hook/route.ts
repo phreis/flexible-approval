@@ -135,8 +135,6 @@ export async function POST(
 
   // Start the processing -->
   // §1 get event state by scenarioEntityId, if not there create new scenarioEntity w reateEventState
-  // interate over scanario steps
-  // process, write log entry
 
   // write log table entry
 

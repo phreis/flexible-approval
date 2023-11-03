@@ -1,7 +1,6 @@
 import { cache } from 'react';
 import { EventStateType } from '../migrations/00000-createTableEventStates';
 import { sql } from './connect';
-import { ScenarioType } from './scenarios';
 
 type CreateEventStateType = {
   scenarioId: EventStateType['scenarioId'];
