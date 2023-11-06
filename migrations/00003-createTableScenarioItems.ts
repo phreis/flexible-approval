@@ -8,6 +8,7 @@ export type ScenarioItemType = {
   taskType: string;
   taskId: number | null;
   condStepResult: boolean | null;
+  actionStepResult: string | null;
 };
 
 export async function up(sql: Sql) {
@@ -19,6 +20,7 @@ export async function up(sql: Sql) {
       task_type varchar(30) NOT NULL,
       task_id integer,
       cond_step_result boolean,
+      action_step_result varchar(30),
       PRIMARY KEY(scenario_id, step_id)
     );
   `;

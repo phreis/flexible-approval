@@ -31,7 +31,7 @@
 
 .tree li::before,
 .tree li::after {
-  content: '';
+  content: ''; // test
   position: absolute;
   top: 0;
   right: 50%;

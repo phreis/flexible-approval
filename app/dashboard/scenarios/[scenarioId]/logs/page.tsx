@@ -1,27 +1,32 @@
 import { notFound } from 'next/navigation';
 import React from 'react';
+import { getScenarioEntitiesByScenarioId } from '../../../../../database/scenarioEntities';
 import {
   getScenarioHeaderById,
   getScenarioItems,
-} from '../../../../database/scenarios';
-import PageContent from '../../../PageContent';
-import PageHeader from '../../../PageHeader';
-import PageHeaderTabs, { TabType } from '../../../PageHeaderTabs';
-import { ScenarioDiagram } from '../ScenarioDiagram';
-import ScenarioStarter from '../ScenarioStarter';
+} from '../../../../../database/scenarios';
+import PageContent from '../../../../PageContent';
+import PageHeader from '../../../../PageHeader';
+import PageHeaderTabs from '../../../../PageHeaderTabs';
 
 type Props = {
   params: { scenarioId: string };
   searchParams: { [key: string]: string | undefined };
 };
 
-export default async function ScenarioPage({ params, searchParams }: Props) {
+export default async function ScenarioLogsPage({
+  params,
+  searchParams,
+}: Props) {
   const tabs: TabType[] = [
     { tabTitle: 'Diagram', tabId: 't1' },
     { tabTitle: 'History', tabId: 't2' },
     { tabTitle: 'Incomplete Executions', tabId: 't3' },
   ];
-  const sceanarioItemsData = await getScenarioItems(Number(params.scenarioId));
+
+  const sceanarioEntities = await getScenarioEntitiesByScenarioId(
+    Number(params.scenarioId),
+  );
   const scenarioHeaderData = await getScenarioHeaderById(
     Number(params.scenarioId),
   );
@@ -33,14 +38,16 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
       <PageHeader
         heading={scenarioHeaderData[0]?.description || 'No descrition'}
       >
-        <PageHeaderTabs tabs={tabs} activeTab={searchParams.tab} />
+        <PageHeaderTabs tabs={tabs} activeTab={'t2'} />
       </PageHeader>
       <PageContent>
-        <ScenarioStarter
-          scenarioId={scenarioId}
-          context={`{"amountToApprove":500}`}
-        />
-        <ScenarioDiagram items={sceanarioItemsData} />
+        <ul>
+          {sceanarioEntities?.map((ent) => {
+            return (
+              <li key={`key-ent.scenarioEntityId`}>{ent.scenarioEntityId}</li>
+            );
+          })}
+        </ul>
       </PageContent>
     </>
   );

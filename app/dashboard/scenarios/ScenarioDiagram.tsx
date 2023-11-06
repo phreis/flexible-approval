@@ -1,5 +1,6 @@
 import util from 'node:util';
 import { ScenarioItemType } from '../../../migrations/00003-createTableScenarioItems';
+import { ScenarioEntityType } from '../../../migrations/00015-createTablescenarioEntities';
 import ScenarioTree from '../../ScenarioTree';
 import Scenario from './Scenario';
 import styles from './Scenario.module.scss';

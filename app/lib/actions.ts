@@ -5,13 +5,14 @@ import bcrypt from 'bcrypt';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { createScenarioEntity } from '../../database/scenarioEntities';
 import { createSession, deleteSessionByToken } from '../../database/sessions';
 import {
   createUser,
   getUserByUsername,
   getUserWithPasswordHashByUsername,
 } from '../../database/users';
-import { processScenario } from './processor';
+import { processScenarioEntity } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
 export async function registerUser(prevState: any, formData: FormData) {
@@ -165,13 +166,13 @@ export async function loginUser(prevState: any, formData: FormData) {
     redirect(x);
   }
 
-  //router.push(
+  // router.push(
   //   getSafeReturnToPath(props.returnTo) || `/profile/${data.user.username}`,
   // );
 
   // revalidatePath() throws unnecessary error, will be used when stable
   // revalidatePath('/(auth)/login', 'page');
-  //router.refresh();
+  // router.refresh();
 }
 export async function logout() {
   // Get the session token from the cookie
@@ -188,7 +189,7 @@ export async function logout() {
   });
 }
 
-export async function processScenarioAction(
+export async function processScenarioNewAction(
   prevState: any,
   formData: FormData,
 ) {
@@ -207,11 +208,18 @@ export async function processScenarioAction(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to register User.',
+      message: 'Missing Fields. Failed to start scenario.',
     };
   }
 
   const { scenarioId, context } = validatedFields.data;
 
-  await processScenario(Number(scenarioId), context);
+  // Create new Scenario Entity:
+  const scenarioEntiy = await createScenarioEntity({
+    scenarioId: Number(scenarioId),
+    context: context,
+  });
+  if (scenarioEntiy) {
+    await processScenarioEntity(scenarioEntiy);
+  }
 }

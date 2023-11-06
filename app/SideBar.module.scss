@@ -5,14 +5,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: bisque;
+  background-color: #a9a9a9;
 }
 .nav {
   display: flex;
 
   flex-direction: column;
   justify-content: space-between;
-  background-color: brown;
+  background-color: #e5e4e2;
   height: calc(100vh - var(--top-heigth));
   color: black;
   padding: 1rem 1rem 1rem 1rem;

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createEventState } from '../../../database/eventstates';
+import { createScenarioEntity } from '../../../database/scenarioEntities';
 import { getScenarioHeaderById } from '../../../database/scenarios';
-import { EventStateType } from '../../../migrations/00000-createTableEventStates';
 import { ScenarioHeaderType } from '../../../migrations/00001-createTableScenarioHeader';
 
 export type Error = {
@@ -115,16 +114,13 @@ export async function POST(
     console.log(jsonSchema.parse(JSON.parse(result.data.context)));
   }
 
-  // Save event state to DB:
-  const eventEntry = await createEventState({
+  // Create new Scenario Entity:
+  const scenarioEntiy = await createScenarioEntity({
     scenarioId: Number(result.data.scenarioId),
-    stepId: 1,
-    eventName: result.data.eventName,
-    state: 'FINISHED',
     context: result.data.context,
   });
 
-  if (!eventEntry) {
+  if (!scenarioEntiy) {
     return NextResponse.json(
       {
         error: 'Error creating the new eventEntry',
@@ -133,13 +129,10 @@ export async function POST(
     );
   }
 
-  // Start the processing -->
-  // §1 get event state by scenarioEntityId, if not there create new scenarioEntity w reateEventState
-
-  // write log table entry
+  // TODO: Start the processing -->
 
   return NextResponse.json({
-    scenarioId: eventEntry.scenarioId,
-    scenarioEntityId: eventEntry.scenarioEntityId,
+    scenarioId: scenarioEntiy.scenarioId,
+    scenarioEntityId: scenarioEntiy.scenarioEntityId,
   });
 }

@@ -7,8 +7,8 @@ const scenarioHeader = [
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
   {
-    scenarioId: 2,
-    description: 'Multi step approval',
+    scenarioId: 3,
+    description: 'Basic approval 2',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
 ];

@@ -1,49 +1,28 @@
+import { getActionDefinitionById } from '../../database/actionDefinitions';
 import { getConditionItems } from '../../database/conditions';
-import { createEventState } from '../../database/eventstates';
 import {
-  getScenarioHeaderById,
-  getScenarioItems,
-} from '../../database/scenarios';
-import { EventStateType } from '../../migrations/00000-createTableEventStates';
-import { ScenarioHeaderType } from '../../migrations/00001-createTableScenarioHeader';
+  createScenarioEntityHistory,
+  CreateScenarioEntityHistoryType,
+  getScenarioEntityHistoryLatest,
+} from '../../database/scenarioEntityHistory';
+import { getScenarioItems } from '../../database/scenarios';
 import { ScenarioItemType } from '../../migrations/00003-createTableScenarioItems';
-import { ConditionHeaderType } from '../../migrations/00007-createTableConditionHeader';
-import ScenarioTree from '../ScenarioTree';
+import { ScenarioEntityType } from '../../migrations/00015-createTablescenarioEntities';
+import { ScenarioEntityHistoryType } from '../../migrations/00017-createTablescenarioEntityHistory';
+import ScenarioTree, { WfNode } from '../ScenarioTree';
 
-export async function processScenario(
-  sceanarioId: ScenarioHeaderType['scenarioId'],
-  context: EventStateType['context'],
+export async function processScenarioEntity(
+  scenarioEntity: ScenarioEntityType,
 ) {
-  // Check, if result.data.scenarioId exists
-  const scenarioHeader = await getScenarioHeaderById(sceanarioId);
-  if (!scenarioHeader[0]) {
-    // TODO: Throw some error
-    throw new Error(`Scenario ${sceanarioId} not found`);
-  }
-
-  // Save event state to DB:
-  const eventEntry = await createEventState({
-    scenarioId: sceanarioId,
-    stepId: 1,
-    eventName: 'start scenario',
-    state: 'FINISHED',
-    context: context,
-  });
-
-  if (!eventEntry) {
-    // TODO: Throw some error
-    throw new Error(`Error creating the new eventEntry`);
-  }
-
   // Get all sceanrio steps
-  const scenarioItems = await getScenarioItems(sceanarioId);
+  const scenarioItems = await getScenarioItems(scenarioEntity.scenarioId);
   if (!scenarioItems) {
     // TODO: Throw some error
-    throw new Error(`No Items for Scenario ${sceanarioId} found`);
+    throw new Error(`No Items for Scenario ${scenarioEntity.scenarioId} found`);
   }
 
   // Build up tree structure from DB entries
-  const tree = new ScenarioTree(scenarioHeader[0], eventEntry);
+  const tree = new ScenarioTree(scenarioEntity);
   scenarioItems.forEach((item: ScenarioItemType) =>
     tree.insertNode({ ...item, children: null }),
   );
@@ -51,38 +30,171 @@ export async function processScenario(
 }
 
 export async function processCondition(
-  conditionId: ConditionHeaderType['conditionId'],
-  context: EventStateType['context'],
+  node: WfNode,
+  scenarioEntity: ScenarioEntityType,
 ): Promise<boolean> {
   let returnValue: boolean = false;
+  let state,
+    errorMessage = '';
 
-  const conditionItems = await getConditionItems(conditionId);
+  const conditionItems = await getConditionItems(node.taskId || 0);
   // console.log(conditionItems);
-  const contextObj = JSON.parse(context);
-  console.log(contextObj);
-  console.log(contextObj[conditionItems[0].contextAttributeName]);
-  conditionItems.forEach((item) => {
-    const compVariable = contextObj[item.contextAttributeName];
-    if (compVariable) {
-      switch (item.comperator) {
-        case '<':
-          returnValue = compVariable < item.compConstant;
-          break;
-        case '>':
-          returnValue = compVariable > item.compConstant;
-          break;
-        default:
+  const contextObj = JSON.parse(scenarioEntity.context || '');
+  conditionItems.forEach(
+    (item) => {
+      try {
+        const compVariable = contextObj[item.contextAttributeName];
+        if (compVariable) {
+          switch (item.comperator) {
+            case '<':
+              returnValue = compVariable < item.compConstant;
+              break;
+            case '>':
+              returnValue = compVariable > item.compConstant;
+              break;
+            default:
+              // TODO: Throw some error
+              throw new Error(
+                `Error: Operator ${item.comperator} not (yet) implemented`,
+              );
+          }
+        } else {
           // TODO: Throw some error
-          throw new Error(
-            `Error: Compaator ${item.comperator} not (yet) implemented`,
+          throw new TypeError(
+            `Error: Attr ${item.contextAttributeName} not found in context-data`,
           );
+        }
+      } catch (err: any) {
+        state = 'ERROR';
+        errorMessage = err.message;
       }
-    } else {
-      // TODO: Throw some error
-      throw new Error(
-        `Error: Attr ${item.contextAttributeName} not found in context-data`,
-      );
-    }
-  });
+    },
+    // TODO: implement, multiple condition steps ()
+  );
+
+  // Log history
+  const historyEntry: CreateScenarioEntityHistoryType = {
+    scenarioEntityId: scenarioEntity.scenarioEntityId,
+    scenarioId: scenarioEntity.scenarioId,
+    stepId: node.stepId,
+    taskType: node.taskType,
+    taskId: node.taskId,
+    condResult: returnValue,
+    actionResult: null,
+    state: state || 'DONE',
+    message: errorMessage,
+  };
+  await createScenarioEntityHistory(historyEntry);
+
+  console.log(
+    `${scenarioEntity.scenarioEntityId} processCondition result: ${returnValue}`,
+  );
   return returnValue;
+}
+
+export async function processAction(
+  node: WfNode,
+  scenarioEntity: ScenarioEntityType,
+  lastHistory: ScenarioEntityHistoryType | undefined,
+): Promise<string | null> {
+  // TODO:
+  if (lastHistory?.state === 'CONTINUE') {
+    // CONTINUE and actionResult has been set by user-interaction
+    // give back actionResult to processing chain
+    // the Action is DONE at this stage
+    // Log history
+    const historyEntry: CreateScenarioEntityHistoryType = {
+      scenarioEntityId: scenarioEntity.scenarioEntityId,
+      scenarioId: scenarioEntity.scenarioId,
+      stepId: node.stepId,
+      taskType: node.taskType,
+      taskId: node.taskId,
+      condResult: null,
+      actionResult: null,
+      state: 'DONE',
+      message: null,
+    };
+    await createScenarioEntityHistory(historyEntry);
+    return await lastHistory.actionResult;
+  } else {
+    const actionDefinition = await getActionDefinitionById(node.taskId);
+
+    // TODO: notify
+    console.log(
+      `Email to: ${actionDefinition?.actionId} \n Text: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/../${scenarioEntity.scenarioEntityId}`,
+    );
+
+    // TODO: in case of error, log ERROR
+
+    // Log history
+    const historyEntry: CreateScenarioEntityHistoryType = {
+      scenarioEntityId: scenarioEntity.scenarioEntityId,
+      scenarioId: scenarioEntity.scenarioId,
+      stepId: node.stepId,
+      taskType: node.taskType,
+      taskId: node.taskId,
+      condResult: null,
+      actionResult: null,
+      state: 'PENDING',
+      message: null,
+    };
+    await createScenarioEntityHistory(historyEntry);
+    return await null;
+  }
+}
+export async function processStart(
+  node: WfNode,
+  scenarioEntity: ScenarioEntityType,
+) {
+  // Log history
+  const historyEntry: CreateScenarioEntityHistoryType = {
+    scenarioEntityId: scenarioEntity.scenarioEntityId,
+    scenarioId: scenarioEntity.scenarioId,
+    stepId: node.stepId,
+    taskType: node.taskType,
+    taskId: node.taskId,
+    condResult: null,
+    actionResult: null,
+    state: 'DONE',
+    message: null,
+  };
+  await createScenarioEntityHistory(historyEntry);
+}
+export async function processEvent(
+  node: WfNode,
+  scenarioEntity: ScenarioEntityType,
+) {
+  // TODO:fire Event
+
+  // Log history
+  const historyEntry: CreateScenarioEntityHistoryType = {
+    scenarioEntityId: scenarioEntity.scenarioEntityId,
+    scenarioId: scenarioEntity.scenarioId,
+    stepId: node.stepId,
+    taskType: node.taskType,
+    taskId: node.taskId,
+    condResult: null,
+    actionResult: null,
+    state: 'DONE',
+    message: null,
+  };
+  await createScenarioEntityHistory(historyEntry);
+}
+export async function processTer(
+  node: WfNode,
+  scenarioEntity: ScenarioEntityType,
+) {
+  // Log history
+  const historyEntry: CreateScenarioEntityHistoryType = {
+    scenarioEntityId: scenarioEntity.scenarioEntityId,
+    scenarioId: scenarioEntity.scenarioId,
+    stepId: node.stepId,
+    taskType: node.taskType,
+    taskId: node.taskId,
+    condResult: null,
+    actionResult: null,
+    state: 'DONE',
+    message: null,
+  };
+  await createScenarioEntityHistory(historyEntry);
 }

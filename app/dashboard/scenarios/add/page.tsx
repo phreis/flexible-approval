@@ -3,8 +3,8 @@ import NewScenario from './NewScenario';
 
 export default function NewScenariosPage() {
   return (
-    <div>
+    <span>
       <NewScenario />
-    </div>
+    </span>
   );
 }
