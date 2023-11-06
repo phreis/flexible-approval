@@ -16,10 +16,19 @@ type Props = {
 };
 
 export default async function ScenarioPage({ params, searchParams }: Props) {
+  const logsLink = `/dashboard/scenarios/${Number(params.scenarioId)}/logs`;
   const tabs: TabType[] = [
-    { tabTitle: 'Diagram', tabId: 't1' },
-    { tabTitle: 'History', tabId: 't2' },
-    { tabTitle: 'Incomplete Executions', tabId: 't3' },
+    {
+      tabTitle: 'Diagram',
+      tabId: 't1',
+      href: `/dashboard/scenarios/${Number(params.scenarioId)}`,
+    },
+    {
+      tabTitle: 'History',
+      tabId: 't2',
+      href: `/dashboard/scenarios/${Number(params.scenarioId)}/logs`,
+    },
+    { tabTitle: 'Incomplete Executions', tabId: 't3', href: '/' },
   ];
   const sceanarioItemsData = await getScenarioItems(Number(params.scenarioId));
   const scenarioHeaderData = await getScenarioHeaderById(

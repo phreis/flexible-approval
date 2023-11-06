@@ -4,6 +4,7 @@ import styles from './PageHeader.module.scss';
 export type TabType = {
   tabTitle: string;
   tabId: string;
+  href: string;
 };
 
 type Props = {
@@ -29,7 +30,7 @@ export default function PageHeadeTabs(props: Props) {
             className={`${styles.navLink} ${
               tab.tabId === activeTab && styles.navLinkActive
             }`}
-            href={`?tab=${tab.tabId}`}
+            href={`${tab.href}`}
           >
             {tab.tabTitle}
           </a>

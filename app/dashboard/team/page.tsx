@@ -12,9 +12,9 @@ type Props = {
 
 export default async function TeamPage({ searchParams }: Props) {
   const tabs: TabType[] = [
-    { tabTitle: 'Tab1', tabId: 't1' },
-    { tabTitle: 'Tab2', tabId: 't2' },
-    { tabTitle: 'Tab3', tabId: 't3' },
+    { tabTitle: 'Tab1', tabId: 't1', href: '?tab=t1' },
+    { tabTitle: 'Tab2', tabId: 't2', href: '?tab=t2' },
+    { tabTitle: 'Tab3', tabId: 't3', href: '?tab=t3' },
   ];
 
   return (

@@ -11,9 +11,9 @@ type Props = {
 
 export default function ScenariosPage({ searchParams }: Props) {
   const tabs: TabType[] = [
-    { tabTitle: 'All', tabId: 'all' },
-    { tabTitle: 'Active Scenarios', tabId: 'active' },
-    { tabTitle: 'Inactive Scenarios', tabId: 'inactive' },
+    { tabTitle: 'All', tabId: 'all', href: '/' },
+    { tabTitle: 'Active Scenarios', tabId: 'active', href: '/' },
+    { tabTitle: 'Inactive Scenarios', tabId: 'inactive', href: '/' },
   ];
 
   return (
