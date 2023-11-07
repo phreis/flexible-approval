@@ -93,7 +93,7 @@ export const createScenarioEntityHistory = cache(
 
 export const getScenarioEntityHistoryById = cache(
   async (scenarioEntityId: ScenarioEntityType['scenarioEntityId']) => {
-    const [scenarioHistoryEnties] = await sql<ScenarioEntityHistoryType[]>`
+    return await sql<ScenarioEntityHistoryType[]>`
       SELECT
         *
       FROM
@@ -101,7 +101,18 @@ export const getScenarioEntityHistoryById = cache(
       WHERE
         scenario_entity_id = ${scenarioEntityId}
     `;
+  },
+);
 
-    return scenarioHistoryEnties;
+export const getScenarioEntityHistoryByHistoryId = cache(
+  async (scenarioEntityHistoryId: ScenarioEntityHistoryType['historyId']) => {
+    return await sql<ScenarioEntityHistoryType[]>`
+      SELECT
+        *
+      FROM
+        scenarioentityhistory
+      WHERE
+        scenario_entity_history_id = ${scenarioEntityHistoryId}
+    `;
   },
 );

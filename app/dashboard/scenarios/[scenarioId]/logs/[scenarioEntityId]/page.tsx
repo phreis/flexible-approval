@@ -1,13 +1,12 @@
 import { notFound } from 'next/navigation';
 import React from 'react';
-import { getScenarioEntitiesByScenarioId } from '../../../../../database/scenarioEntities';
-import { getScenarioHeaderById } from '../../../../../database/scenarios';
-import { TabType } from '../../../PageHeaderTabs';
-import DashboardPage from '../../DashboardPage';
-import ScenarioEntitiesList from './ScenarioEntitiesList';
+import { getScenarioHeaderById } from '../../../../../../database/scenarios';
+import { TabType } from '../../../../PageHeaderTabs';
+import DashboardPage from '../../../DashboardPage';
+import ScenarioEntitiesHistoryList from './ScenarioEntitiesHistoryList';
 
 type Props = {
-  params: { scenarioId: string };
+  params: { scenarioId: string; scenarioEntityId: string };
   searchParams: { [key: string]: string | undefined };
 };
 
@@ -38,21 +37,16 @@ export default async function ScenarioEntityPage({
   const scenarioHeaderData = await getScenarioHeaderById(
     Number(params.scenarioId),
   );
-  let activeTab = 't2';
-  if (searchParams.filter === 'incomplete') {
-    activeTab = 't3';
-  }
+
+  const scenarioId = scenarioHeaderData[0]?.scenarioId;
 
   return (
     <DashboardPage
       heading={scenarioHeaderData[0]?.description || 'No descrition'}
       tabs={tabs}
-      activeTab={activeTab}
+      activeTab="t2"
     >
-      <ScenarioEntitiesList
-        scenarioId={Number(params.scenarioId)}
-        filter={searchParams.filter}
-      />
+      <ScenarioEntitiesHistoryList scenarioEntityId={params.scenarioEntityId} />
     </DashboardPage>
   );
 }

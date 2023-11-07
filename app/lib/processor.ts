@@ -119,13 +119,6 @@ export async function processAction(
   } else {
     const actionDefinition = await getActionDefinitionById(node.taskId);
 
-    // TODO: notify
-    console.log(
-      `Email to: ${actionDefinition?.actionId} \n Text: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/../${scenarioEntity.scenarioEntityId}`,
-    );
-
-    // TODO: in case of error, log ERROR
-
     // Log history
     const historyEntry: CreateScenarioEntityHistoryType = {
       scenarioEntityId: scenarioEntity.scenarioEntityId,
@@ -138,7 +131,15 @@ export async function processAction(
       state: 'PENDING',
       message: null,
     };
-    await createScenarioEntityHistory(historyEntry);
+    const pendingHistoryEntry = await createScenarioEntityHistory(historyEntry);
+
+    // TODO: notify
+    console.log(
+      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/../${pendingHistoryEntry?.historyId}`,
+    );
+
+    // TODO: in case of error, log ERROR
+
     return await null;
   }
 }

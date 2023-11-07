@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import PageContent from '../../PageContent';
-import PageHeader from '../../PageHeader';
-import PageHeaderTabs, { TabType } from '../../PageHeaderTabs';
+import PageContent from '../PageContent';
+import PageHeader from '../PageHeader';
+import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
 import ScenariosHeader from './ScenariosHeader';
 
 type Props = {

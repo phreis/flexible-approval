@@ -4,9 +4,10 @@ import {
   getScenarioHeaderById,
   getScenarioItems,
 } from '../../../../database/scenarios';
-import PageContent from '../../../PageContent';
-import PageHeader from '../../../PageHeader';
-import PageHeaderTabs, { TabType } from '../../../PageHeaderTabs';
+import PageContent from '../../PageContent';
+import PageHeader from '../../PageHeader';
+import PageHeaderTabs, { TabType } from '../../PageHeaderTabs';
+import DashboardPage from '../DashboardPage';
 import { ScenarioDiagram } from '../ScenarioDiagram';
 import ScenarioStarter from '../ScenarioStarter';
 
@@ -38,19 +39,16 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
   const scenarioId = scenarioHeaderData[0]?.scenarioId;
 
   return (
-    <>
-      <PageHeader
-        heading={scenarioHeaderData[0]?.description || 'No descrition'}
-      >
-        <PageHeaderTabs tabs={tabs} activeTab={searchParams.tab} />
-      </PageHeader>
-      <PageContent>
-        <ScenarioStarter
-          scenarioId={scenarioId}
-          context={`{"amountToApprove":500}`}
-        />
-        <ScenarioDiagram items={sceanarioItemsData} />
-      </PageContent>
-    </>
+    <DashboardPage
+      heading={scenarioHeaderData[0]?.description || 'No descrition'}
+      tabs={tabs}
+      activeTab={searchParams.tab}
+    >
+      <ScenarioStarter
+        scenarioId={scenarioId}
+        context={`{"amountToApprove":500}`}
+      />
+      <ScenarioDiagram items={sceanarioItemsData} />
+    </DashboardPage>
   );
 }

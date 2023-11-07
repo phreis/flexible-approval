@@ -1,6 +1,6 @@
-import PageContent from '../PageContent';
-import PageHeader from '../PageHeader';
-import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
+import PageContent from './PageContent';
+import PageHeader from './PageHeader';
+import PageHeaderTabs, { TabType } from './PageHeaderTabs';
 
 type Props = {
   params: { scenarioId: string };

@@ -110,9 +110,8 @@ export async function loginUser(prevState: any, formData: FormData) {
   const { username, password } = validatedFields.data;
 
   // 2. verify the user credentials
-  const userWithPasswordHash = await getUserWithPasswordHashByUsername(
-    username,
-  );
+  const userWithPasswordHash =
+    await getUserWithPasswordHashByUsername(username);
 
   if (!userWithPasswordHash) {
     return {
@@ -222,4 +221,11 @@ export async function processScenarioNewAction(
   if (scenarioEntiy) {
     await processScenarioEntity(scenarioEntiy);
   }
+}
+
+export async function persistActionResultAction(
+  prevState: any,
+  formData: FormData,
+) {
+  console.log(formData);
 }
