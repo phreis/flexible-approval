@@ -110,8 +110,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
         WHERE
           scenarioentities.scenario_id = ${scenarioId}
           AND (
-            history.state = 'PENDING'
-            OR history.state = 'ERROR'
+            history.state <> 'DONE'
           )
         ORDER BY
           creationdate DESC

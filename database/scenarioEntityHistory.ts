@@ -59,7 +59,7 @@ export const createScenarioEntityHistory = cache(
     const [scenarioEntiyHistory] = await sql<ScenarioEntityHistoryType[]>`
       INSERT INTO
         scenarioentityhistory (
-          scenario_entity_history_id,
+          history_id,
           scenario_entity_id,
           scenario_id,
           step_id,
@@ -91,7 +91,7 @@ export const createScenarioEntityHistory = cache(
   },
 );
 
-export const getScenarioEntityHistoryById = cache(
+export const getScenarioEntityHistoriesById = cache(
   async (scenarioEntityId: ScenarioEntityType['scenarioEntityId']) => {
     return await sql<ScenarioEntityHistoryType[]>`
       SELECT
@@ -105,14 +105,14 @@ export const getScenarioEntityHistoryById = cache(
 );
 
 export const getScenarioEntityHistoryByHistoryId = cache(
-  async (scenarioEntityHistoryId: ScenarioEntityHistoryType['historyId']) => {
+  async (historyId: ScenarioEntityHistoryType['historyId']) => {
     return await sql<ScenarioEntityHistoryType[]>`
       SELECT
         *
       FROM
         scenarioentityhistory
       WHERE
-        scenario_entity_history_id = ${scenarioEntityHistoryId}
+        history_id = ${historyId}
     `;
   },
 );

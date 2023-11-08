@@ -12,7 +12,7 @@ import {
   getUserByUsername,
   getUserWithPasswordHashByUsername,
 } from '../../database/users';
-import { processScenarioEntity } from './processor';
+import { processActionResult, processScenarioEntity } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
 export async function registerUser(prevState: any, formData: FormData) {
@@ -223,9 +223,35 @@ export async function processScenarioNewAction(
   }
 }
 
-export async function persistActionResultAction(
+export async function processActionResultAction(
   prevState: any,
   formData: FormData,
 ) {
-  console.log(formData);
+  const historyId = String(formData.get('historyId'));
+  let actionResponse;
+
+  if (historyId) {
+    if (formData.get('approve')) {
+      actionResponse = 'approved';
+    }
+    if (formData.get('reject')) {
+      actionResponse = 'rejected';
+    }
+    if (!actionResponse) {
+      return {
+        message: `Form error`,
+      };
+    }
+    try {
+      await processActionResult(historyId, actionResponse);
+    } catch (e: any) {
+      return {
+        message: `Error: ${e.message}`,
+      };
+    }
+
+    return {
+      message: `Successfully ${actionResponse} - you can close this window now.`,
+    };
+  }
 }

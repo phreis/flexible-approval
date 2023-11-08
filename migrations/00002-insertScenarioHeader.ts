@@ -11,23 +11,38 @@ const scenarioHeader = [
     description: 'Basic approval 2',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
+  {
+    scenarioId: 4,
+    description: 'Basic approval 3',
+    contextDataDescription: `'{"amountToApprove":"number"}'`,
+  },
 ];
 
 export async function up(sql: Sql) {
   for (const header of scenarioHeader) {
     await sql`
-      INSERT INTO scenarioheader
-        (scenario_id, description, context_data_description)
+      INSERT INTO
+        scenarioheader (
+          scenario_id,
+          description,
+          context_data_description
+        )
       VALUES
-        (${header.scenarioId}, ${header.description},${header.contextDataDescription} )
-  `;
+        (
+          ${header.scenarioId},
+          ${header.description},
+          ${header.contextDataDescription}
+        )
+    `;
   }
 }
 
 export async function down(sql: Sql) {
   for (const header of scenarioHeader) {
     await sql`
-      DELETE FROM scenarioheader WHERE scenario_id = ${header.scenarioId}
+      DELETE FROM scenarioheader
+      WHERE
+        scenario_id = ${header.scenarioId}
     `;
   }
 }

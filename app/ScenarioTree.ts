@@ -63,18 +63,18 @@ export default class ScenarioTree {
       }
 
       // If the current step, is already done, proceed with the following steps (children)
-      if (lastHistory?.state === 'DONE') {
-        node?.children?.forEach((step) => this.process(step));
-      }
+      // if (lastHistory?.state !== 'DONE') {
+      // console.log('Done:', node.taskType);
+      // node?.children?.forEach((step) => this.process(step));
 
       if (node.taskType === 'EVENT') {
-        await processEvent(node, this.scenarioEntity);
+        await processEvent(node, this.scenarioEntity, lastHistory);
       }
       if (node.taskType === 'START') {
-        await processStart(node, this.scenarioEntity);
+        await processStart(node, this.scenarioEntity, lastHistory);
       }
       if (node.taskType === 'TER') {
-        await processTer(node, this.scenarioEntity);
+        await processTer(node, this.scenarioEntity, lastHistory);
       }
 
       if (node.taskType === 'ACTION') {
@@ -83,6 +83,9 @@ export default class ScenarioTree {
           this.scenarioEntity,
           lastHistory,
         );
+
+        console.log('after process Action: ', actionResult);
+
         if (actionResult) {
           // ACTION option (successor) is one of the (two) children
           const actionOption = node.children?.find(
@@ -99,7 +102,11 @@ export default class ScenarioTree {
 
       if (node?.taskType === 'COND') {
         // TODO: evalueate COND
-        const condResult = await processCondition(node, this.scenarioEntity);
+        const condResult = await processCondition(
+          node,
+          this.scenarioEntity,
+          lastHistory,
+        );
         // COND option (successor) is one of the (two) children
         const condOption = node.children?.find(
           (condOpt) => condOpt.condStepResult === condResult,

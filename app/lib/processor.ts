@@ -1,8 +1,10 @@
 import { getActionDefinitionById } from '../../database/actionDefinitions';
 import { getConditionItems } from '../../database/conditions';
+import { getScenarioEntityById } from '../../database/scenarioEntities';
 import {
   createScenarioEntityHistory,
   CreateScenarioEntityHistoryType,
+  getScenarioEntityHistoryByHistoryId,
   getScenarioEntityHistoryLatest,
 } from '../../database/scenarioEntityHistory';
 import { getScenarioItems } from '../../database/scenarios';
@@ -32,6 +34,7 @@ export async function processScenarioEntity(
 export async function processCondition(
   node: WfNode,
   scenarioEntity: ScenarioEntityType,
+  lastHistory: ScenarioEntityHistoryType | undefined,
 ): Promise<boolean> {
   let returnValue: boolean = false;
   let state,
@@ -84,7 +87,9 @@ export async function processCondition(
     state: state || 'DONE',
     message: errorMessage,
   };
-  await createScenarioEntityHistory(historyEntry);
+  if (lastHistory?.state !== 'DONE') {
+    await createScenarioEntityHistory(historyEntry);
+  }
 
   console.log(
     `${scenarioEntity.scenarioEntityId} processCondition result: ${returnValue}`,
@@ -115,38 +120,47 @@ export async function processAction(
       message: null,
     };
     await createScenarioEntityHistory(historyEntry);
+    console.log(
+      'processAction CONTINUE actionResult',
+      lastHistory.actionResult,
+    );
     return await lastHistory.actionResult;
   } else {
-    const actionDefinition = await getActionDefinitionById(node.taskId);
+    if (lastHistory?.state !== 'DONE') {
+      const actionDefinition = await getActionDefinitionById(node.taskId);
 
-    // Log history
-    const historyEntry: CreateScenarioEntityHistoryType = {
-      scenarioEntityId: scenarioEntity.scenarioEntityId,
-      scenarioId: scenarioEntity.scenarioId,
-      stepId: node.stepId,
-      taskType: node.taskType,
-      taskId: node.taskId,
-      condResult: null,
-      actionResult: null,
-      state: 'PENDING',
-      message: null,
-    };
-    const pendingHistoryEntry = await createScenarioEntityHistory(historyEntry);
+      // Log history
+      const historyEntry: CreateScenarioEntityHistoryType = {
+        scenarioEntityId: scenarioEntity.scenarioEntityId,
+        scenarioId: scenarioEntity.scenarioId,
+        stepId: node.stepId,
+        taskType: node.taskType,
+        taskId: node.taskId,
+        condResult: null,
+        actionResult: null,
+        state: 'PENDING',
+        message: null,
+      };
+      const pendingHistoryEntry =
+        await createScenarioEntityHistory(historyEntry);
 
-    // TODO: notify
-    console.log(
-      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/../${pendingHistoryEntry?.historyId}`,
-    );
+      // TODO: notify
+      console.log(
+        `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry?.historyId}`,
+      );
 
-    // TODO: in case of error, log ERROR
-
+      // TODO: in case of error, log ERROR
+    }
     return await null;
   }
 }
 export async function processStart(
   node: WfNode,
   scenarioEntity: ScenarioEntityType,
+  lastHistory: ScenarioEntityHistoryType | undefined,
 ) {
+  if (lastHistory?.state === 'DONE') return;
+
   // Log history
   const historyEntry: CreateScenarioEntityHistoryType = {
     scenarioEntityId: scenarioEntity.scenarioEntityId,
@@ -164,7 +178,10 @@ export async function processStart(
 export async function processEvent(
   node: WfNode,
   scenarioEntity: ScenarioEntityType,
+  lastHistory: ScenarioEntityHistoryType | undefined,
 ) {
+  if (lastHistory?.state === 'DONE') return;
+
   // TODO:fire Event
 
   // Log history
@@ -184,7 +201,10 @@ export async function processEvent(
 export async function processTer(
   node: WfNode,
   scenarioEntity: ScenarioEntityType,
+  lastHistory: ScenarioEntityHistoryType | undefined,
 ) {
+  if (lastHistory?.state === 'DONE') return;
+
   // Log history
   const historyEntry: CreateScenarioEntityHistoryType = {
     scenarioEntityId: scenarioEntity.scenarioEntityId,
@@ -198,4 +218,54 @@ export async function processTer(
     message: null,
   };
   await createScenarioEntityHistory(historyEntry);
+}
+
+/** Called, when a Approver responds to the Action (approve or reject)
+ * Called from Form Action: processActionResultAction (actions.ts)
+ */
+export async function processActionResult(
+  historyId: ScenarioEntityHistoryType['historyId'],
+  actionResult: ScenarioEntityHistoryType['actionResult'],
+) {
+  const scenarioEntityHistoryArr =
+    await getScenarioEntityHistoryByHistoryId(historyId);
+
+  const scenarioEntityHistory = scenarioEntityHistoryArr[0];
+  // Does the history entry really exist?
+  if (!scenarioEntityHistory) {
+    throw new Error(`History entry ${historyId} does not exist`);
+  }
+
+  // Check, with getScenarioEntityHistoryLatest(scenarioEntityId) if the history set to be processed, is (still) the latest(?)
+  const scenarioEntityHistoryLatest = await getScenarioEntityHistoryLatest(
+    scenarioEntityHistory.scenarioId,
+    scenarioEntityHistory.scenarioEntityId,
+    scenarioEntityHistory.stepId,
+  );
+
+  // Check if history entry is processable E.g. state is PENDING && actionResult is empty
+  if (
+    !(
+      scenarioEntityHistory.state === 'PENDING' &&
+      !scenarioEntityHistory.actionResult
+    ) ||
+    scenarioEntityHistoryLatest?.historyId !== scenarioEntityHistory.historyId
+  ) {
+    throw new Error(`History entry ${historyId} cannot processed (anymore)`);
+  }
+  // TODO:Check Authorization - user -> throw error
+
+  // create new history entry
+  const historyEntry: CreateScenarioEntityHistoryType = {
+    ...scenarioEntityHistory,
+    state: 'CONTINUE',
+    actionResult: actionResult,
+  };
+  await createScenarioEntityHistory(historyEntry);
+
+  // Continue with processing
+  const scenarioEntity = await getScenarioEntityById(
+    scenarioEntityHistory.scenarioEntityId,
+  );
+  if (scenarioEntity) await processScenarioEntity(scenarioEntity);
 }

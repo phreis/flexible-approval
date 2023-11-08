@@ -13,7 +13,7 @@ export type ScenarioEntityHistoryType = {
   taskId: ScenarioItemType['taskId'] | null;
   condResult: ScenarioItemType['condStepResult'] | null;
   actionResult: ScenarioItemType['actionStepResult'] | null;
-  state: 'DONE' | 'ERROR' | 'PENDING' | 'CONTINUE' | null;
+  state: 'DONE' | 'ERROR' | 'PENDING' | 'CONTINUE' | string | null;
   message: string | null;
   username: User['username'];
   creationdate: Date;
@@ -21,26 +21,31 @@ export type ScenarioEntityHistoryType = {
 
 export async function up(sql: Sql) {
   await sql`
-    CREATE TABLE scenarioentityhistory (
-      scenario_entity_history_id varchar(36) NOT NULL,
-      scenario_entity_id varchar(36) NOT NULL references scenarioentities (scenario_entity_id) ON DELETE CASCADE,
-      scenario_id integer NOT NULL references scenarioheader (scenario_id) ON DELETE CASCADE,
-      step_id integer NOT NULL,
-      task_type varchar(30) NOT NULL,
-      task_id integer,
-      cond_result boolean,
-      action_result varchar(30),
-      state varchar(20),
-      message varchar(1000),
-      username varchar(80) NOT NULL,
-      creationdate timestamp NOT NULL DEFAULT NOW(),
-      PRIMARY KEY(scenario_entity_history_id)
-    );
+    CREATE TABLE
+      scenarioentityhistory (
+        history_id VARCHAR(36) NOT NULL,
+        scenario_entity_id VARCHAR(36) NOT NULL REFERENCES scenarioentities (
+          scenario_entity_id
+        ) ON DELETE CASCADE,
+        scenario_id INTEGER NOT NULL REFERENCES scenarioheader (
+          scenario_id
+        ) ON DELETE CASCADE,
+        step_id INTEGER NOT NULL,
+        task_type VARCHAR(30) NOT NULL,
+        task_id INTEGER,
+        cond_result BOOLEAN,
+        action_result VARCHAR(30),
+        state VARCHAR(20),
+        message VARCHAR(1000),
+        username VARCHAR(80) NOT NULL,
+        creationdate TIMESTAMP NOT NULL DEFAULT NOW (),
+        PRIMARY KEY (
+          history_id
+        )
+      );
   `;
 }
 
 export async function down(sql: Sql) {
-  await sql`
-    DROP TABLE scenarioentityhistory
-  `;
+  await sql` DROP TABLE scenarioentityhistory `;
 }

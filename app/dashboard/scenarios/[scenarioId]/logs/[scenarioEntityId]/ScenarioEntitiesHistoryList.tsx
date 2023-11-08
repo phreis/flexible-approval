@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { getScenarioEntityHistoryById } from '../../../../../../database/scenarioEntityHistory';
+import { getScenarioEntityHistoriesById } from '../../../../../../database/scenarioEntityHistory';
 import { ScenarioEntityType } from '../../../../../../migrations/00015-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../../../../../../migrations/00017-createTablescenarioEntityHistory';
 import styles from './ScenarioEntitiesHistoryList.module.scss';
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default async function ScenarioEntitiesHistoryList(props: Props) {
-  const sceanarioHistoryEntities = await getScenarioEntityHistoryById(
+  const sceanarioHistoryEntities = await getScenarioEntityHistoriesById(
     props.scenarioEntityId,
   );
 

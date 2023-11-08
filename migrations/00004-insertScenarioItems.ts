@@ -158,24 +158,112 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
 ];
+const basicApprovalItems3 = [
+  {
+    scenarioId: 4,
+    stepId: 1,
+    parentStepId: null,
+    taskType: 'START',
+    taskId: null,
+    condStepResult: null,
+    actionStepResult: null,
+  },
+  {
+    scenarioId: 4,
+    stepId: 2,
+    parentStepId: 1,
+    taskType: 'ACTION',
+    taskId: 1,
+    condStepResult: null,
+    actionStepResult: null,
+  },
+  {
+    scenarioId: 4,
+    stepId: 3,
+    parentStepId: 2,
+    taskType: 'ACTION',
+    taskId: 1,
+    condStepResult: null,
+    actionStepResult: 'approved',
+  },
+  {
+    scenarioId: 4,
+    stepId: 4,
+    parentStepId: 2,
+    taskType: 'EVENT',
+    taskId: 2,
+    condStepResult: false,
+    actionStepResult: 'rejected',
+  },
+  {
+    scenarioId: 4,
+    stepId: 5,
+    parentStepId: 3,
+    taskType: 'TER',
+    taskId: null,
+    condStepResult: null,
+    actionStepResult: 'approved',
+  },
+  {
+    scenarioId: 4,
+    stepId: 6,
+    parentStepId: 3,
+    taskType: 'EVENT',
+    taskId: null,
+    condStepResult: null,
+    actionStepResult: 'rejected',
+  },
+  {
+    scenarioId: 4,
+    stepId: 7,
+    parentStepId: 6,
+    taskType: 'TER',
+    taskId: null,
+    condStepResult: null,
+    actionStepResult: null,
+  },
+];
 
-const scenarioitems = [...basicApprovalItems, ...basicApprovalItems2];
+const scenarioitems = [
+  ...basicApprovalItems,
+  ...basicApprovalItems2,
+  ...basicApprovalItems3,
+];
 
 export async function up(sql: Sql) {
   for (const item of scenarioitems) {
     await sql`
-      INSERT INTO scenarioitems
-        (scenario_id, step_id, parent_step_id, task_type, task_id, cond_step_result, action_step_result)
+      INSERT INTO
+        scenarioitems (
+          scenario_id,
+          step_id,
+          parent_step_id,
+          task_type,
+          task_id,
+          cond_step_result,
+          action_step_result
+        )
       VALUES
-        (${item.scenarioId}, ${item.stepId},${item.parentStepId},${item.taskType},${item.taskId},${item.condStepResult},${item.actionStepResult} )
-  `;
+        (
+          ${item.scenarioId},
+          ${item.stepId},
+          ${item.parentStepId},
+          ${item.taskType},
+          ${item.taskId},
+          ${item.condStepResult},
+          ${item.actionStepResult}
+        )
+    `;
   }
 }
 
 export async function down(sql: Sql) {
   for (const item of scenarioitems) {
     await sql`
-      DELETE FROM scenarioitems WHERE scenario_id = ${item.scenarioId} AND step_id = ${item.stepId}
+      DELETE FROM scenarioitems
+      WHERE
+        scenario_id = ${item.scenarioId}
+        AND step_id = ${item.stepId}
     `;
   }
 }
