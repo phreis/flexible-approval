@@ -8,23 +8,42 @@ const actiondefinitions = [
     textTemplate: `Amount to approve <?>. Please approve or reject`,
     approver: 'hugo1',
   },
+  {
+    actionId: 2,
+    scenarioId: 1,
+    description: 'Another approvement request from User',
+    textTemplate: `Amount to approve <?>. Please approve or reject`,
+    approver: 'hugo1',
+  },
 ];
 
 export async function up(sql: Sql) {
   for (const item of actiondefinitions) {
     await sql`
-      INSERT INTO actiondefinitions
-        (scenario_id, description, text_template, approver )
+      INSERT INTO
+        actiondefinitions (
+          scenario_id,
+          description,
+          text_template,
+          approver
+        )
       VALUES
-        (${item.scenarioId}, ${item.description},${item.textTemplate},${item.approver} )
-  `;
+        (
+          ${item.scenarioId},
+          ${item.description},
+          ${item.textTemplate},
+          ${item.approver}
+        )
+    `;
   }
 }
 
 export async function down(sql: Sql) {
   for (const item of actiondefinitions) {
     await sql`
-      DELETE FROM actiondefinitions WHERE action_id = ${item.actionId}
+      DELETE FROM actiondefinitions
+      WHERE
+        action_id = ${item.actionId}
     `;
   }
 }

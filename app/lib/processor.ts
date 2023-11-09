@@ -103,10 +103,16 @@ export async function processAction(
   lastHistory: ScenarioEntityHistoryType | undefined,
 ): Promise<string | null> {
   // TODO:
+  console.log('last history state: ', lastHistory?.state);
+
   if (lastHistory?.state === 'CONTINUE') {
     // CONTINUE and actionResult has been set by user-interaction
     // give back actionResult to processing chain
-    // the Action is DONE at this stage
+    // no additonal history entry at this stage!
+    return await lastHistory.actionResult;
+  } else {
+    const actionDefinition = await getActionDefinitionById(node.taskId);
+
     // Log history
     const historyEntry: CreateScenarioEntityHistoryType = {
       scenarioEntityId: scenarioEntity.scenarioEntityId,
@@ -116,41 +122,18 @@ export async function processAction(
       taskId: node.taskId,
       condResult: null,
       actionResult: null,
-      state: 'DONE',
+      state: 'PENDING',
       message: null,
     };
-    await createScenarioEntityHistory(historyEntry);
+    const pendingHistoryEntry = await createScenarioEntityHistory(historyEntry);
+
+    // TODO: notify
     console.log(
-      'processAction CONTINUE actionResult',
-      lastHistory.actionResult,
+      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry?.historyId}`,
     );
-    return await lastHistory.actionResult;
-  } else {
-    if (lastHistory?.state !== 'DONE') {
-      const actionDefinition = await getActionDefinitionById(node.taskId);
 
-      // Log history
-      const historyEntry: CreateScenarioEntityHistoryType = {
-        scenarioEntityId: scenarioEntity.scenarioEntityId,
-        scenarioId: scenarioEntity.scenarioId,
-        stepId: node.stepId,
-        taskType: node.taskType,
-        taskId: node.taskId,
-        condResult: null,
-        actionResult: null,
-        state: 'PENDING',
-        message: null,
-      };
-      const pendingHistoryEntry =
-        await createScenarioEntityHistory(historyEntry);
+    // TODO: in case of error, log ERROR
 
-      // TODO: notify
-      console.log(
-        `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry?.historyId}`,
-      );
-
-      // TODO: in case of error, log ERROR
-    }
     return await null;
   }
 }

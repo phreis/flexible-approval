@@ -101,7 +101,7 @@ ul.first li.first::after {
 .tree li .box {
   border: 1px solid #ccc;
   margin: 0px 30px 0px 30px;
-  padding: 15px 30px 15px 30px;
+
   text-decoration: none;
   color: #666;
   font-size: 12px;
@@ -116,22 +116,22 @@ ul.first li.first::after {
 
 /*Hover effects*/
 
-.tree li .box:hover,
-.tree li .box:hover + ul li .box {
-  background: #c8e4f8;
-  color: #000;
-  border: 1px solid #94a0b4;
-}
+//.tree li .box:hover,
+//.tree li .box:hover + ul li .box {
+//  background: #c8e4f8;
+//  color: #000;
+//  border: 1px solid #94a0b4;
+//}
 
 /*Connector styles on hover*/
 
-.tree li .box:hover + ul li::after,
-.tree li .box:hover + ul li::before,
-.tree li .box:hover + ul::before,
-.tree li .box:hover + ul ul::before,
-.avatar {
-  border-color: #94a0b4;
-}
+//.tree li .box:hover + ul li::after,
+//.tree li .box:hover + ul li::before,
+//.tree li .box:hover + ul::before,
+//.tree li .box:hover + ul ul::before,
+//.avatar {
+//  border-color: #94a0b4;
+//}
 
 /*Avatar bubbles*/
 

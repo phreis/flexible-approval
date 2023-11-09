@@ -4,12 +4,10 @@ import {
   getScenarioHeaderById,
   getScenarioItems,
 } from '../../../../database/scenarios';
-import PageContent from '../../PageContent';
-import PageHeader from '../../PageHeader';
-import PageHeaderTabs, { TabType } from '../../PageHeaderTabs';
 import DashboardPage from '../DashboardPage';
 import { ScenarioDiagram } from '../ScenarioDiagram';
 import ScenarioStarter from '../ScenarioStarter';
+import styles from './ScenarioPage.module.scss';
 
 type Props = {
   params: { scenarioId: string };
@@ -44,11 +42,13 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
       tabs={tabs}
       activeTab={searchParams.tab}
     >
-      <ScenarioStarter
-        scenarioId={scenarioId}
-        context={`{"amountToApprove":500}`}
-      />
-      <ScenarioDiagram items={sceanarioItemsData} />
+      <div className={styles.basicGridDivider}>
+        <ScenarioStarter
+          scenarioId={scenarioId}
+          context={`{"amountToApprove":500}`}
+        />
+        <ScenarioDiagram items={sceanarioItemsData} />
+      </div>
     </DashboardPage>
   );
 }

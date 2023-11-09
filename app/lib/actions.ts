@@ -219,7 +219,17 @@ export async function processScenarioNewAction(
     context: context,
   });
   if (scenarioEntiy) {
-    await processScenarioEntity(scenarioEntiy);
+    try {
+      await processScenarioEntity(scenarioEntiy);
+    } catch (e: any) {
+      return {
+        errors: `Error: ${e.message}`,
+      };
+    }
+    return {
+      message: `Scenario started`,
+      scenarioEntityId: scenarioEntiy.scenarioEntityId,
+    };
   }
 }
 

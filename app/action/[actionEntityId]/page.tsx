@@ -33,8 +33,16 @@ export default async function ActionEntiyPage(props: Props) {
       const scenarioEntity = await getScenarioEntityById(
         scenarioEntityHistory.scenarioEntityId,
       );
+      if (!actionDefinition) {
+        return (
+          <main>
+            Err: Action definition for taskId {scenarioEntityHistory.taskId} not
+            found
+          </main>
+        );
+      }
 
-      if (actionDefinition && scenarioEntity) {
+      if (scenarioEntity) {
         const scenarioEntityHistoryLatest =
           await getScenarioEntityHistoryLatest(
             scenarioEntityHistory.scenarioId,
