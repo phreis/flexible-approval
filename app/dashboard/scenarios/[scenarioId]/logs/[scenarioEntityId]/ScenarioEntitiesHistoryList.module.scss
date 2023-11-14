@@ -1,18 +1,14 @@
 .grid {
+  margin: 31px;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   border-top: 1px solid black;
-  border-right: 1px solid black;
+  height: fit-content;
 
   span {
-    padding: 8px 4px;
-    border-left: 1px solid black;
-    border-bottom: 1px solid black;
+    color: #666;
+    padding: 5px 5px 5px 5px;
+    font-size: 12px;
+    border-top: 1px solid #ccc;
   }
-}
-
-.grid_ > span {
-  padding: 8px 4px;
-  border-left: 1px solid black;
-  border-bottom: 1px solid black;
 }

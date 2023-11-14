@@ -4,6 +4,7 @@ import {
   getScenarioHeaderById,
   getScenarioItems,
 } from '../../../../database/scenarios';
+import { TabType } from '../../PageHeaderTabs';
 import DashboardPage from '../DashboardPage';
 import { ScenarioDiagram } from '../ScenarioDiagram';
 import ScenarioStarter from '../ScenarioStarter';
@@ -29,26 +30,27 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
     },
     { tabTitle: 'Incomplete Executions', tabId: 't3', href: '/' },
   ];
-  const sceanarioItemsData = await getScenarioItems(Number(params.scenarioId));
+
   const scenarioHeaderData = await getScenarioHeaderById(
     Number(params.scenarioId),
   );
 
   const scenarioId = scenarioHeaderData[0]?.scenarioId;
-
-  return (
-    <DashboardPage
-      heading={scenarioHeaderData[0]?.description || 'No descrition'}
-      tabs={tabs}
-      activeTab={searchParams.tab}
-    >
-      <div className={styles.basicGridDivider}>
-        <ScenarioStarter
-          scenarioId={scenarioId}
-          context={`{"amountToApprove":500}`}
-        />
-        <ScenarioDiagram items={sceanarioItemsData} />
-      </div>
-    </DashboardPage>
-  );
+  if (scenarioId) {
+    return (
+      <DashboardPage
+        heading={scenarioHeaderData[0]?.description || 'No descrition'}
+        tabs={tabs}
+        activeTab={searchParams.tab}
+      >
+        <div className={styles.basicGridDivider}>
+          <ScenarioDiagram scenarioId={scenarioId} />
+          <ScenarioStarter
+            scenarioId={scenarioId}
+            context={`{"amountToApprove":500}`}
+          />
+        </div>
+      </DashboardPage>
+    );
+  }
 }

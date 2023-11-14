@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import React from 'react';
 import { getActionDefinitionById } from '../../../database/actionDefinitions';
 import { getScenarioEntityById } from '../../../database/scenarioEntities';
@@ -6,6 +7,11 @@ import {
   getScenarioEntityHistoryLatest,
 } from '../../../database/scenarioEntityHistory';
 import ActionForm from './ActionForm';
+
+export const metadata: Metadata = {
+  title: 'Please respond',
+  description: 'Approval Workflows made easy',
+};
 
 type Props = {
   params: { actionEntityId: string };

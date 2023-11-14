@@ -6,7 +6,7 @@ import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
 type Props = {
   heading: string;
   tabs: TabType[];
-  activeTab: string;
+  activeTab: string | undefined;
   children: React.ReactNode;
 };
 

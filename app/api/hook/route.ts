@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createScenarioEntity } from '../../../database/scenarioEntities';
 import { getScenarioHeaderById } from '../../../database/scenarios';
 import { ScenarioHeaderType } from '../../../migrations/00001-createTableScenarioHeader';
+import { processScenarioEntity } from '../../lib/processor';
 
 export type Error = {
   error: string;
@@ -129,7 +130,17 @@ export async function POST(
     );
   }
 
-  // TODO: Start the processing -->
+  // Start the processing -->
+  try {
+    await processScenarioEntity(scenarioEntiy);
+  } catch (e: any) {
+    return NextResponse.json(
+      {
+        error: `Error: ${e.message}`,
+      },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({
     scenarioId: scenarioEntiy.scenarioId,

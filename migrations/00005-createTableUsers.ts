@@ -3,20 +3,26 @@ import { Sql } from 'postgres';
 export type User = {
   id: number;
   username: string;
+  orgId: number;
+  email: string;
+  role: string;
 };
 
 export async function up(sql: Sql) {
   await sql`
-    CREATE TABLE users (
-      id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-      username varchar(80) NOT NULL UNIQUE,
-      password_hash varchar (80) NOT NULL
-    );
+    CREATE TABLE
+      users (
+        id INTEGER GENERATED ALWAYS AS IDENTITY,
+        username VARCHAR(80) NOT NULL UNIQUE,
+        org_id INTEGER NOT NULL,
+        email VARCHAR(40),
+        role VARCHAR(10),
+        password_hash VARCHAR(80) NOT NULL,
+        PRIMARY KEY (id)
+      );
   `;
 }
 
 export async function down(sql: Sql) {
-  await sql`
-    DROP TABLE users
-  `;
+  await sql` DROP TABLE users `;
 }

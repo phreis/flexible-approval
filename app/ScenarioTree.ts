@@ -22,12 +22,12 @@ export type WfNode = {
 };
 
 export default class ScenarioTree {
-  constructor(scenarioEntity: ScenarioEntityType) {
+  constructor(scenarioEntity?: ScenarioEntityType) {
     this.scenarioEntity = scenarioEntity;
   }
   root: WfNode | undefined;
   nodes: WfNode[] = [];
-  scenarioEntity: ScenarioEntityType;
+  scenarioEntity: ScenarioEntityType | undefined;
 
   insertNode(newNode: WfNode) {
     this.nodes = [...(this.nodes || []), newNode];
@@ -46,7 +46,7 @@ export default class ScenarioTree {
     return this.root;
   }
   async process(node = this.root) {
-    if (node) {
+    if (node && this.scenarioEntity) {
       console.log('process: ', node.stepId, ' ', node.taskType);
 
       // TODO: check this.scenarioEntity against scenarioEntities, if node has to be processed: scenarioEntities.state = null || ERROR || ACTION_RESPONSE_RECEIVED
@@ -101,7 +101,6 @@ export default class ScenarioTree {
       }
 
       if (node?.taskType === 'COND') {
-        // TODO: evalueate COND
         const condResult = await processCondition(
           node,
           this.scenarioEntity,
@@ -113,7 +112,7 @@ export default class ScenarioTree {
         );
         if (condOption) await this.process(condOption);
       } else {
-        node?.children?.forEach((step) => this.process(step));
+        node.children?.forEach((step) => this.process(step));
       }
     }
   }

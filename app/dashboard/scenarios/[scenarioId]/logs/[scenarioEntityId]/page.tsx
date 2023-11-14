@@ -3,14 +3,16 @@ import React from 'react';
 import { getScenarioHeaderById } from '../../../../../../database/scenarios';
 import { TabType } from '../../../../PageHeaderTabs';
 import DashboardPage from '../../../DashboardPage';
+import { ScenarioDiagram } from '../../../ScenarioDiagram';
 import ScenarioEntitiesHistoryList from './ScenarioEntitiesHistoryList';
+import styles from './ScenarioEntitiesHistoryPage.module.scss';
 
 type Props = {
   params: { scenarioId: string; scenarioEntityId: string };
   searchParams: { [key: string]: string | undefined };
 };
 
-export default async function ScenarioEntityPage({
+export default async function ScenarioEntityHistoryPage({
   params,
   searchParams,
 }: Props) {
@@ -46,7 +48,15 @@ export default async function ScenarioEntityPage({
       tabs={tabs}
       activeTab="t2"
     >
-      <ScenarioEntitiesHistoryList scenarioEntityId={params.scenarioEntityId} />
+      <div className={styles.basicGridDivider}>
+        <ScenarioDiagram
+          scenarioId={Number(params.scenarioId)}
+          scenarioEntityId={params.scenarioEntityId}
+        />
+        <ScenarioEntitiesHistoryList
+          scenarioEntityId={params.scenarioEntityId}
+        />
+      </div>
     </DashboardPage>
   );
 }

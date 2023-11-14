@@ -3,41 +3,31 @@ import {
   getConditionItems,
   getCondtitionHeaderById,
 } from '../../../database/conditions';
+import { ScenarioEntityHistoryType } from '../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNode } from '../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
+import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 
-export default async function ScenarioNodeCond(props: { node: WfNode }) {
+export default async function ScenarioNodeCond(props: {
+  node: WfNode;
+  lastHistory?: ScenarioEntityHistoryType;
+}) {
   const condHeaderArr = await getCondtitionHeaderById(props.node.taskId);
   const condItemsArr = await getConditionItems(props.node.taskId);
 
   const condHeader = condHeaderArr[0];
   const condItems = condItemsArr[0];
 
-  function renderTopBox() {
-    const constStepResult =
-      props.node.condStepResult !== null &&
-      (props.node.condStepResult === true ? 'TRUE' : 'FALSE');
-
-    const actionStepResult =
-      props.node.actionStepResult !== null && props.node.actionStepResult;
-
-    if (constStepResult || actionStepResult) {
-      return (
-        <div className={styles.topBox}>
-          <span>{constStepResult}</span>
-          <span>{actionStepResult}</span>
-        </div>
-      );
-    }
-  }
-
   return (
     <div className={styles.nodeContainer}>
-      {renderTopBox()}
+      {renderTopBox(props.node)}
 
       <div className={styles.headLine}>
         <span>#{props.node.stepId}</span>
         <span className={styles.taskNameBox}>{props.node.taskType}</span>
+        {props.lastHistory && (
+          <span className={getStatusIcon(props.lastHistory.state)} />
+        )}
       </div>
       <div className={styles.genericData}>
         <span className={styles.description}>{condHeader?.description}</span>

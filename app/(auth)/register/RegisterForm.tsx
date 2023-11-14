@@ -16,6 +16,10 @@ export default function RegisterForm() {
           <input id="username" name="username" />
         </span>
         <span className={styles.formElement}>
+          <label htmlFor="email">Email</label>
+          <input type="email" id="email" name="email" />
+        </span>
+        <span className={styles.formElement}>
           <label htmlFor="pasword">Password </label>
           <input type="password" id="password" name="password" />
         </span>

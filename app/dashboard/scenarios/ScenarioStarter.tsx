@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function ScenarioStarter(props: Props) {
-  const initialState = { scenarioEntityId: null, message: null, errors: {} };
+  const initialState = { scenarioEntityId: null, message: null, errors: null };
   const [state, dispatch] = useFormState(
     processScenarioNewAction,
     initialState,
@@ -37,18 +37,22 @@ export default function ScenarioStarter(props: Props) {
           name="context"
           rows={5}
           cols={30}
-          value={props.context || ''}
+          defaultValue={props.context || ''}
         />
 
         <button>Run once</button>
       </form>
       <p>
         {state?.message}{' '}
-        <a
-          href={`http://localhost:3000/dashboard/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
-        >
-          DETAILS
-        </a>
+        {!state?.errors && state?.message ? (
+          <a
+            href={`http://localhost:3000/dashboard/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
+          >
+            DETAILS
+          </a>
+        ) : (
+          state?.errors
+        )}
       </p>
     </div>
   );

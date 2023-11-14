@@ -1,5 +1,9 @@
 import util from 'node:util';
 import dynamic from 'next/dynamic';
+import { getScenarioEntityById } from '../../../database/scenarioEntities';
+import { getScenarioEntityHistoriesById } from '../../../database/scenarioEntityHistory';
+import { getScenarioItems } from '../../../database/scenarios';
+import { ScenarioHeaderType } from '../../../migrations/00001-createTableScenarioHeader';
 import { ScenarioItemType } from '../../../migrations/00003-createTableScenarioItems';
 import { ScenarioEntityType } from '../../../migrations/00015-createTablescenarioEntities';
 import ScenarioTree from '../../ScenarioTree';
@@ -10,12 +14,16 @@ import styles from './Scenario.module.scss';
 const Scenario = dynamic(() => import('./Scenario'), { ssr: false });
 
 type Props = {
-  items: ScenarioItemType[];
+  scenarioId: ScenarioHeaderType['scenarioId'];
+  scenarioEntityId?: ScenarioEntityType['scenarioEntityId'];
 };
 
-export function ScenarioDiagram(props: Props) {
+export async function ScenarioDiagram(props: Props) {
+  const sceanarioItemsData = await getScenarioItems(props.scenarioId);
+
   const tree = new ScenarioTree();
-  props.items.forEach((item: ScenarioItemType) =>
+
+  sceanarioItemsData.forEach((item: ScenarioItemType) =>
     tree.insertNode({ ...item, children: null }),
   );
 
@@ -25,7 +33,7 @@ export function ScenarioDiagram(props: Props) {
     return (
       <div className={styles.tree}>
         <ul>
-          <Scenario node={rootNode} />
+          <Scenario node={rootNode} scenarioEntityId={props.scenarioEntityId} />
         </ul>
       </div>
     );

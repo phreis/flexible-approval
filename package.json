@@ -2,11 +2,14 @@
   "name": "flexible-approval",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "migrate": "ley up -r tsm",
+    "migrateUndo": "ley down -a -r tsm",
+    "start": "next start -p"
   },
   "dependencies": {
     "@emotion/css": "^11.11.2",
@@ -29,7 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint-config-upleveled": "^6.1.2",
+    "eslint-config-upleveled": "^7.0.0",
     "libpg-query": "^15.0.2",
     "prettier-plugin-embed": "^0.2.5",
     "prettier-plugin-sql": "^0.15.1",

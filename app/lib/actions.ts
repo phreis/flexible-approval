@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { createOrganization } from '../../database/organizations';
 import { createScenarioEntity } from '../../database/scenarioEntities';
 import { createSession, deleteSessionByToken } from '../../database/sessions';
 import {
@@ -18,6 +19,7 @@ import { getSafeReturnToPath, secureCookieOptions } from './utils';
 export async function registerUser(prevState: any, formData: FormData) {
   const registerSchema = z.object({
     username: z.string().min(3),
+    email: z.string().email(),
     password: z.string().min(3),
   });
 
@@ -25,6 +27,7 @@ export async function registerUser(prevState: any, formData: FormData) {
   const validatedFields = registerSchema.safeParse({
     username: formData.get('username'),
     password: formData.get('password'),
+    email: formData.get('email'),
   });
 
   // If form validation fails, return errors early. Otherwise, continue.
@@ -35,7 +38,7 @@ export async function registerUser(prevState: any, formData: FormData) {
     };
   }
 
-  const { username, password } = validatedFields.data;
+  const { username, password, email } = validatedFields.data;
 
   // 2. Check if user already exist in the database
 
@@ -48,9 +51,22 @@ export async function registerUser(prevState: any, formData: FormData) {
 
   // 3. Hash the plain password from the user
 
+  // 3.1 get a new Organization
+  const newOrganization = await createOrganization('My Organization');
+  if (!newOrganization?.orgId) {
+    return {
+      message: `Error on creation new Organization`,
+    };
+  }
   const passwordHash = await bcrypt.hash(password, 12);
   // 4. Save the user information with the hashed password in the database
-  const newUser = await createUser(username, passwordHash);
+  const newUser = await createUser(
+    newOrganization.orgId,
+    username,
+    passwordHash,
+    email,
+    'admin',
+  );
 
   if (!newUser) {
     return {
@@ -61,7 +77,7 @@ export async function registerUser(prevState: any, formData: FormData) {
   const token = crypto.randomBytes(100).toString('base64');
 
   // 5. Create the session record
-  const session = await createSession(newUser.id, token);
+  const session = await createSession(newUser.id, token, newOrganization.orgId);
 
   if (!session) {
     return {
@@ -133,8 +149,14 @@ export async function loginUser(prevState: any, formData: FormData) {
   // 4. Create a token
   const token = crypto.randomBytes(100).toString('base64');
 
+  console.log('userWithPasswordHash: ', userWithPasswordHash.orgId);
+
   // 5. Create the session record
-  const session = await createSession(userWithPasswordHash.id, token);
+  const session = await createSession(
+    userWithPasswordHash.id,
+    token,
+    userWithPasswordHash.orgId,
+  );
 
   if (!session) {
     return {
@@ -226,10 +248,13 @@ export async function processScenarioNewAction(
         errors: `Error: ${e.message}`,
       };
     }
-    return {
+    /*     return {
       message: `Scenario started`,
       scenarioEntityId: scenarioEntiy.scenarioEntityId,
-    };
+    }; */
+    redirect(
+      `/dashboard/scenarios/${scenarioId}/logs/${scenarioEntiy.scenarioEntityId}`,
+    );
   }
 }
 

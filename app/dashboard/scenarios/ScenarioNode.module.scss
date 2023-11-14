@@ -43,4 +43,28 @@
       gap: 5px;
     }
   }
+  .iconDone {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url(/icons/correct.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .iconPending {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url(/icons/clockwise.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .iconError {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url(/icons/close.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
 }

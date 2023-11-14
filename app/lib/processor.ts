@@ -56,14 +56,12 @@ export async function processCondition(
               returnValue = compVariable > item.compConstant;
               break;
             default:
-              // TODO: Throw some error
               throw new Error(
                 `Error: Operator ${item.comperator} not (yet) implemented`,
               );
           }
         } else {
-          // TODO: Throw some error
-          throw new TypeError(
+          throw new Error(
             `Error: Attr ${item.contextAttributeName} not found in context-data`,
           );
         }
@@ -103,7 +101,6 @@ export async function processAction(
   lastHistory: ScenarioEntityHistoryType | undefined,
 ): Promise<string | null> {
   // TODO:
-  console.log('last history state: ', lastHistory?.state);
 
   if (lastHistory?.state === 'CONTINUE') {
     // CONTINUE and actionResult has been set by user-interaction

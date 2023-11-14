@@ -22,7 +22,7 @@ export default function ScenariosPage({ searchParams }: Props) {
         <PageHeaderTabs tabs={tabs} activeTab={searchParams.tab} />
       </PageHeader>
       <PageContent>
-        <Link href="/dashboard/scenarios/add">Add new scenario</Link>
+        {/*         <Link href="/dashboard/scenarios/add">Add new scenario</Link> */}
         <ScenariosHeader />
       </PageContent>
     </>

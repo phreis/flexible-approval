@@ -24,7 +24,7 @@ export default function ActionForm(props: Props) {
     <section className={`${styles.formContainer}`}>
       {!state?.message ? (
         <>
-          <h1>Please response!</h1>
+          <h1>Please respond!</h1>
 
           <p>Hello, {props.actionDefinition.approver}!</p>
           <p>{props.actionDefinition.textTemplate}</p>
