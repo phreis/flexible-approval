@@ -1,7 +1,7 @@
 import React from 'react';
-import { getActionDefinitionById } from '../../../database/actionDefinitions';
-import { ScenarioEntityHistoryType } from '../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../ScenarioTree';
+import { getActionDefinitionById } from '../../../../database/actionDefinitions';
+import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
+import { WfNode } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 

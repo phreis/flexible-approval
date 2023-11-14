@@ -1,5 +1,5 @@
 import React from 'react';
-import ScenarioTree, { WfNode } from '../../../ScenarioTree';
+import ScenarioTree, { WfNode } from '../../../../ScenarioTree';
 import Scenario from '../Scenario';
 import styles from '../Scenario.module.scss';
 

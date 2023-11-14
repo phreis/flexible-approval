@@ -1,14 +1,16 @@
 'use client';
 import React from 'react';
 import { useFormState } from 'react-dom';
-import { ScenarioHeaderType } from '../../../migrations/00001-createTableScenarioHeader';
-import { ScenarioEntityType } from '../../../migrations/00015-createTablescenarioEntities';
-import { processScenarioNewAction } from '../../lib/actions';
+import { ScenarioHeaderType } from '../../../../migrations/00001-createTableScenarioHeader';
+import { OrganizationType } from '../../../../migrations/00004-createTableOrganizations';
+import { ScenarioEntityType } from '../../../../migrations/00015-createTablescenarioEntities';
+import { processScenarioNewAction } from '../../../lib/actions';
 import styles from './ScenarioStarter.module.scss';
 
 type Props = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   context: ScenarioEntityType['context'];
+  organizationId: OrganizationType['orgId'];
 };
 
 export default function ScenarioStarter(props: Props) {
@@ -46,7 +48,7 @@ export default function ScenarioStarter(props: Props) {
         {state?.message}{' '}
         {!state?.errors && state?.message ? (
           <a
-            href={`http://localhost:3000/dashboard/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
+            href={`http://localhost:3000/dashboard/${organizationId}/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
           >
             DETAILS
           </a>

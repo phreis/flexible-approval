@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { getScenarioHeaders } from '../../../database/scenarios';
+import { getScenarioHeaders } from '../../../../database/scenarios';
 import styles from './ScenariosHeader.module.scss';
 
 export default async function Scenarios() {

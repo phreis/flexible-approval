@@ -3,7 +3,7 @@ import React from 'react';
 import {
   getScenarioHeaderById,
   getScenarioItems,
-} from '../../../../database/scenarios';
+} from '../../../../../database/scenarios';
 import { TabType } from '../../PageHeaderTabs';
 import DashboardPage from '../DashboardPage';
 import { ScenarioDiagram } from '../ScenarioDiagram';
@@ -11,22 +11,25 @@ import ScenarioStarter from '../ScenarioStarter';
 import styles from './ScenarioPage.module.scss';
 
 type Props = {
-  params: { scenarioId: string };
+  params: { scenarioId: string; organizationId: number };
   searchParams: { [key: string]: string | undefined };
 };
 
 export default async function ScenarioPage({ params, searchParams }: Props) {
-  const logsLink = `/dashboard/scenarios/${Number(params.scenarioId)}/logs`;
   const tabs: TabType[] = [
     {
       tabTitle: 'Diagram',
       tabId: 't1',
-      href: `/dashboard/scenarios/${Number(params.scenarioId)}`,
+      href: `/dashboard/${params.organizationId}/scenarios/${Number(
+        params.scenarioId,
+      )}`,
     },
     {
       tabTitle: 'History',
       tabId: 't2',
-      href: `/dashboard/scenarios/${Number(params.scenarioId)}/logs`,
+      href: `/dashboard/${params.organizationId}/scenarios/${Number(
+        params.scenarioId,
+      )}/logs`,
     },
     { tabTitle: 'Incomplete Executions', tabId: 't3', href: '/' },
   ];
@@ -47,6 +50,7 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
           <ScenarioDiagram scenarioId={scenarioId} />
           <ScenarioStarter
             scenarioId={scenarioId}
+            organizationId={params.organizationId}
             context={`{"amountToApprove":500}`}
           />
         </div>

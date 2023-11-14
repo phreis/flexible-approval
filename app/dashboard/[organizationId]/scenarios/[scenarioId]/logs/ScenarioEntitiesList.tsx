@@ -2,13 +2,15 @@ import React, { Fragment } from 'react';
 import {
   getScenarioEntitiesListByScenarioId,
   ScenarioEntityListType,
-} from '../../../../../database/scenarioEntities';
-import { ScenarioHeaderType } from '../../../../../migrations/00001-createTableScenarioHeader';
+} from '../../../../../../database/scenarioEntities';
+import { ScenarioHeaderType } from '../../../../../../migrations/00001-createTableScenarioHeader';
+import { OrganizationType } from '../../../../../../migrations/00004-createTableOrganizations';
 import styles from './ScenarioEntitiesList.module.scss';
 
 type Props = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   filter?: string | undefined;
+  organizationId: OrganizationType['orgId'];
 };
 
 export default async function ScenarioEntitiesList(props: Props) {
@@ -42,7 +44,7 @@ export default async function ScenarioEntitiesList(props: Props) {
             <span>{ent.message}</span>
             <span>
               <a
-                href={`/dashboard/scenarios/${ent.scenarioId}/logs/${ent.scenarioEntityId}`}
+                href={`/dashboard/${props.organizationId}/scenarios/${ent.scenarioId}/logs/${ent.scenarioEntityId}`}
               >
                 DETAILS
               </a>

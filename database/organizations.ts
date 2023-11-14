@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { getUserLoggedIn } from '../app/lib/utils';
 import { sql } from '../database/connect';
 import { OrganizationType } from '../migrations/00004-createTableOrganizations';
 import { User } from '../migrations/00005-createTableUsers';
@@ -45,3 +46,13 @@ export const getOrganizationByUserName = cache(
     return organization;
   },
 );
+
+export async function getOrganizationLoggedIn() {
+  const userLoggedIn = await getUserLoggedIn();
+  let organizationLoggedIn;
+  if (userLoggedIn) {
+    return (organizationLoggedIn = await getOrganizationByUserName(
+      userLoggedIn.username,
+    ));
+  }
+}

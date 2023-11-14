@@ -1,6 +1,7 @@
 import { Route } from 'next';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
+import { getOrganizationByUserName } from '../../database/organizations';
 import { getUserBySessionToken } from '../../database/users';
 import { ScenarioEntityHistoryType } from '../../migrations/00017-createTablescenarioEntityHistory';
 

@@ -2,9 +2,9 @@ import React from 'react';
 import {
   getConditionItems,
   getCondtitionHeaderById,
-} from '../../../database/conditions';
-import { ScenarioEntityHistoryType } from '../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../ScenarioTree';
+} from '../../../../database/conditions';
+import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
+import { WfNode } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 

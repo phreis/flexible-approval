@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react';
-import { getScenarioEntityHistoriesById } from '../../../../../../database/scenarioEntityHistory';
-import { ScenarioEntityType } from '../../../../../../migrations/00015-createTablescenarioEntities';
-import { ScenarioEntityHistoryType } from '../../../../../../migrations/00017-createTablescenarioEntityHistory';
+import { getScenarioEntityHistoriesById } from '../../../../../../../database/scenarioEntityHistory';
+import { OrganizationType } from '../../../../../../../migrations/00004-createTableOrganizations';
+import { ScenarioEntityType } from '../../../../../../../migrations/00015-createTablescenarioEntities';
+import { ScenarioEntityHistoryType } from '../../../../../../../migrations/00017-createTablescenarioEntityHistory';
 import styles from './ScenarioEntitiesHistoryList.module.scss';
 
 type Props = {

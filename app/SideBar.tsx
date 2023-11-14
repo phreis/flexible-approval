@@ -11,8 +11,8 @@ export default async function SideBar() {
       <div className={styles.sideBarTopLogo}>topLogo</div>
       <nav className={styles.nav}>
         <div className={styles.sideBarTop}>
-          <Link href="/dashboard">Organization</Link>
-          <Link href="/dashboard/scenarios">Scenarios</Link>
+          <Link href={`/dashboard/${user?.orgId}`}>Organization</Link>
+          <Link href={`/dashboard/${user?.orgId}/scenarios`}>Scenarios</Link>
           {/*           <Link href="/dashboard/team">Team</Link> */}
         </div>
         <div className={styles.sideBarBottom}>

@@ -5,7 +5,10 @@ import bcrypt from 'bcrypt';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { createOrganization } from '../../database/organizations';
+import {
+  createOrganization,
+  getOrganizationLoggedIn,
+} from '../../database/organizations';
 import { createScenarioEntity } from '../../database/scenarioEntities';
 import { createSession, deleteSessionByToken } from '../../database/sessions';
 import {
@@ -149,7 +152,7 @@ export async function loginUser(prevState: any, formData: FormData) {
   // 4. Create a token
   const token = crypto.randomBytes(100).toString('base64');
 
-  console.log('userWithPasswordHash: ', userWithPasswordHash.orgId);
+  // console.log('userWithPasswordHash: ', userWithPasswordHash.orgId);
 
   // 5. Create the session record
   const session = await createSession(
@@ -252,8 +255,10 @@ export async function processScenarioNewAction(
       message: `Scenario started`,
       scenarioEntityId: scenarioEntiy.scenarioEntityId,
     }; */
+    const orgLoggedIn = await getOrganizationLoggedIn();
+
     redirect(
-      `/dashboard/scenarios/${scenarioId}/logs/${scenarioEntiy.scenarioEntityId}`,
+      `/dashboard/${orgLoggedIn?.orgId}/scenarios/${scenarioId}/logs/${scenarioEntiy.scenarioEntityId}`,
     );
   }
 }

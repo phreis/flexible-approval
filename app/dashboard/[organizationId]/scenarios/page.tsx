@@ -5,13 +5,13 @@ import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
 import ScenariosHeader from './ScenariosHeader';
 
 type Props = {
-  params: { scenarioId: string };
+  params: { scenarioId: string; organizationId: number };
   searchParams: { [key: string]: string | undefined };
 };
 
 export default function ScenariosPage({ searchParams }: Props) {
   const tabs: TabType[] = [
-    { tabTitle: 'All', tabId: 'all', href: '/' },
+    { tabTitle: 'All', tabId: 'all', href: '/scenarios' },
     { tabTitle: 'Active Scenarios', tabId: 'active', href: '/' },
     { tabTitle: 'Inactive Scenarios', tabId: 'inactive', href: '/' },
   ];

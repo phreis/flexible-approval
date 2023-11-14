@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation';
 import React from 'react';
-import { getScenarioEntitiesByScenarioId } from '../../../../../database/scenarioEntities';
-import { getScenarioHeaderById } from '../../../../../database/scenarios';
+import { getScenarioEntitiesByScenarioId } from '../../../../../../database/scenarioEntities';
+import { getScenarioHeaderById } from '../../../../../../database/scenarios';
 import { TabType } from '../../../PageHeaderTabs';
 import DashboardPage from '../../DashboardPage';
 import ScenarioEntitiesList from './ScenarioEntitiesList';
 
 type Props = {
-  params: { scenarioId: string };
+  params: { scenarioId: string; organizationId: number };
   searchParams: { [key: string]: string | undefined };
 };
 
@@ -19,17 +19,21 @@ export default async function ScenarioEntityPage({
     {
       tabTitle: 'Diagram',
       tabId: 't1',
-      href: `/dashboard/scenarios/${Number(params.scenarioId)}`,
+      href: `/dashboard/${params.organizationId}/scenarios/${Number(
+        params.scenarioId,
+      )}`,
     },
     {
       tabTitle: 'History',
       tabId: 't2',
-      href: `/dashboard/scenarios/${Number(params.scenarioId)}/logs`,
+      href: `/dashboard/${params.organizationId}/scenarios/${Number(
+        params.scenarioId,
+      )}/logs`,
     },
     {
       tabTitle: 'Incomplete Executions',
       tabId: 't3',
-      href: `/dashboard/scenarios/${Number(
+      href: `/dashboard/${params.organizationId}/scenarios/${Number(
         params.scenarioId,
       )}/logs?filter=incomplete`,
     },
@@ -51,6 +55,7 @@ export default async function ScenarioEntityPage({
     >
       <ScenarioEntitiesList
         scenarioId={Number(params.scenarioId)}
+        organizationId={params.organizationId}
         filter={searchParams.filter}
       />
     </DashboardPage>

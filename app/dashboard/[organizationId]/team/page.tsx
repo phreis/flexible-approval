@@ -1,6 +1,6 @@
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { getValidSessionByToken } from '../../../database/sessions';
+import { getValidSessionByToken } from '../../../../database/sessions';
 import PageContent from '../PageContent';
 import PageHeader from '../PageHeader';
 import PageHeaderTabs, { TabType } from '../PageHeaderTabs';

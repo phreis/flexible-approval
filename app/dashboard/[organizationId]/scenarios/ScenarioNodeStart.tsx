@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import React from 'react';
-import { getScenarioHeaderById } from '../../../database/scenarios';
-import { ScenarioEntityHistoryType } from '../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../ScenarioTree';
+import { getScenarioHeaderById } from '../../../../database/scenarios';
+import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
+import { WfNode } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon } from './scenarioNodeUtils';
 
