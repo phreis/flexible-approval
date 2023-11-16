@@ -23,6 +23,7 @@ import {
   getUserByUsername,
   getUserWithPasswordHashByUsername,
 } from '../../database/users';
+import { sendEmail } from './email';
 import { processActionResult, processScenarioEntity } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
@@ -169,6 +170,7 @@ export async function preRegisterUserAction(
   });
 
   // TODO: Kick off EMail...
+  await sendEmail();
   console.log('rsvp id: ', inv?.invitationId);
 
   revalidatePath('/');

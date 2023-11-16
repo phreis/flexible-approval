@@ -10,6 +10,10 @@ export function setEnvironmentVariables() {
       process.env.PGUSERNAME = process.env.POSTGRES_USER;
       process.env.PGPASSWORD = process.env.POSTGRES_PASSWORD;
     }
+    // Set environment variables for mailjet
+    process.env.MJAPIKEYPUBLIC = process.env.MJ_APIKEY_PUBLIC;
+    process.env.MJAPIKEYPRIVATE = process.env.MJ_APIKEY_PRIVATE;
+
     return;
   }
 
