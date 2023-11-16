@@ -51,12 +51,12 @@ export default class ScenarioTree {
 
       // TODO: check this.scenarioEntity against scenarioEntities, if node has to be processed: scenarioEntities.state = null || ERROR || ACTION_RESPONSE_RECEIVED
 
-      const lastHistory = await getScenarioEntityHistoryLatest(
+      const lastHistoryArr = await getScenarioEntityHistoryLatest(
         node.scenarioId,
         this.scenarioEntity.scenarioEntityId,
         node.stepId,
       );
-
+      const lastHistory = lastHistoryArr[0];
       // If the current step, is PENDING (E.g. awaiting User Interaction, we must stop the processing here)
       if (lastHistory?.state === 'PENDING') {
         return;

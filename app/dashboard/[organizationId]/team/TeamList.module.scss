@@ -1,0 +1,31 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid black;
+  height: fit-content;
+
+  span {
+    color: #666;
+    padding: 5px 5px 5px 5px;
+    font-size: 12px;
+    border-top: 1px solid #ccc;
+  }
+}
+.toolsContainer {
+  display: flex;
+  justify-content: right;
+  padding-bottom: 1rem;
+
+  a {
+    height: 2rem;
+    border: none;
+    background-color: rgb(74, 72, 72);
+    color: white;
+    border-radius: 8px;
+    margin-top: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+}

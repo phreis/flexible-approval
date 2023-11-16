@@ -20,7 +20,7 @@ export default function RegisterForm() {
           <input type="email" id="email" name="email" />
         </span>
         <span className={styles.formElement}>
-          <label htmlFor="pasword">Password </label>
+          <label htmlFor="password">Password </label>
           <input type="password" id="password" name="password" />
         </span>
         <button>Sign up</button>

@@ -27,9 +27,8 @@ export async function up(sql: Sql) {
         scenario_entity_id VARCHAR(36) NOT NULL REFERENCES scenarioentities (
           scenario_entity_id
         ) ON DELETE CASCADE,
-        scenario_id INTEGER NOT NULL REFERENCES scenarioheader (
-          scenario_id
-        ) ON DELETE CASCADE,
+        org_id INTEGER NOT NULL,
+        scenario_id INTEGER NOT NULL,
         step_id INTEGER NOT NULL,
         task_type VARCHAR(30) NOT NULL,
         task_id INTEGER,

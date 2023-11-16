@@ -3,19 +3,20 @@ import {
   getScenarioEntitiesListByScenarioId,
   ScenarioEntityListType,
 } from '../../../../../../database/scenarioEntities';
+import { OrganizationType } from '../../../../../../migrations/00000-createTableOrganizations';
 import { ScenarioHeaderType } from '../../../../../../migrations/00001-createTableScenarioHeader';
-import { OrganizationType } from '../../../../../../migrations/00004-createTableOrganizations';
 import styles from './ScenarioEntitiesList.module.scss';
 
 type Props = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   filter?: string | undefined;
-  organizationId: OrganizationType['orgId'];
+  orgId: OrganizationType['orgId'];
 };
 
 export default async function ScenarioEntitiesList(props: Props) {
   const scenarioEntities = await getScenarioEntitiesListByScenarioId(
     props.scenarioId,
+    props.orgId,
     props.filter,
   );
 
@@ -44,7 +45,7 @@ export default async function ScenarioEntitiesList(props: Props) {
             <span>{ent.message}</span>
             <span>
               <a
-                href={`/dashboard/${props.organizationId}/scenarios/${ent.scenarioId}/logs/${ent.scenarioEntityId}`}
+                href={`/dashboard/${props.orgId}/scenarios/${ent.scenarioId}/logs/${ent.scenarioEntityId}`}
               >
                 DETAILS
               </a>
@@ -55,5 +56,3 @@ export default async function ScenarioEntitiesList(props: Props) {
     </div>
   );
 }
-
-// < key={`key-ent.scenarioEntityId`}>

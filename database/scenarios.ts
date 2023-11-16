@@ -1,37 +1,78 @@
 import 'server-only';
+import { Andada_Pro } from 'next/font/google';
 import { headers } from 'next/headers';
 import { cache } from 'react';
+import { OrganizationType } from '../migrations/00000-createTableOrganizations';
 import { ScenarioHeaderType } from '../migrations/00001-createTableScenarioHeader';
 import { ScenarioItemType } from '../migrations/00003-createTableScenarioItems';
 import { sql } from './connect';
 import { getOrganizationLoggedIn } from './organizations';
 
-export const getScenarioHeaderById = cache(
-  async (scenarioId: ScenarioHeaderType['scenarioId']) => {
-    const orgLoggedIn = await getOrganizationLoggedIn();
-    console.log('orgLoggedIn: ', orgLoggedIn);
+export async function getScenarioHeaderById(
+  scenarioId: ScenarioHeaderType['scenarioId'],
+): Promise<ScenarioHeaderType[] | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getScenarioHeaderByIdOrgId(scenarioId, orgId);
+  }
+}
+
+const getScenarioHeaderByIdOrgId = cache(
+  async (
+    scenarioId: ScenarioHeaderType['scenarioId'],
+    orgId: OrganizationType['orgId'],
+  ) => {
     return await sql<ScenarioHeaderType[]>`
       SELECT
         *
       FROM
         scenarioheader
       WHERE
-        scenario_id = ${scenarioId};
+        scenario_id = ${scenarioId}
+        AND org_id = ${orgId};
     `;
   },
 );
 
-export const getScenarioHeaders = cache(async () => {
-  return await sql<ScenarioHeaderType[]>`
-    SELECT
-      *
-    FROM
-      scenarioheader;
-  `;
-});
+export async function getScenarioHeaders(): Promise<
+  ScenarioHeaderType[] | undefined
+> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getScenarioHeadersByOrgId(orgId);
+  }
+}
 
-export const getScenarioItems = cache(
-  async (scenarioId: ScenarioHeaderType['scenarioId']) => {
+const getScenarioHeadersByOrgId = cache(
+  async (orgId: OrganizationType['orgId']) => {
+    return await sql<ScenarioHeaderType[]>`
+      SELECT
+        *
+      FROM
+        scenarioheader
+      WHERE
+        org_id = ${orgId};
+    `;
+  },
+);
+
+export async function getScenarioItems(
+  scenarioId: ScenarioHeaderType['scenarioId'],
+): Promise<ScenarioItemType[] | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getScenarioItemsByOrgId(scenarioId, orgId);
+  }
+}
+
+export const getScenarioItemsByOrgId = cache(
+  async (
+    scenarioId: ScenarioHeaderType['scenarioId'],
+    orgId: OrganizationType['orgId'],
+  ) => {
     return await sql<ScenarioItemType[]>`
       SELECT
         *
@@ -39,6 +80,7 @@ export const getScenarioItems = cache(
         scenarioitems
       WHERE
         scenario_id = ${scenarioId}
+        AND org_id = ${orgId}
       ORDER BY
         scenario_id ASC,
         step_id ASC;

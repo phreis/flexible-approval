@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { sql } from '../database/connect';
-import { OrganizationType } from '../migrations/00004-createTableOrganizations';
+import { OrganizationType } from '../migrations/00000-createTableOrganizations';
 import { User } from '../migrations/00005-createTableUsers';
 import { ActionDefinitionType } from '../migrations/00011-createTableActionDefinitions';
 
@@ -60,7 +60,7 @@ export const getUserByUsername = cache(async (username: string) => {
 
 export const getUserByOrganization = cache(
   async (orgId: OrganizationType['orgId']) => {
-    const [user] = await sql<User[]>`
+    return await sql<User[]>`
       SELECT
         id,
         org_id,
@@ -72,7 +72,6 @@ export const getUserByOrganization = cache(
       WHERE
         org_id = ${orgId}
     `;
-    return user;
   },
 );
 

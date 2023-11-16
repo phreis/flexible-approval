@@ -126,7 +126,7 @@ export async function processAction(
 
     // TODO: notify
     console.log(
-      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry?.historyId}`,
+      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry[0]?.historyId}`,
     );
 
     // TODO: in case of error, log ERROR
@@ -217,12 +217,13 @@ export async function processActionResult(
   }
 
   // Check, with getScenarioEntityHistoryLatest(scenarioEntityId) if the history set to be processed, is (still) the latest(?)
-  const scenarioEntityHistoryLatest = await getScenarioEntityHistoryLatest(
+  const scenarioEntityHistoryLatestArr = await getScenarioEntityHistoryLatest(
     scenarioEntityHistory.scenarioId,
     scenarioEntityHistory.scenarioEntityId,
     scenarioEntityHistory.stepId,
   );
 
+  const scenarioEntityHistoryLatest = scenarioEntityHistoryLatestArr[0];
   // Check if history entry is processable E.g. state is PENDING && actionResult is empty
   if (
     !(
@@ -247,5 +248,5 @@ export async function processActionResult(
   const scenarioEntity = await getScenarioEntityById(
     scenarioEntityHistory.scenarioEntityId,
   );
-  if (scenarioEntity) await processScenarioEntity(scenarioEntity);
+  if (scenarioEntity[0]) await processScenarioEntity(scenarioEntity[0]);
 }

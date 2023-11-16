@@ -2,9 +2,16 @@
 
 import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import {
+  acceptInvitation,
+  createInvitation,
+  getInvitationById,
+  getInvitedUsersByUsername,
+} from '../../database/invitations';
 import {
   createOrganization,
   getOrganizationLoggedIn,
@@ -19,6 +26,154 @@ import {
 import { processActionResult, processScenarioEntity } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
+// User sign up on invitation response
+export async function rsvpAction(prevState: any, formData: FormData) {
+  if (formData.get('invitationId') === null) {
+    return {
+      message: 'Err: Invitation ID not provided',
+    };
+  } else {
+    const invitationId = String(formData.get('invitationId'));
+
+    const rsvpSchema = z.object({
+      password: z.string().min(5),
+      rePassword: z.string().min(5),
+    });
+
+    // Field Validation
+    const validatedFields = rsvpSchema.safeParse({
+      password: formData.get('password'),
+      rePassword: formData.get('repassword'),
+    });
+
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to register User.',
+      };
+    }
+
+    const { password, rePassword } = validatedFields.data;
+    if (password !== rePassword) {
+      return {
+        message: 'Passwords to not match',
+      };
+    }
+    // TODO:
+    const invitation = await getInvitationById(invitationId);
+    if (!invitation) {
+      return {
+        message: 'Err: Invitation ID not found',
+      };
+    }
+    // --> Create Use based on the pre-registeration (Invitation)
+
+    // 1. Again, Check if user already exist in the database
+
+    const userAlreadyThere = await getUserByUsername(invitation.username);
+    if (userAlreadyThere) {
+      return {
+        message: `Username ${userAlreadyThere.username} already taken`,
+      };
+    }
+
+    // 2. Hash the plain password from the user
+    const passwordHash = await bcrypt.hash(password, 12);
+    // 3. Save the user information with the hashed password in the database
+    const newUser = await createUser(
+      invitation.orgId,
+      invitation.username,
+      passwordHash,
+      invitation.email,
+      invitation.role,
+    );
+
+    if (!newUser) {
+      return {
+        message: `Error creating the new user`,
+      };
+    }
+
+    // 4. Update Invitation
+    await acceptInvitation(invitation.invitationId);
+
+    // 5. Create a token
+    const token = crypto.randomBytes(100).toString('base64');
+
+    // 6. Create the session record
+    const session = await createSession(newUser.id, token, newUser.orgId);
+
+    if (!session) {
+      return {
+        message: `Error creating the new session`,
+      };
+    }
+
+    // 7. Send the new cookie in the headers
+    cookies().set({
+      name: 'sessionToken',
+      value: session.token,
+      ...secureCookieOptions,
+    });
+    redirect(`/dashboard/${newUser.orgId}/scenarios`);
+  }
+}
+export async function preRegisterUserAction(
+  prevState: any,
+  formData: FormData,
+) {
+  const preRegisterSchema = z.object({
+    username: z.string().min(3),
+    email: z.string().email(),
+    role: z.enum(['ADMIN', 'MEMBER']),
+  });
+
+  // Field Validation
+  const validatedFields = preRegisterSchema.safeParse({
+    username: formData.get('username'),
+    email: formData.get('email'),
+    role: formData.get('role'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to register User.',
+    };
+  }
+
+  const { username, email, role } = validatedFields.data;
+
+  // Check if user is already invited
+  const userAlreadyInvited = await getInvitedUsersByUsername(username);
+  if (userAlreadyInvited) {
+    return {
+      message: `${userAlreadyInvited.username} is already invited`,
+    };
+  }
+
+  // Check if user already exist in the database
+  const userAlreadyThere = await getUserByUsername(username);
+  if (userAlreadyThere) {
+    return {
+      message: `Username ${userAlreadyThere.username} already taken`,
+    };
+  }
+
+  const inv = await createInvitation({
+    username: username,
+    email: email,
+    role: role,
+  });
+
+  // TODO: Kick off EMail...
+  console.log('rsvp id: ', inv?.invitationId);
+
+  revalidatePath('/');
+}
+
 export async function registerUser(prevState: any, formData: FormData) {
   const registerSchema = z.object({
     username: z.string().min(3),
@@ -26,7 +181,7 @@ export async function registerUser(prevState: any, formData: FormData) {
     password: z.string().min(3),
   });
 
-  // 1. Validate the user data
+  // 1. Field Validation
   const validatedFields = registerSchema.safeParse({
     username: formData.get('username'),
     password: formData.get('password'),
@@ -54,7 +209,7 @@ export async function registerUser(prevState: any, formData: FormData) {
 
   // 3. Hash the plain password from the user
 
-  // 3.1 get a new Organization
+  // 3.1 create a new Organization
   const newOrganization = await createOrganization('My Organization');
   if (!newOrganization?.orgId) {
     return {
@@ -237,30 +392,35 @@ export async function processScenarioNewAction(
   }
 
   const { scenarioId, context } = validatedFields.data;
-
-  // Create new Scenario Entity:
-  const scenarioEntiy = await createScenarioEntity({
-    scenarioId: Number(scenarioId),
-    context: context,
-  });
-  if (scenarioEntiy) {
-    try {
-      await processScenarioEntity(scenarioEntiy);
-    } catch (e: any) {
-      return {
-        errors: `Error: ${e.message}`,
-      };
-    }
-    /*     return {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  if (orgLoggedIn) {
+    // Create new Scenario Entity:
+    const scenarioEntiy = await createScenarioEntity({
+      scenarioId: Number(scenarioId),
+      orgId: orgLoggedIn.orgId,
+      context: context,
+    });
+    if (scenarioEntiy) {
+      try {
+        await processScenarioEntity(scenarioEntiy);
+      } catch (e: any) {
+        return {
+          errors: `Error: ${e.message}`,
+        };
+      }
+      /*     return {
       message: `Scenario started`,
       scenarioEntityId: scenarioEntiy.scenarioEntityId,
     }; */
-    const orgLoggedIn = await getOrganizationLoggedIn();
 
-    redirect(
-      `/dashboard/${orgLoggedIn?.orgId}/scenarios/${scenarioId}/logs/${scenarioEntiy.scenarioEntityId}`,
-    );
-  }
+      redirect(
+        `/dashboard/${orgLoggedIn.orgId}/scenarios/${scenarioId}/logs/${scenarioEntiy.scenarioEntityId}`,
+      );
+    }
+  } else
+    return {
+      errors: `Err: Organization ID missing.`,
+    };
 }
 
 export async function processActionResultAction(

@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import React from 'react';
-import { getScenarioEntitiesByScenarioId } from '../../../../../../database/scenarioEntities';
 import { getScenarioHeaderById } from '../../../../../../database/scenarios';
 import { TabType } from '../../../PageHeaderTabs';
 import DashboardPage from '../../DashboardPage';
@@ -55,7 +54,7 @@ export default async function ScenarioEntityPage({
     >
       <ScenarioEntitiesList
         scenarioId={Number(params.scenarioId)}
-        organizationId={params.organizationId}
+        orgId={params.organizationId}
         filter={searchParams.filter}
       />
     </DashboardPage>

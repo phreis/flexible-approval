@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import { getUserLoggedIn } from '../app/lib/utils';
 import { sql } from '../database/connect';
-import { OrganizationType } from '../migrations/00004-createTableOrganizations';
+import { OrganizationType } from '../migrations/00000-createTableOrganizations';
 import { User } from '../migrations/00005-createTableUsers';
 
 export const createOrganization = cache(async (name: string) => {

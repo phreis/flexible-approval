@@ -6,7 +6,15 @@ const users = [
     org_id: 1,
     username: 'hugo1',
     email: 'hugo1@example.com',
-    role: 'admin',
+    role: 'ADMIN',
+    password_hash:
+      '$2b$12$Fb3Wdc8IOb78BTC1HYQSAO012SjipC1dhOmDZC73FZt7pC2jfnJLu',
+  },
+  {
+    org_id: 2,
+    username: 'hugo2',
+    email: 'hugo2@example.com',
+    role: 'ADMIN',
     password_hash:
       '$2b$12$Fb3Wdc8IOb78BTC1HYQSAO012SjipC1dhOmDZC73FZt7pC2jfnJLu',
   },

@@ -1,7 +1,9 @@
+import { Andada_Pro } from 'next/font/google';
 import { Sql } from 'postgres';
 
 const basicApprovalItems = [
   {
+    orgId: 1,
     scenarioId: 1,
     stepId: 1,
     parentStepId: null,
@@ -11,6 +13,7 @@ const basicApprovalItems = [
     actionStepResult: null,
   },
   {
+    orgId: 1,
     scenarioId: 1,
     stepId: 2,
     parentStepId: 1,
@@ -20,6 +23,7 @@ const basicApprovalItems = [
     actionStepResult: null,
   },
   {
+    orgId: 1,
     scenarioId: 1,
     stepId: 3,
     parentStepId: 2,
@@ -29,6 +33,7 @@ const basicApprovalItems = [
     actionStepResult: null,
   },
   {
+    orgId: 1,
     scenarioId: 1,
     stepId: 4,
     parentStepId: 2,
@@ -38,28 +43,31 @@ const basicApprovalItems = [
     actionStepResult: null,
   },
   {
+    orgId: 1,
     scenarioId: 1,
     stepId: 5,
     parentStepId: 4,
     taskType: 'TER',
     taskId: null,
     condStepResult: null,
-    actionStepResult: null,
+    actionStepResult: 'approved',
   },
   {
+    orgId: 1,
     scenarioId: 1,
     stepId: 6,
     parentStepId: 3,
     taskType: 'TER',
     taskId: null,
     condStepResult: null,
-    actionStepResult: null,
+    actionStepResult: 'approved',
   },
 ];
 
 const basicApprovalItems2 = [
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 1,
     parentStepId: null,
     taskType: 'START',
@@ -68,7 +76,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 2,
     parentStepId: 1,
     taskType: 'COND',
@@ -77,7 +86,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 3,
     parentStepId: 2,
     taskType: 'ACTION',
@@ -86,7 +96,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 4,
     parentStepId: 2,
     taskType: 'EVENT',
@@ -95,7 +106,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 5,
     parentStepId: 4,
     taskType: 'TER',
@@ -104,7 +116,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 6,
     parentStepId: 3,
     taskType: 'EVENT',
@@ -113,7 +126,8 @@ const basicApprovalItems2 = [
     actionStepResult: 'rejected',
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 7,
     parentStepId: 3,
     taskType: 'EVENT',
@@ -122,7 +136,8 @@ const basicApprovalItems2 = [
     actionStepResult: 'approved',
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 8,
     parentStepId: 6,
     taskType: 'COND',
@@ -131,7 +146,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 9,
     parentStepId: 7,
     taskType: 'TER',
@@ -140,7 +156,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 10,
     parentStepId: 8,
     taskType: 'TER',
@@ -149,7 +166,8 @@ const basicApprovalItems2 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     stepId: 11,
     parentStepId: 8,
     taskType: 'TER',
@@ -160,6 +178,7 @@ const basicApprovalItems2 = [
 ];
 const basicApprovalItems3 = [
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 1,
     parentStepId: null,
@@ -169,6 +188,7 @@ const basicApprovalItems3 = [
     actionStepResult: null,
   },
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 2,
     parentStepId: 1,
@@ -178,6 +198,7 @@ const basicApprovalItems3 = [
     actionStepResult: null,
   },
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 3,
     parentStepId: 2,
@@ -187,6 +208,7 @@ const basicApprovalItems3 = [
     actionStepResult: 'approved',
   },
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 4,
     parentStepId: 2,
@@ -196,6 +218,7 @@ const basicApprovalItems3 = [
     actionStepResult: 'rejected',
   },
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 5,
     parentStepId: 3,
@@ -205,6 +228,7 @@ const basicApprovalItems3 = [
     actionStepResult: 'approved',
   },
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 6,
     parentStepId: 3,
@@ -214,6 +238,7 @@ const basicApprovalItems3 = [
     actionStepResult: 'rejected',
   },
   {
+    orgId: 2,
     scenarioId: 4,
     stepId: 7,
     parentStepId: 6,
@@ -225,7 +250,8 @@ const basicApprovalItems3 = [
 ];
 const basicApprovalItems4 = [
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 1,
     parentStepId: null,
     taskType: 'START',
@@ -234,7 +260,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 2,
     parentStepId: 1,
     taskType: 'COND',
@@ -243,7 +270,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 3,
     parentStepId: 2,
     taskType: 'COND',
@@ -252,7 +280,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 4,
     parentStepId: 2,
     taskType: 'COND',
@@ -261,7 +290,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 5,
     parentStepId: 3,
     taskType: 'TER',
@@ -270,7 +300,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 6,
     parentStepId: 3,
     taskType: 'TER',
@@ -279,7 +310,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 7,
     parentStepId: 4,
     taskType: 'TER',
@@ -288,7 +320,8 @@ const basicApprovalItems4 = [
     actionStepResult: null,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 3,
     stepId: 9,
     parentStepId: 4,
     taskType: 'TER',
@@ -309,6 +342,7 @@ export async function up(sql: Sql) {
     await sql`
       INSERT INTO
         scenarioitems (
+          org_id,
           scenario_id,
           step_id,
           parent_step_id,
@@ -319,6 +353,7 @@ export async function up(sql: Sql) {
         )
       VALUES
         (
+          ${item.orgId},
           ${item.scenarioId},
           ${item.stepId},
           ${item.parentStepId},
@@ -338,6 +373,7 @@ export async function down(sql: Sql) {
       WHERE
         scenario_id = ${item.scenarioId}
         AND step_id = ${item.stepId}
+        AND org_id = ${item.orgId}
     `;
   }
 }

@@ -1,27 +1,32 @@
 import { cache } from 'react';
+import { OrganizationType } from '../migrations/00000-createTableOrganizations';
 import { ScenarioEntityType } from '../migrations/00015-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../migrations/00017-createTablescenarioEntityHistory';
 import { sql } from './connect';
+import { getOrganizationLoggedIn } from './organizations';
 
 type CreateScenatioEntityType = {
   scenarioId: ScenarioEntityType['scenarioId'];
+  orgId: OrganizationType['orgId'];
   context: ScenarioEntityType['context'] | undefined;
 };
 
 export const createScenarioEntity = cache(
   async (createScenarioEntityParam: CreateScenatioEntityType) => {
-    const { scenarioId, context } = createScenarioEntityParam;
+    const { scenarioId, orgId, context } = createScenarioEntityParam;
     const [scenarioEntiy] = await sql<ScenarioEntityType[]>`
       INSERT INTO
         scenarioentities (
           scenario_entity_id,
           scenario_id,
+          org_id,
           context
         )
       VALUES
         (
           ${crypto.randomUUID()},
           ${scenarioId},
+          ${orgId},
           ${context || null}
         ) RETURNING *
     `;
@@ -30,30 +35,29 @@ export const createScenarioEntity = cache(
   },
 );
 
-export const getScenarioEntityById = cache(
-  async (scenarioEntityId: ScenarioEntityType['scenarioEntityId']) => {
-    const [scenarioEntiy] = await sql<ScenarioEntityType[]>`
-      SELECT
-        *
-      FROM
-        scenarioentities
-      WHERE
-        scenario_entity_id = ${scenarioEntityId}
-    `;
+export async function getScenarioEntityById(
+  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
+): Promise<ScenarioEntityType[] | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getScenarioEntityByIdOrgId(scenarioEntityId, orgId);
+  }
+}
 
-    return scenarioEntiy;
-  },
-);
-
-export const getScenarioEntitiesByScenarioId = cache(
-  async (scenarioId: ScenarioEntityType['scenarioId']) => {
+const getScenarioEntityByIdOrgId = cache(
+  async (
+    scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
+    orgId: OrganizationType['orgId'],
+  ) => {
     return await sql<ScenarioEntityType[]>`
       SELECT
         *
       FROM
         scenarioentities
       WHERE
-        scenario_id = ${scenarioId}
+        scenario_entity_id = ${scenarioEntityId}
+        AND org_id = ${orgId}
     `;
   },
 );
@@ -72,6 +76,7 @@ export type ScenarioEntityListType = {
 export const getScenarioEntitiesListByScenarioId = cache(
   async (
     scenarioId: ScenarioEntityType['scenarioId'],
+    orgId: OrganizationType['orgId'],
     filter: string | undefined,
   ) => {
     if (filter === 'incomplete') {
@@ -79,6 +84,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
         SELECT
           scenarioentities.scenario_id,
           scenarioentities.scenario_entity_id,
+          scenarioentities.org_id,
           scenarioentities.creationdate,
           scenarioentities.context,
           history.state,
@@ -109,6 +115,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
           ) AS history ON scenarioentities.scenario_entity_id = history.scenario_entity_id
         WHERE
           scenarioentities.scenario_id = ${scenarioId}
+          AND scenarioentities.org_id = ${orgId}
           AND (
             history.state <> 'DONE'
           )
@@ -120,6 +127,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
         SELECT
           scenarioentities.scenario_id,
           scenarioentities.scenario_entity_id,
+          scenarioentities.org_id,
           scenarioentities.creationdate,
           scenarioentities.context,
           history.state,
@@ -150,6 +158,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
           ) AS history ON scenarioentities.scenario_entity_id = history.scenario_entity_id
         WHERE
           scenarioentities.scenario_id = ${scenarioId}
+          AND scenarioentities.org_id = ${orgId}
         ORDER BY
           creationdate DESC
       `;

@@ -36,9 +36,11 @@ export default async function ActionEntiyPage(props: Props) {
         scenarioEntityHistory.taskId,
       );
 
-      const scenarioEntity = await getScenarioEntityById(
+      const scenarioEntityArr = await getScenarioEntityById(
         scenarioEntityHistory.scenarioEntityId,
       );
+      const scenarioEntity = scenarioEntityArr[0];
+
       if (!actionDefinition) {
         return (
           <main>
@@ -49,13 +51,13 @@ export default async function ActionEntiyPage(props: Props) {
       }
 
       if (scenarioEntity) {
-        const scenarioEntityHistoryLatest =
+        const scenarioEntityHistoryLatestArr =
           await getScenarioEntityHistoryLatest(
             scenarioEntityHistory.scenarioId,
             scenarioEntityHistory.scenarioEntityId,
             scenarioEntityHistory.stepId,
           );
-
+        const scenarioEntityHistoryLatest = scenarioEntityHistoryLatestArr[0];
         // Check if history entry is processable E.g. state is PENDING && actionResult is empty
         if (
           !(

@@ -3,7 +3,10 @@ import { Sql } from 'postgres';
 // PW hugo1 1234
 const organizations = [
   {
-    name: 'My Organization',
+    name: 'My Organization 1',
+  },
+  {
+    name: 'My Organization 2',
   },
 ];
 

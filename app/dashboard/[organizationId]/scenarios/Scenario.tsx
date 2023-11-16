@@ -17,14 +17,18 @@ type Props = {
 
 //export default async function Scenario({ node }: { node: WfNode }) {
 export default async function Scenario({ node, scenarioEntityId }: Props) {
+  let lastHistoryForNodeArr: ScenarioEntityHistoryType[] | undefined;
   let lastHistoryForNode: ScenarioEntityHistoryType | undefined;
 
   if (scenarioEntityId) {
-    lastHistoryForNode = await getScenarioEntityHistoryLatest(
+    lastHistoryForNodeArr = await getScenarioEntityHistoryLatest(
       node.scenarioId,
       scenarioEntityId,
       node.stepId,
     );
+    if (lastHistoryForNodeArr) {
+      lastHistoryForNode = lastHistoryForNodeArr[0];
+    }
   }
 
   function nodeRenderer(nde: WfNode) {

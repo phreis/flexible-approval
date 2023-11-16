@@ -1,7 +1,5 @@
 import util from 'node:util';
 import dynamic from 'next/dynamic';
-import { getScenarioEntityById } from '../../../../database/scenarioEntities';
-import { getScenarioEntityHistoriesById } from '../../../../database/scenarioEntityHistory';
 import { getScenarioItems } from '../../../../database/scenarios';
 import { ScenarioHeaderType } from '../../../../migrations/00001-createTableScenarioHeader';
 import { ScenarioItemType } from '../../../../migrations/00003-createTableScenarioItems';

@@ -2,22 +2,26 @@ import { Sql } from 'postgres';
 
 const scenarioHeader = [
   {
+    orgId: 1,
     scenarioId: 1,
     description: 'Basic approval',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
   {
-    scenarioId: 3,
+    orgId: 1,
+    scenarioId: 2,
     description: 'Basic approval 2',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
   {
-    scenarioId: 4,
+    orgId: 2,
+    scenarioId: 3,
     description: 'Basic approval - Actions',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
   {
-    scenarioId: 5,
+    orgId: 2,
+    scenarioId: 4,
     description: 'Basic approval - Conditions',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
   },
@@ -28,13 +32,13 @@ export async function up(sql: Sql) {
     await sql`
       INSERT INTO
         scenarioheader (
-          scenario_id,
+          org_id,
           description,
           context_data_description
         )
       VALUES
         (
-          ${header.scenarioId},
+          ${header.orgId},
           ${header.description},
           ${header.contextDataDescription}
         )
@@ -48,6 +52,7 @@ export async function down(sql: Sql) {
       DELETE FROM scenarioheader
       WHERE
         scenario_id = ${header.scenarioId}
+        AND org_id = ${header.orgId}
     `;
   }
 }

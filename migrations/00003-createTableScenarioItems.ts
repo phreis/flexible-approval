@@ -13,21 +13,25 @@ export type ScenarioItemType = {
 
 export async function up(sql: Sql) {
   await sql`
-    CREATE TABLE scenarioitems (
-      scenario_id integer NOT NULL references scenarioheader (scenario_id) ON DELETE CASCADE,
-      step_id integer NOT NULL,
-      parent_step_id integer,
-      task_type varchar(30) NOT NULL,
-      task_id integer,
-      cond_step_result boolean,
-      action_step_result varchar(30),
-      PRIMARY KEY(scenario_id, step_id)
-    );
+    CREATE TABLE
+      scenarioitems (
+        org_id INTEGER NOT NULL,
+        scenario_id INTEGER NOT NULL,
+        step_id INTEGER NOT NULL,
+        parent_step_id INTEGER,
+        task_type VARCHAR(30) NOT NULL,
+        task_id INTEGER,
+        cond_step_result BOOLEAN,
+        action_step_result VARCHAR(30),
+        PRIMARY KEY (
+          org_id,
+          scenario_id,
+          step_id
+        )
+      );
   `;
 }
 
 export async function down(sql: Sql) {
-  await sql`
-    DROP TABLE scenarioitems
-  `;
+  await sql` DROP TABLE scenarioitems `;
 }

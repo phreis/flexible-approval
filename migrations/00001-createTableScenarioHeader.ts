@@ -9,18 +9,21 @@ export type ScenarioHeaderType = {
 
 export async function up(sql: Sql) {
   await sql`
-    CREATE TABLE scenarioheader (
-      scenario_id integer NOT NULL,
-      description varchar(100) NOT NULL,
-      context_data_description varchar(1000),
-      creationdate timestamp NOT NULL DEFAULT NOW(),
-      PRIMARY KEY(scenario_id)
-    );
+    CREATE TABLE
+      scenarioheader (
+        org_id INTEGER NOT NULL,
+        scenario_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
+        description VARCHAR(100) NOT NULL,
+        context_data_description VARCHAR(1000),
+        creationdate TIMESTAMP NOT NULL DEFAULT NOW (),
+        PRIMARY KEY (
+          org_id,
+          scenario_id
+        )
+      );
   `;
 }
 
 export async function down(sql: Sql) {
-  await sql`
-    DROP TABLE scenarioheader
-  `;
+  await sql` DROP TABLE scenarioheader `;
 }

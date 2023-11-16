@@ -119,6 +119,7 @@ export async function POST(
   const scenarioEntiy = await createScenarioEntity({
     scenarioId: Number(result.data.scenarioId),
     context: result.data.context,
+    orgId: 1, //TODO: retrieve Organization from Request (authentication)
   });
 
   if (!scenarioEntiy) {

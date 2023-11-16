@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import { useFormState } from 'react-dom';
+import { OrganizationType } from '../../../../migrations/00000-createTableOrganizations';
 import { ScenarioHeaderType } from '../../../../migrations/00001-createTableScenarioHeader';
-import { OrganizationType } from '../../../../migrations/00004-createTableOrganizations';
 import { ScenarioEntityType } from '../../../../migrations/00015-createTablescenarioEntities';
 import { processScenarioNewAction } from '../../../lib/actions';
 import styles from './ScenarioStarter.module.scss';
