@@ -1,10 +1,30 @@
-import React from 'react';
-import NewScenario from './NewScenario';
+import { TabType } from '../../PageHeaderTabs';
+import DashboardPage from '../DashboardPage';
+import ScenariosHeader from '../ScenariosHeader';
 
-export default function NewScenariosPage() {
+type Props = {
+  params: { scenarioId: string; organizationId: number };
+  searchParams: { [key: string]: string | undefined };
+};
+
+export default function NewScenariosPage({ params, searchParams }: Props) {
+  const tabs: TabType[] = [
+    {
+      tabTitle: '',
+      tabId: '',
+      href: ``,
+    },
+    /*     { tabTitle: 'Active Scenarios', tabId: 'active', href: '/' },
+    { tabTitle: 'Inactive Scenarios', tabId: 'inactive', href: '/' }, */
+  ];
+
   return (
-    <span>
-      <NewScenario />
-    </span>
+    <DashboardPage
+      heading="Create a new scenario"
+      tabs={tabs}
+      activeTab={searchParams.tab}
+    >
+      here comes the magic...
+    </DashboardPage>
   );
 }

@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import React from 'react';
-import { getActionDefinitionById } from '../../../database/actionDefinitions';
-import { getInvitationById } from '../../../database/invitations';
-import { getScenarioEntityById } from '../../../database/scenarioEntities';
+import { getActionDefinitionById } from '../../../../database/actionDefinitions';
+import { getInvitationById } from '../../../../database/invitations';
+import { getScenarioEntityById } from '../../../../database/scenarioEntities';
 import {
   getScenarioEntityHistoryByHistoryId,
   getScenarioEntityHistoryLatest,
-} from '../../../database/scenarioEntityHistory';
+} from '../../../../database/scenarioEntityHistory';
 import RsvpForm from './RsvpForm';
 
 export const metadata: Metadata = {

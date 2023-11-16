@@ -23,3 +23,21 @@
     box-shadow: 5px 3px 3px lightgray;
   }
 }
+.toolsContainer {
+  display: flex;
+  justify-content: right;
+  padding-bottom: 1rem;
+
+  a {
+    height: 2rem;
+    border: none;
+    background-color: rgb(74, 72, 72);
+    color: white;
+    border-radius: 8px;
+    margin-top: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+}

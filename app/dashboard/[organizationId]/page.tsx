@@ -21,7 +21,7 @@ export default async function OrganizationPage({
     { tabTitle: 'Tab3', tabId: 't3', href: '?tab=t3' }, */
   ];
 
-  // until the OrganizationPage is implemented, we redirect to team
+  // until the OrganizationPage is implemented, we redirect to scenarios
   redirect(`/dashboard/${params.organizationId}/team`);
 
   return (

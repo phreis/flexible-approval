@@ -23,7 +23,7 @@ import {
   getUserByUsername,
   getUserWithPasswordHashByUsername,
 } from '../../database/users';
-import { sendEmail } from './email';
+import { sendEmail, sendEmailRsvp } from './email';
 import { processActionResult, processScenarioEntity } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
@@ -61,7 +61,7 @@ export async function rsvpAction(prevState: any, formData: FormData) {
         message: 'Passwords to not match',
       };
     }
-    // TODO:
+
     const invitation = await getInvitationById(invitationId);
     if (!invitation) {
       return {
@@ -169,9 +169,18 @@ export async function preRegisterUserAction(
     role: role,
   });
 
-  // TODO: Kick off EMail...
-  await sendEmail();
-  console.log('rsvp id: ', inv?.invitationId);
+  // Kick off EMail...
+  if (inv) {
+    const status = await sendEmailRsvp(
+      inv?.username,
+      inv?.email,
+      inv.invitationId,
+    );
+    console.log(status);
+  } else
+    return {
+      message: `Err: On creating th invitation`,
+    };
 
   revalidatePath('/');
 }

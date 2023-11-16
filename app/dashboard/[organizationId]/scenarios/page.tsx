@@ -1,9 +1,7 @@
-import Link from 'next/link';
-import PageContent from '../PageContent';
-import PageHeader from '../PageHeader';
-import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
+import { TabType } from '../PageHeaderTabs';
 import DashboardPage from './DashboardPage';
 import ScenariosHeader from './ScenariosHeader';
+import styles from './ScenariosHeader.module.scss';
 
 type Props = {
   params: { scenarioId: string; organizationId: number };
@@ -27,6 +25,11 @@ export default function ScenariosPage({ params, searchParams }: Props) {
       tabs={tabs}
       activeTab={searchParams.tab}
     >
+      <div className={styles.toolsContainer}>
+        <a href={`/dashboard/${params.organizationId}/scenarios/add`}>
+          + Create a new scenario
+        </a>
+      </div>
       <ScenariosHeader />
     </DashboardPage>
   );

@@ -34,7 +34,7 @@ export default async function Layout({
     return;
   }
   if (Number(params.organizationId) !== organizationLoggedIn?.orgId) {
-    redirect(`/dashboard/${organizationLoggedIn?.orgId}/team`);
+    redirect(`/dashboard/${organizationLoggedIn?.orgId}`);
   }
 
   return (

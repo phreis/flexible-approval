@@ -1,8 +1,8 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { InvitationType } from '../../../migrations/00018-createTableInvitations';
-import { rsvpAction } from '../../lib/actions';
+import { InvitationType } from '../../../../migrations/00018-createTableInvitations';
+import { rsvpAction } from '../../../lib/actions';
 import styles from './RsvpForm.module.scss';
 
 type Props = {
