@@ -1,7 +1,6 @@
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import React from 'react';
-import { getOrganizationLoggedIn } from '../../database/organizations';
 import { getValidSessionByToken } from '../../database/sessions';
 import SideBar from '../SideBar';
 

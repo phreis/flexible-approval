@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { ActionDefinitionType } from '../migrations/00011-createTableActionDefinitions';
+import { ActionDefinitionType } from '../migrations/00012-createTableActionDefinitions';
 import { sql } from './connect';
 
 export const getActionDefinitionById = cache(

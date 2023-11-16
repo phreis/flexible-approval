@@ -1,13 +1,5 @@
 import { redirect } from 'next/navigation';
-import {
-  getOrganizationByUserName,
-  getOrganizationLoggedIn,
-} from '../../../database/organizations';
-import { OrganizationType } from '../../../migrations/00000-createTableOrganizations';
-import { getUserLoggedIn } from '../../lib/utils';
-import PageContent from './PageContent';
-import PageHeader from './PageHeader';
-import PageHeaderTabs, { TabType } from './PageHeaderTabs';
+import { TabType } from './PageHeaderTabs';
 import DashboardPage from './scenarios/DashboardPage';
 
 type Props = {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useFormState } from 'react-dom';
-import { ActionDefinitionType } from '../../../migrations/00011-createTableActionDefinitions';
-import { ScenarioEntityType } from '../../../migrations/00015-createTablescenarioEntities';
+import { ActionDefinitionType } from '../../../migrations/00012-createTableActionDefinitions';
+import { ScenarioEntityType } from '../../../migrations/00016-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../../../migrations/00017-createTablescenarioEntityHistory';
 import { processActionResultAction } from '../../lib/actions';
 import styles from './ActionForm.module.scss';

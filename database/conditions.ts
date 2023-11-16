@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
-import { ConditionHeaderType } from '../migrations/00007-createTableConditionHeader';
-import { ConditionItemType } from '../migrations/00009-createTableConditionItems';
+import { ConditionHeaderType } from '../migrations/00008-createTableConditionHeader';
+import { ConditionItemType } from '../migrations/00010-createTableConditionItems';
 import { sql } from './connect';
 
 export const getCondtitionHeaderById = cache(

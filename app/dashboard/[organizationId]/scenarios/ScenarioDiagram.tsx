@@ -1,9 +1,9 @@
 import util from 'node:util';
 import dynamic from 'next/dynamic';
 import { getScenarioItems } from '../../../../database/scenarios';
-import { ScenarioHeaderType } from '../../../../migrations/00001-createTableScenarioHeader';
-import { ScenarioItemType } from '../../../../migrations/00003-createTableScenarioItems';
-import { ScenarioEntityType } from '../../../../migrations/00015-createTablescenarioEntities';
+import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
+import { ScenarioItemType } from '../../../../migrations/00005-createTableScenarioItems';
+import { ScenarioEntityType } from '../../../../migrations/00016-createTablescenarioEntities';
 import ScenarioTree from '../../../ScenarioTree';
 import styles from './Scenario.module.scss';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { getScenarioEntityHistoryLatest } from '../../../../database/scenarioEntityHistory';
-import { ScenarioEntityType } from '../../../../migrations/00015-createTablescenarioEntities';
+import { ScenarioEntityType } from '../../../../migrations/00016-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNode } from '../../../ScenarioTree';
 import styles from './Scenario.module.scss';

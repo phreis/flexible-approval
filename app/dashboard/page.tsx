@@ -1,9 +1,5 @@
 import { redirect } from 'next/navigation';
-import {
-  getOrganizationByUserName,
-  getOrganizationLoggedIn,
-} from '../../database/organizations';
-import { getUserLoggedIn } from '../lib/utils';
+import { getOrganizationLoggedIn } from '../../database/organizations';
 
 export default async function LandingPage() {
   const organizationLoggedIn = await getOrganizationLoggedIn();

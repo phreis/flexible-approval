@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { getUserByOrganization } from '../../../../database/users';
-import { OrganizationType } from '../../../../migrations/00000-createTableOrganizations';
-import { User } from '../../../../migrations/00005-createTableUsers';
+import { OrganizationType } from '../../../../migrations/00001-createTableOrganizations';
+import { User } from '../../../../migrations/00007-createTableUsers';
 import styles from './TeamList.module.scss';
 
 type Props = {

@@ -2,9 +2,9 @@ import 'server-only';
 import { Andada_Pro } from 'next/font/google';
 import { headers } from 'next/headers';
 import { cache } from 'react';
-import { OrganizationType } from '../migrations/00000-createTableOrganizations';
-import { ScenarioHeaderType } from '../migrations/00001-createTableScenarioHeader';
-import { ScenarioItemType } from '../migrations/00003-createTableScenarioItems';
+import { OrganizationType } from '../migrations/00001-createTableOrganizations';
+import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
+import { ScenarioItemType } from '../migrations/00005-createTableScenarioItems';
 import { sql } from './connect';
 import { getOrganizationLoggedIn } from './organizations';
 

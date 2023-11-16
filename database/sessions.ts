@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import { sql } from '../database/connect';
-import { OrganizationType } from '../migrations/00000-createTableOrganizations';
-import { Session } from '../migrations/00014-createTableSessions';
+import { OrganizationType } from '../migrations/00001-createTableOrganizations';
+import { Session } from '../migrations/00015-createTableSessions';
 
 export const deleteExpiredSessions = cache(async () => {
   await sql`
@@ -13,8 +13,6 @@ export const deleteExpiredSessions = cache(async () => {
 
 export const createSession = cache(
   async (userId: number, token: string, orgId: OrganizationType['orgId']) => {
-    console.log('createSession OrgId: ', orgId);
-
     const [session] = await sql<Session[]>`
       INSERT INTO
         sessions (

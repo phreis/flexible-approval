@@ -1,8 +1,8 @@
 import { cache } from 'react';
 import { getUserLoggedIn } from '../app/lib/utils';
 import { sql } from '../database/connect';
-import { OrganizationType } from '../migrations/00000-createTableOrganizations';
-import { User } from '../migrations/00005-createTableUsers';
+import { OrganizationType } from '../migrations/00001-createTableOrganizations';
+import { User } from '../migrations/00007-createTableUsers';
 
 export const createOrganization = cache(async (name: string) => {
   const [organization] = await sql<OrganizationType[]>`

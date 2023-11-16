@@ -1,6 +1,6 @@
 import { cache } from 'react';
-import { OrganizationType } from '../migrations/00000-createTableOrganizations';
-import { ScenarioEntityType } from '../migrations/00015-createTablescenarioEntities';
+import { OrganizationType } from '../migrations/00001-createTableOrganizations';
+import { ScenarioEntityType } from '../migrations/00016-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../migrations/00017-createTablescenarioEntityHistory';
 import { sql } from './connect';
 import { getOrganizationLoggedIn } from './organizations';
