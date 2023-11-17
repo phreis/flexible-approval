@@ -10,7 +10,7 @@ import { getOrganizationLoggedIn } from './organizations';
 
 export async function getScenarioHeaderById(
   scenarioId: ScenarioHeaderType['scenarioId'],
-): Promise<ScenarioHeaderType[] | undefined> {
+): Promise<ScenarioHeaderType | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
@@ -23,7 +23,7 @@ const getScenarioHeaderByIdOrgId = cache(
     scenarioId: ScenarioHeaderType['scenarioId'],
     orgId: OrganizationType['orgId'],
   ) => {
-    return await sql<ScenarioHeaderType[]>`
+    const [scenario] = await sql<ScenarioHeaderType[]>`
       SELECT
         *
       FROM
@@ -32,6 +32,7 @@ const getScenarioHeaderByIdOrgId = cache(
         scenario_id = ${scenarioId}
         AND org_id = ${orgId};
     `;
+    return scenario;
   },
 );
 
@@ -85,5 +86,41 @@ export const getScenarioItemsByOrgId = cache(
         scenario_id ASC,
         step_id ASC;
     `;
+  },
+);
+
+type CreateScenarioHeaderType = {
+  description: ScenarioHeaderType['description'];
+};
+
+export async function createScenario(
+  scenarioHeader: CreateScenarioHeaderType,
+): Promise<ScenarioHeaderType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return createScenarioWithOrgId(scenarioHeader, orgId);
+  }
+}
+
+const createScenarioWithOrgId = cache(
+  async (
+    scenarioHeader: CreateScenarioHeaderType,
+    orgId: OrganizationType['orgId'],
+  ) => {
+    const { description } = scenarioHeader;
+    const [invite] = await sql<ScenarioHeaderType[]>`
+      INSERT INTO
+        scenarioheader (
+          org_id,
+          description
+        )
+      VALUES
+        (
+          ${orgId},
+          ${description}
+        ) RETURNING *
+    `;
+    return invite;
   },
 );

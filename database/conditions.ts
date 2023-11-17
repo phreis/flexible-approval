@@ -1,8 +1,11 @@
 import 'server-only';
 import { cache } from 'react';
+import { OrganizationType } from '../migrations/00001-createTableOrganizations';
+import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
 import { ConditionHeaderType } from '../migrations/00008-createTableConditionHeader';
 import { ConditionItemType } from '../migrations/00010-createTableConditionItems';
 import { sql } from './connect';
+import { getOrganizationLoggedIn } from './organizations';
 
 export const getCondtitionHeaderById = cache(
   async (conditionId: ConditionHeaderType['conditionId']) => {
@@ -39,5 +42,42 @@ export const getConditionItems = cache(
         condition_id ASC,
         condition_item_id ASC;
     `;
+  },
+);
+
+export type CreateConditionHeaderType = {
+  scenarioId: ScenarioHeaderType['scenarioId'];
+  description: string;
+};
+
+export async function createConditionHeader(
+  condHeader: CreateConditionHeaderType,
+): Promise<ConditionHeaderType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return createConditionHeaderWithOrgId(condHeader, orgId);
+  }
+}
+
+const createConditionHeaderWithOrgId = cache(
+  async (
+    condHeader: CreateConditionHeaderType,
+    orgId: OrganizationType['orgId'],
+  ) => {
+    const { scenarioId, description } = condHeader;
+    const [condition] = await sql<ConditionHeaderType[]>`
+      INSERT INTO
+        conditionheader (
+          scenario_id,
+          description
+        )
+      VALUES
+        (
+          ${scenarioId},
+          ${description}
+        )
+    `;
+    return condition;
   },
 );

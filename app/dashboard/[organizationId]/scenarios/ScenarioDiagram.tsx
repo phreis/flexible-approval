@@ -4,7 +4,7 @@ import { getScenarioItems } from '../../../../database/scenarios';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
 import { ScenarioItemType } from '../../../../migrations/00005-createTableScenarioItems';
 import { ScenarioEntityType } from '../../../../migrations/00016-createTablescenarioEntities';
-import ScenarioTree from '../../../ScenarioTree';
+import ScenarioTree, { WfNode } from '../../../ScenarioTree';
 import styles from './Scenario.module.scss';
 
 // within Scenario we have <ul> within <li>, which leads to Haydration errors in Next14
@@ -27,6 +27,7 @@ export async function ScenarioDiagram(props: Props) {
 
   const rootNode = tree.getNodes();
   // console.log(util.inspect(rootNode, false, null, true /* enable colors */));
+
   if (rootNode) {
     return (
       <div className={styles.tree}>
