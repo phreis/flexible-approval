@@ -38,11 +38,11 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
     Number(params.scenarioId),
   );
 
-  const scenarioId = scenarioHeaderData[0]?.scenarioId;
+  const scenarioId = scenarioHeaderData.scenarioId;
   if (scenarioId) {
     return (
       <DashboardPage
-        heading={scenarioHeaderData[0]?.description || 'No descrition'}
+        heading={scenarioHeaderData.description || 'No descrition'}
         tabs={tabs}
         activeTab={searchParams.tab}
       >

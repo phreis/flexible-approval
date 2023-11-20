@@ -1,0 +1,42 @@
+.builderContainer {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  height: max-content;
+  margin: 31px;
+  align-items: center;
+
+  .builderFormContainer {
+    display: flex;
+    flex-direction: column;
+    padding-top: 15px;
+    width: 100%;
+    textarea {
+      resize: none;
+    }
+
+    gap: 8px;
+
+    button {
+      height: 2rem;
+      border: none;
+      background-color: rgb(74, 72, 72);
+      color: #ccc;
+      border-radius: 8px;
+      margin-top: 16px;
+      cursor: pointer;
+    }
+  }
+  p,
+  label {
+    font-size: 0.8rem;
+  }
+  a {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+  }
+}

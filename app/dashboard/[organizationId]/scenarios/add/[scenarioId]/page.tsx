@@ -3,11 +3,13 @@ import {
   createScenario,
   getScenarioHeaderById,
 } from '../../../../../../database/scenarios';
+import { getUserByOrganization } from '../../../../../../database/users';
 import { ScenarioHeaderType } from '../../../../../../migrations/00003-createTableScenarioHeader';
 import { TabType } from '../../../PageHeaderTabs';
 import DashboardPage from '../../DashboardPage';
 import { ScenarioDiagram } from '../../ScenarioDiagram';
 import ScenariosHeader from '../../ScenariosHeader';
+import styles from './NewScenarioPage.module.scss';
 import ScenarioBuilder from './ScenarioBuilder';
 
 type Props = {
@@ -40,16 +42,17 @@ export default async function NewScenarioPage({ params, searchParams }: Props) {
       redirect(`/dashboard/${params.organizationId}/scenarios/add/new`);
     }
   }
-
+  const users = await getUserByOrganization(params.organizationId);
   return (
     <DashboardPage
       heading="Create a new scenario"
       tabs={tabs}
       activeTab={searchParams.tab}
     >
-      here comes the magic...
-      <ScenarioBuilder scenarioId={newScenario.scenarioId} />
-      <ScenarioDiagram scenarioId={newScenario.scenarioId} />
+      <div className={styles.basicGridDivider}>
+        <ScenarioBuilder scenarioId={newScenario.scenarioId} users={users} />
+        <ScenarioDiagram scenarioId={newScenario.scenarioId} />
+      </div>
     </DashboardPage>
   );
 }

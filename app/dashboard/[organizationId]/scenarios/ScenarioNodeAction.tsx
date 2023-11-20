@@ -10,7 +10,6 @@ export default async function ScenarioNodeAction(props: {
   lastHistory?: ScenarioEntityHistoryType;
 }) {
   const actionDefintion = await getActionDefinitionById(props.node.taskId);
-
   return (
     <div className={styles.nodeContainer}>
       {renderTopBox(props.node)}

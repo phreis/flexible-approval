@@ -1,8 +1,8 @@
 import { Sql } from 'postgres';
-import { ConditionItemType } from './00009-createTableConditionItems';
+import { ConditionItemType } from './00010-createTableConditionItems';
 
 const conditionitems: ConditionItemType[] = [
-  {
+  /*   {
     conditionId: 1,
     conditionItemId: 1,
     contextAttributeName: 'amountToApprove',
@@ -41,7 +41,7 @@ const conditionitems: ConditionItemType[] = [
     comperator: '>',
     compConstant: 5000,
     linkConditionNext: null,
-  },
+  }, */
 ];
 
 export async function up(sql: Sql) {
@@ -50,7 +50,6 @@ export async function up(sql: Sql) {
       INSERT INTO
         conditionitems (
           condition_id,
-          condition_item_id,
           context_attribute_name,
           comperator,
           comp_constant,
@@ -59,7 +58,6 @@ export async function up(sql: Sql) {
       VALUES
         (
           ${item.conditionId},
-          ${item.conditionItemId},
           ${item.contextAttributeName},
           ${item.comperator},
           ${item.compConstant},

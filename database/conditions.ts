@@ -55,6 +55,7 @@ export async function createConditionHeader(
 ): Promise<ConditionHeaderType | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
+
   if (orgId) {
     return createConditionHeaderWithOrgId(condHeader, orgId);
   }
@@ -76,8 +77,46 @@ const createConditionHeaderWithOrgId = cache(
         (
           ${scenarioId},
           ${description}
-        )
+        ) RETURNING *
     `;
     return condition;
+  },
+);
+
+export type CreateConditionItemType = {
+  conditionId: ConditionHeaderType['conditionId'];
+  contextAttributeName: ConditionItemType['contextAttributeName'];
+  comperator: ConditionItemType['comperator'] | string;
+  compConstant: ConditionItemType['compConstant'];
+  linkConditionNext: 'AND' | 'OR' | null;
+};
+export const createConditionItem = cache(
+  async (condItem: CreateConditionItemType) => {
+    const {
+      conditionId,
+      contextAttributeName,
+      comperator,
+      compConstant,
+      linkConditionNext,
+    } = condItem;
+    const [conditionItem] = await sql<ConditionHeaderType[]>`
+      INSERT INTO
+        conditionitems (
+          condition_id,
+          context_attribute_name,
+          comperator,
+          comp_constant,
+          link_condition_next
+        )
+      VALUES
+        (
+          ${conditionId},
+          ${contextAttributeName},
+          ${comperator},
+          ${compConstant},
+          ${linkConditionNext}
+        )
+    `;
+    return conditionItem;
   },
 );

@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef } from 'react';
 import { useFormState } from 'react-dom';
-import { OrganizationType } from '../../../../../migrations/00000-createTableOrganizations';
+import { OrganizationType } from '../../../../../migrations/00001-createTableOrganizations';
 import { preRegisterUserAction } from '../../../../lib/actions';
 import styles from './Invite.module.scss';
 

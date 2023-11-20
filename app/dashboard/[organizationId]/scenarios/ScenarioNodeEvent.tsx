@@ -1,5 +1,6 @@
 import React from 'react';
 import { getActionDefinitionById } from '../../../../database/actionDefinitions';
+import { getEventDefinitionById } from '../../../../database/eventDefinitions';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNode } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
@@ -9,7 +10,7 @@ export default async function ScenarioNodeEvent(props: {
   node: WfNode;
   lastHistory?: ScenarioEntityHistoryType;
 }) {
-  // const eventDefintion = await getEventDefinitionById(props.node.taskId);
+  const eventDefintion = await getEventDefinitionById(props.node.taskId);
 
   return (
     <div className={styles.nodeContainer}>
@@ -23,7 +24,10 @@ export default async function ScenarioNodeEvent(props: {
         )}
       </div>
       <div className={styles.genericData}>
-        <span className={styles.description}>{`<not yet implemented>`}</span>
+        <span className={styles.description}>
+          {eventDefintion?.description}
+        </span>
+        <span>Recipient: {eventDefintion?.recipient}</span>
       </div>
     </div>
   );

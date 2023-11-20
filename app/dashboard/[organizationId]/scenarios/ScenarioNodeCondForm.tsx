@@ -8,6 +8,7 @@ import {
   startNodeFormAction,
 } from '../../../lib/nodeActions';
 import { WfNode } from '../../../ScenarioTree';
+import ConditionFormFieldGroup from './FieldGroupFormCond';
 import styles from './Scenario.module.scss';
 
 type Props = {
@@ -20,18 +21,17 @@ export default async function ScenarioNodeCondForm(props: Props) {
   return (
     <>
       <form action={condNodeFormAction}>
-        <span className={styles.description}>
-          <input
-            name="description"
-            defaultValue={props.condHeader?.description}
-          />
-          <input
-            name="node"
-            value={JSON.stringify(props.node)}
-            hidden={true}
-            readOnly={true}
-          />
-        </span>
+        <ConditionFormFieldGroup
+          condHeader={props.condHeader}
+          contextAttributeNames={['attribute1', 'attribute2']}
+        />
+        <input
+          name="node"
+          value={JSON.stringify(props.node)}
+          hidden={true}
+          readOnly={true}
+        />
+
         <button>Save</button>
       </form>
     </>

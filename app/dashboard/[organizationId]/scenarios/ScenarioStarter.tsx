@@ -48,7 +48,7 @@ export default function ScenarioStarter(props: Props) {
         {state?.message}{' '}
         {!state?.errors && state?.message ? (
           <a
-            href={`http://localhost:3000/dashboard/${organizationId}/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
+            href={`/dashboard/${organizationId}/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
           >
             DETAILS
           </a>

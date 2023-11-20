@@ -66,7 +66,7 @@ export async function POST(
 
   // Check, if result.data.scenarioId exists
   const scenario = await getScenarioHeaderById(Number(result.data.scenarioId));
-  if (!scenario[0]) {
+  if (!scenario) {
     return NextResponse.json(
       {
         error: `Scenario ${result.data.scenarioId} not found`,

@@ -109,7 +109,7 @@ const createScenarioWithOrgId = cache(
     orgId: OrganizationType['orgId'],
   ) => {
     const { description } = scenarioHeader;
-    const [invite] = await sql<ScenarioHeaderType[]>`
+    const [scenario] = await sql<ScenarioHeaderType[]>`
       INSERT INTO
         scenarioheader (
           org_id,
@@ -121,6 +121,88 @@ const createScenarioWithOrgId = cache(
           ${description}
         ) RETURNING *
     `;
-    return invite;
+    return scenario;
+  },
+);
+
+export type UpdateScenarioHeaderType = {
+  orgId: OrganizationType['orgId'];
+  scenarioId: ScenarioHeaderType['scenarioId'];
+  description: ScenarioHeaderType['description'];
+  contextDataDescription: ScenarioHeaderType['contextDataDescription'];
+};
+
+export const updateScenarioHeader = cache(
+  async (scenarioHeader: UpdateScenarioHeaderType) => {
+    const { orgId, scenarioId, description, contextDataDescription } =
+      scenarioHeader;
+    const [scenario] = await sql<ScenarioHeaderType[]>`
+      UPDATE scenarioheader
+      SET
+        description = ${description},
+        context_data_description = ${contextDataDescription}
+      WHERE
+        org_id = ${orgId}
+        AND scenario_id = ${scenarioId} RETURNING *
+    `;
+    return scenario;
+  },
+);
+
+export type CreateScenarioItemType = {
+  scenarioId: ScenarioHeaderType['scenarioId'];
+  parentStepId?: ScenarioItemType['stepId'] | null;
+  taskType: string;
+  taskId?: number | null;
+  condStepResult?: boolean | null;
+  actionStepResult?: string | null;
+};
+
+export async function createScenarioItem(
+  scenarioItem: CreateScenarioItemType,
+): Promise<ScenarioItemType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return createScenarioItemWithOrgId(scenarioItem, orgId);
+  }
+}
+
+const createScenarioItemWithOrgId = cache(
+  async (
+    scenarioItem: CreateScenarioItemType,
+    orgId: OrganizationType['orgId'],
+  ) => {
+    const {
+      scenarioId,
+      parentStepId,
+      taskType,
+      taskId,
+      condStepResult,
+      actionStepResult,
+    } = scenarioItem;
+    const [item] = await sql<ScenarioItemType[]>`
+      INSERT INTO
+        scenarioitems (
+          org_id,
+          scenario_id,
+          parent_step_id,
+          task_type,
+          task_id,
+          cond_step_result,
+          action_step_result
+        )
+      VALUES
+        (
+          ${orgId},
+          ${scenarioId},
+          ${parentStepId},
+          ${taskType},
+          ${taskId},
+          ${condStepResult},
+          ${actionStepResult}
+        ) RETURNING *
+    `;
+    return item;
   },
 );

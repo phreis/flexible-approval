@@ -4,6 +4,7 @@ import { useFormState } from 'react-dom';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
 import { startNodeFormAction } from '../../../lib/nodeActions';
 import { WfNode } from '../../../ScenarioTree';
+import StartFormFieldGroup from './FieldGroupFormStart';
 import styles from './Scenario.module.scss';
 
 type Props = {
@@ -16,17 +17,7 @@ export default async function ScenarioNodeStartForm(props: Props) {
   return (
     <>
       <form action={dispatch}>
-        <span className={styles.description}>
-          <input
-            name="description"
-            defaultValue={props.scenarioHeader?.description}
-          />
-        </span>
-        <span> Context data description:</span>
-        <input
-          name="contextDataDescription"
-          defaultValue={props.scenarioHeader?.contextDataDescription || ''}
-        />
+        <StartFormFieldGroup scenarioHeader={props.scenarioHeader} />
         <button>Save</button>
         <p>{state?.message}</p>
       </form>

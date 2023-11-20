@@ -331,10 +331,10 @@ const basicApprovalItems4 = [
   },
 ];
 const scenarioitems = [
-  ...basicApprovalItems,
+  /*   ...basicApprovalItems,
   ...basicApprovalItems2,
   ...basicApprovalItems3,
-  ...basicApprovalItems4,
+  ...basicApprovalItems4, */
 ];
 
 export async function up(sql: Sql) {

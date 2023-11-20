@@ -17,7 +17,7 @@ export async function up(sql: Sql) {
       scenarioitems (
         org_id INTEGER NOT NULL,
         scenario_id INTEGER NOT NULL,
-        step_id INTEGER NOT NULL,
+        step_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
         parent_step_id INTEGER,
         task_type VARCHAR(30) NOT NULL,
         task_id INTEGER,

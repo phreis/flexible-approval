@@ -11,9 +11,7 @@ export default async function ScenarioNodeStart(props: {
   node: WfNode;
   lastHistory?: ScenarioEntityHistoryType;
 }) {
-  const scenarioHeaderArr = await getScenarioHeaderById(props.node.scenarioId);
-
-  const scenarioHeader = scenarioHeaderArr[0];
+  const scenarioHeader = await getScenarioHeaderById(props.node.scenarioId);
 
   return (
     <div className={styles.nodeContainer}>
@@ -25,15 +23,15 @@ export default async function ScenarioNodeStart(props: {
         )}
       </div>
       <div className={styles.genericData}>
-        {/*         <span className={styles.description}>
+        <span className={styles.description}>
           {scenarioHeader?.description}
         </span>
         <span> Context data description:</span>
-        <code>{scenarioHeader?.contextDataDescription}</code> */}
-        <ScenarioNodeStartForm
+        <code>{scenarioHeader?.contextDataDescription}</code>
+        {/*         <ScenarioNodeStartForm
           node={props.node}
           scenarioHeader={scenarioHeader}
-        />
+        /> */}
       </div>
     </div>
   );

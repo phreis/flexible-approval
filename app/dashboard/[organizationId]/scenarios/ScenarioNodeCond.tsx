@@ -31,8 +31,8 @@ export default async function ScenarioNodeCond(props: {
         )}
       </div>
       <div className={styles.genericData}>
-        {/*         <span className={styles.description}>{condHeader?.description}</span> */}
-        <ScenarioNodeCondForm condHeader={condHeader} node={props.node} />
+        {<span className={styles.description}>{condHeader?.description}</span>}
+        {/*         <ScenarioNodeCondForm condHeader={condHeader} node={props.node} /> */}
         <span className={styles.conditionExpression}>
           <code>{condItems?.contextAttributeName}</code>
           <code>{condItems?.comperator}</code>

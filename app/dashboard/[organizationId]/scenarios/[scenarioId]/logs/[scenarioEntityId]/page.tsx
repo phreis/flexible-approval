@@ -48,11 +48,11 @@ export default async function ScenarioEntityHistoryPage({
     Number(params.scenarioId),
   );
 
-  const scenarioId = scenarioHeaderData[0]?.scenarioId;
+  const scenarioId = scenarioHeaderData.scenarioId;
 
   return (
     <DashboardPage
-      heading={scenarioHeaderData[0]?.description || 'No descrition'}
+      heading={scenarioHeaderData.description || 'No descrition'}
       tabs={tabs}
       activeTab="t2"
     >
