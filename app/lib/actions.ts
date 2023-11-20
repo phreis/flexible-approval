@@ -176,7 +176,6 @@ export async function preRegisterUserAction(
       inv?.email,
       inv.invitationId,
     );
-    console.log(status);
   } else
     return {
       message: `Err: On creating th invitation`,

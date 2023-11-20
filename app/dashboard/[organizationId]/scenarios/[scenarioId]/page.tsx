@@ -31,18 +31,26 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
         params.scenarioId,
       )}/logs`,
     },
-    { tabTitle: 'Incomplete Executions', tabId: 't3', href: '/' },
+    {
+      tabTitle: 'Incomplete Executions',
+      tabId: 't3',
+      href: `/dashboard/${params.organizationId}/scenarios/${Number(
+        params.scenarioId,
+      )}/logs?filter=incomplete`,
+    },
   ];
 
   const scenarioHeaderData = await getScenarioHeaderById(
     Number(params.scenarioId),
   );
 
+  console.log('scenarioHeaderData: ', scenarioHeaderData);
+
   const scenarioId = scenarioHeaderData.scenarioId;
   if (scenarioId) {
     return (
       <DashboardPage
-        heading={scenarioHeaderData.description || 'No descrition'}
+        heading={scenarioHeaderData.description || 'No description'}
         tabs={tabs}
         activeTab={searchParams.tab}
       >

@@ -5,6 +5,7 @@ import {
 } from '../../../../../../database/scenarios';
 import { getUserByOrganization } from '../../../../../../database/users';
 import { ScenarioHeaderType } from '../../../../../../migrations/00003-createTableScenarioHeader';
+import { getContextAttributeName } from '../../../../../lib/utils';
 import { TabType } from '../../../PageHeaderTabs';
 import DashboardPage from '../../DashboardPage';
 import { ScenarioDiagram } from '../../ScenarioDiagram';
@@ -43,6 +44,7 @@ export default async function NewScenarioPage({ params, searchParams }: Props) {
     }
   }
   const users = await getUserByOrganization(params.organizationId);
+
   return (
     <DashboardPage
       heading="Create a new scenario"
@@ -50,7 +52,7 @@ export default async function NewScenarioPage({ params, searchParams }: Props) {
       activeTab={searchParams.tab}
     >
       <div className={styles.basicGridDivider}>
-        <ScenarioBuilder scenarioId={newScenario.scenarioId} users={users} />
+        <ScenarioBuilder scenario={newScenario} users={users} />
         <ScenarioDiagram scenarioId={newScenario.scenarioId} />
       </div>
     </DashboardPage>

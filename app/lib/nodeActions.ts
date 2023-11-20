@@ -1,6 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { NextURL } from 'next/dist/server/web/next-url';
+import { headers } from 'next/headers';
+import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import {
   createActionDefinition,
@@ -25,6 +28,7 @@ import {
 import { OrganizationType } from '../../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../../migrations/00003-createTableScenarioHeader';
 import { ScenarioItemType } from '../../migrations/00005-createTableScenarioItems';
+import { getContextAttributeName } from './utils';
 
 type ScenarioBuilderNodeGenericType = {
   orgId: OrganizationType['orgId'];
@@ -121,12 +125,20 @@ async function createNodeStart(
 
   // If form validation fails, return early. Otherwise, continue.
   if (!validatedBuilderFields.success) {
-    console.log(validatedBuilderFields.error);
+    // console.log(validatedBuilderFields.error);
     return {
       message: 'Err on Start Node input fields',
     };
   }
+
   const { description, contextDataDescription } = validatedBuilderFields.data;
+
+  // try to parse the ContextDataDescription
+  try {
+    JSON.parse(contextDataDescription);
+  } catch (e) {
+    throw `Please provide the Context Data Description as the string representation of an JavaScript Object E.g.: {"attributeName": "string"}`;
+  }
 
   // §1 update scenario w/ description, contextDataDescription
   const headerUpdate: UpdateScenarioHeaderType = {

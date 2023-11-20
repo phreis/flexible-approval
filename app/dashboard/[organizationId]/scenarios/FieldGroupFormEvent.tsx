@@ -1,5 +1,7 @@
 import React from 'react';
+import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
 import { User } from '../../../../migrations/00007-createTableUsers';
+import { getContextAttributeNames } from '../../../lib/utilsClient';
 import { WfNode } from '../../../ScenarioTree';
 import styles from './FieldGroupsForm.module.scss';
 
@@ -7,11 +9,18 @@ type Props = {
   node?: WfNode;
   description?: string;
   textTemplate?: string;
-  recipient?: User['username'];
-  users: User[];
+  recipient?: string;
+  scenario: ScenarioHeaderType;
 };
 
 export default function FieldGroupFormEvent(props: Props) {
+  let contextAttributeNames: string[] = [];
+  try {
+    contextAttributeNames = getContextAttributeNames(
+      props.scenario.contextDataDescription,
+    );
+  } catch (e) {}
+
   return (
     <div className={styles.fieldGroupContainer}>
       <span>
@@ -26,8 +35,8 @@ export default function FieldGroupFormEvent(props: Props) {
       <span>
         <label htmlFor="recipient">Recipient</label>
         <select id="recipient" name="recipient">
-          {props.users.map((user) => {
-            return <option value={user.username}>{user.username}</option>;
+          {contextAttributeNames.map((attrName) => {
+            return <option value={attrName}>{attrName}</option>;
           })}
         </select>
       </span>

@@ -41,6 +41,7 @@ export default async function ScenarioEntityPage({
   const scenarioHeaderData = await getScenarioHeaderById(
     Number(params.scenarioId),
   );
+
   let activeTab = 't2';
   if (searchParams.filter === 'incomplete') {
     activeTab = 't3';
@@ -48,7 +49,7 @@ export default async function ScenarioEntityPage({
 
   return (
     <DashboardPage
-      heading={scenarioHeaderData[0]?.description || 'No descrition'}
+      heading={scenarioHeaderData.description || 'No descrition'}
       tabs={tabs}
       activeTab={activeTab}
     >

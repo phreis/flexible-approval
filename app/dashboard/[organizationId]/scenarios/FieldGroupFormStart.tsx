@@ -19,9 +19,11 @@ export default function FieldGroupFormStart(props: Props) {
       </span>
       <span>
         <label htmlFor="contextDataDescription">Context Data Description</label>
-        <input
+        <textarea
           id="contextDataDescription"
           name="contextDataDescription"
+          rows={5}
+          cols={30}
           defaultValue={props.scenarioHeader?.contextDataDescription}
         />
       </span>

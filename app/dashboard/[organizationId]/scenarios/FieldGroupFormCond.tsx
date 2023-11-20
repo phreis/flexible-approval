@@ -1,6 +1,8 @@
 import React from 'react';
+import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
 import { ConditionHeaderType } from '../../../../migrations/00008-createTableConditionHeader';
 import { ConditionItemType } from '../../../../migrations/00010-createTableConditionItems';
+import { getContextAttributeNames } from '../../../lib/utilsClient';
 import { WfNode } from '../../../ScenarioTree';
 import styles from './FieldGroupsForm.module.scss';
 
@@ -8,10 +10,17 @@ type Props = {
   node?: WfNode;
   condHeader?: ConditionHeaderType;
   condItem?: ConditionItemType;
-  contextAttributeNames: string[];
+  scenario: ScenarioHeaderType;
 };
 
 export default function FieldGroupFormCondition(props: Props) {
+  let contextAttributeNames: string[] = [];
+  try {
+    contextAttributeNames = getContextAttributeNames(
+      props.scenario.contextDataDescription,
+    );
+  } catch (e) {}
+
   return (
     <div className={styles.fieldGroupContainer}>
       <span>
@@ -25,7 +34,7 @@ export default function FieldGroupFormCondition(props: Props) {
           name="contextAttributeName"
           required={true}
         >
-          {props.contextAttributeNames.map((name) => {
+          {contextAttributeNames.map((name) => {
             return <option value={name}>{name}</option>;
           })}
         </select>

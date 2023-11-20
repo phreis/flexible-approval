@@ -22,7 +22,7 @@ export default async function OrganizationPage({
   ];
 
   // until the OrganizationPage is implemented, we redirect to scenarios
-  redirect(`/dashboard/${params.organizationId}/team`);
+  redirect(`/dashboard/${params.organizationId}/scenarios`);
 
   return (
     <DashboardPage

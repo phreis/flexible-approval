@@ -1,7 +1,7 @@
 import { Sql } from 'postgres';
 
 const scenarioHeader = [
-  {
+  /*   {
     orgId: 1,
     scenarioId: 1,
     description: 'Basic approval',
@@ -24,7 +24,7 @@ const scenarioHeader = [
     scenarioId: 4,
     description: 'Basic approval - Conditions',
     contextDataDescription: `'{"amountToApprove":"number"}'`,
-  },
+  }, */
 ];
 
 export async function up(sql: Sql) {

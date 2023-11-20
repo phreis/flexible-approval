@@ -1,7 +1,7 @@
 import { Sql } from 'postgres';
-import { ScenarioHeaderType } from '../migrations/00001-createTableScenarioHeader';
-import { ScenarioItemType } from './00003-createTableScenarioItems';
-import { User } from './00005-createTableUsers';
+import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
+import { ScenarioItemType } from './00005-createTableScenarioItems';
+import { User } from './00007-createTableUsers';
 
 export type ActionDefinitionType = {
   actionId: ScenarioItemType['taskId'];

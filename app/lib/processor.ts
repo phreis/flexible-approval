@@ -1,5 +1,6 @@
 import { getActionDefinitionById } from '../../database/actionDefinitions';
 import { getConditionItems } from '../../database/conditions';
+import { getEventDefinitionById } from '../../database/eventDefinitions';
 import { getScenarioEntityById } from '../../database/scenarioEntities';
 import {
   createScenarioEntityHistory,
@@ -12,6 +13,7 @@ import { ScenarioItemType } from '../../migrations/00003-createTableScenarioItem
 import { ScenarioEntityType } from '../../migrations/00015-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../../migrations/00017-createTablescenarioEntityHistory';
 import ScenarioTree, { WfNode } from '../ScenarioTree';
+import { sendEmailAction, sendEmailEvent } from './email';
 
 export async function processScenarioEntity(
   scenarioEntity: ScenarioEntityType,
@@ -124,10 +126,15 @@ export async function processAction(
     };
     const pendingHistoryEntry = await createScenarioEntityHistory(historyEntry);
 
-    // TODO: notify
-    console.log(
-      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry[0]?.historyId}`,
+    const status = await sendEmailAction(
+      actionDefinition?.approver,
+      actionDefinition?.textTemplate,
+      pendingHistoryEntry[0]?.historyId,
     );
+
+    /*    console.log(
+      `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry[0]?.historyId}`,
+    ); */
 
     // TODO: in case of error, log ERROR
 
@@ -162,7 +169,7 @@ export async function processEvent(
 ) {
   if (lastHistory?.state === 'DONE') return;
 
-  // TODO:fire Event
+  const eventDefinition = await getEventDefinitionById(node.taskId);
 
   // Log history
   const historyEntry: CreateScenarioEntityHistoryType = {
@@ -177,6 +184,17 @@ export async function processEvent(
     message: null,
   };
   await createScenarioEntityHistory(historyEntry);
+
+  // get the recipient email address from context
+  try {
+    const contextObj = JSON.parse(scenarioEntity.context || '');
+    if (contextObj && eventDefinition?.recipient) {
+      const mailTo = contextObj[eventDefinition?.recipient];
+      await sendEmailEvent(mailTo, eventDefinition?.textTemplate);
+    }
+  } catch (e) {
+    //TODO: react on err
+  }
 }
 export async function processTer(
   node: WfNode,

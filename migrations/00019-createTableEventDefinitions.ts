@@ -8,7 +8,7 @@ export type EventDefinitionType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   description: string;
   textTemplate: string;
-  recipient: User['username'];
+  recipient: string;
   creationdate: Date;
 };
 
@@ -20,9 +20,7 @@ export async function up(sql: Sql) {
         scenario_id INTEGER NOT NULL,
         description VARCHAR(100) NOT NULL,
         text_template VARCHAR(1000) NOT NULL,
-        recipient VARCHAR(80) NOT NULL REFERENCES users (
-          username
-        ),
+        recipient VARCHAR(80) NOT NULL,
         creationdate TIMESTAMP NOT NULL DEFAULT NOW ()
       );
   `;

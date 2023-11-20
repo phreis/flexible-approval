@@ -13,7 +13,7 @@ import FieldGroupFormTerminate from '../../FieldGroupFormTer';
 import styles from './ScenarioBuilder.module.scss';
 
 type Props = {
-  scenarioId: ScenarioHeaderType['scenarioId'];
+  scenario: ScenarioHeaderType;
   users: User[];
 };
 
@@ -28,15 +28,11 @@ export default function ScenarioBuilder(props: Props) {
       case 'START':
         return <FieldGroupFormStart />;
       case 'COND':
-        return (
-          <FieldGroupFormCond
-            contextAttributeNames={['attribute1', 'attribute2']}
-          />
-        );
+        return <FieldGroupFormCond scenario={props.scenario} />;
       case 'ACTION':
         return <FieldGroupFormAction users={props.users} />;
       case 'EVENT':
-        return <FieldGroupFormEvent users={props.users} />;
+        return <FieldGroupFormEvent scenario={props.scenario} />;
       case 'TER':
         return <FieldGroupFormTerminate />;
       default:
@@ -74,7 +70,7 @@ export default function ScenarioBuilder(props: Props) {
         <input name="taskType" value={taskType} hidden={true} readOnly={true} />
         <input
           name="scenarioId"
-          value={props.scenarioId}
+          value={props.scenario.scenarioId}
           hidden={true}
           readOnly={true}
         />
