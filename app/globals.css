@@ -37,7 +37,7 @@ main section {
   flex-direction: column;
   justify-content: space-between;
   height: var(--top-heigth);
-  background-color: #d3d3d3;
+  background-color: white;
 }
 
 h1 {

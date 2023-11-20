@@ -8,7 +8,9 @@ export default async function SideBar() {
   const user = await getUserLoggedIn();
   return (
     <aside>
-      <div className={styles.sideBarTopLogo}>topLogo</div>
+      <div className={styles.sideBarTopLogo}>
+        <img src="/images/flexible-approval-logo.png" />
+      </div>
       <nav className={styles.nav}>
         <div className={styles.sideBarTop}>
           <Link href={`/dashboard/${user?.orgId}/team`}>Organization</Link>

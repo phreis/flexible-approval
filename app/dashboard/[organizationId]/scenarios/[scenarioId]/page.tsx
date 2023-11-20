@@ -44,8 +44,6 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
     Number(params.scenarioId),
   );
 
-  console.log('scenarioHeaderData: ', scenarioHeaderData);
-
   const scenarioId = scenarioHeaderData.scenarioId;
   if (scenarioId) {
     return (
