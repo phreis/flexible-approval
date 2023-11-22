@@ -67,6 +67,7 @@ export async function sendEmailAction(
   historyId: ScenarioEntityHistoryType['historyId'],
 ): Promise<SendEmailV3_1.ResponseMessage[] | undefined> {
   const user = await getUserByUsername(approver);
+
   if (user) {
     const headersList = headers();
     const referer = headersList.get('referer');

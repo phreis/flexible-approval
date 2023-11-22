@@ -4,21 +4,38 @@
   justify-content: flex-start;
   gap: 16px;
   width: 100%;
-  a {
+  .containerEntry {
     display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    justify-content: center;
-    padding: 20px 0px 20px 20px;
-    color: black;
+    align-items: center;
+    justify-content: space-between;
+    a {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      justify-content: center;
+      padding: 20px 0px 20px 20px;
+      color: black;
 
-    gap: 3px;
-    .subInfo {
-      color: gray;
-      font-size: small;
+      gap: 3px;
+      .subInfo {
+        color: gray;
+        font-size: small;
+      }
+    }
+    button {
+      height: 2rem;
+      border: none;
+      background-color: rgb(74, 72, 72);
+      color: white;
+      border-radius: 8px;
+
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.8rem;
+      padding: 8px;
     }
   }
-  a:hover {
+  .containerEntry:hover {
     background-color: lightgray;
     box-shadow: 5px 3px 3px lightgray;
   }

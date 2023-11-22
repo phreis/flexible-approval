@@ -20,11 +20,7 @@ export default function FieldGroupFormTerminate(props: Props) {
       </span>
       <span>
         <label htmlFor="actionStepResult">on action Result</label>
-        <select
-          id="actionStepResult"
-          name="actionStepResult"
-          defaultValue={'NULL'}
-        >
+        <select id="actionStepResult" name="actionStepResult" defaultValue={''}>
           <option value="approved">approved</option>
           <option value="rejected">rejected</option>
           <option value="NULL">not used</option>

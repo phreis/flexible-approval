@@ -17,6 +17,7 @@ import {
   getOrganizationLoggedIn,
 } from '../../database/organizations';
 import { createScenarioEntity } from '../../database/scenarioEntities';
+import { deleteScenario } from '../../database/scenarios';
 import { createSession, deleteSessionByToken } from '../../database/sessions';
 import {
   createUser,
@@ -463,5 +464,13 @@ export async function processActionResultAction(
     return {
       message: `Successfully ${actionResponse} - you can close this window now.`,
     };
+  }
+}
+export async function deleteScenarioAction(prevState: any, formData: FormData) {
+  console.log(formData);
+  if (formData.get('scenarioId')) {
+    await deleteScenario({ scenarioId: Number(formData.get('scenarioId')) });
+    // TODO: delete corresponding Scenario Items, Actions, Conditions, Events and Ter as well!
+    revalidatePath('/');
   }
 }

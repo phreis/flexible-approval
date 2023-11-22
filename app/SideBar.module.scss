@@ -17,7 +17,7 @@
   flex-direction: column;
   justify-content: space-between;
   background-color: #e5e4e2;
-  height: calc(100vh - var(--top-heigth));
+  height: 100%;
   color: black;
   padding: 1rem 1rem 1rem 1rem;
   font-size: small;
@@ -43,7 +43,7 @@
   border-top: 1px solid;
   padding-top: 0.8rem;
 
-  height: 10vh;
+  height: 100px;
 }
 .loginLogout {
   display: flex;

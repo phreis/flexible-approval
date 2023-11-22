@@ -206,3 +206,36 @@ const createScenarioItemWithOrgId = cache(
     return item;
   },
 );
+
+type DeleteScenarioType = {
+  scenarioId: ScenarioHeaderType['scenarioId'];
+};
+
+export async function deleteScenario(
+  scenarioHeader: DeleteScenarioType,
+): Promise<ScenarioHeaderType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+
+  if (orgId) {
+    return deleteScenarioWithOrgId(scenarioHeader, orgId);
+  }
+}
+
+const deleteScenarioWithOrgId = cache(
+  async (
+    scenarioHeader: DeleteScenarioType,
+    orgId: OrganizationType['orgId'],
+  ) => {
+    const { scenarioId } = scenarioHeader;
+    console.log('scenarioId: ', scenarioId, 'orgId: ', orgId);
+    const [scenario] = await sql<ScenarioHeaderType[]>`
+      DELETE FROM scenarioheader
+      WHERE
+        org_id = ${orgId}
+        AND scenario_id = ${scenarioId} RETURNING *
+    `;
+
+    return scenario;
+  },
+);
