@@ -22,8 +22,8 @@ export default function FieldGroupFormStart(props: Props) {
         <textarea
           id="contextDataDescription"
           name="contextDataDescription"
-          rows={5}
-          cols={30}
+          rows={7}
+          cols={40}
           defaultValue={props.scenarioHeader?.contextDataDescription}
         />
       </span>

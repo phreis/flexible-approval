@@ -37,9 +37,9 @@ export default function ScenarioStarter(props: Props) {
         <textarea
           id="scenarioStarter"
           name="context"
-          rows={5}
-          cols={30}
-          defaultValue={props.context || ''}
+          rows={7}
+          cols={40}
+          defaultValue={''}
         />
 
         <button>Run once</button>
