@@ -89,38 +89,38 @@ The Context Data Description basically describes the data you want to approve. I
 - `startDate`, `endDate` Dates, when they want to go on holiday
 - `duration` days off in total
 
-### Create an START node
+### Create a START node
 
 <figure>
-<img src="public/images/screen_formStart.png" width="100" height="100">
+<img src="public/images/screen_formStart.png" width="200" height="200">
   <figcaption>Create and configure the START node with the Context Data Description </figcaption>
 </figure>
 
 ### Create an ACTION node
 
 <figure>
-<img src="public/images/screen_formAction.png" width="300" height="100">
+<img src="public/images/screen_formAction.png" width="400" height="150">
   <figcaption>Except from the START node, every node has to be associated with one parent. In this case, we want the ACTION node to be associated with the START node, therefor we will have to enter its node number in the configuration. In this example: 13. </figcaption>
 </figure>
 
 ### Create an EVENT node
 
 <figure>
-<img src="public/images/screen_formEvent.png" width="100" height="100">
+<img src="public/images/screen_formEvent.png" width="130" height="200">
   <figcaption>An EVENT is basically a notification sent to the Applicant, with information concerning the ongoing workflow. In this exapmle, we want the EVENT to get executed, when the previous ACTION is rejected. Therefore we have to set 'on action Result' as 'rejected'. </figcaption>
 </figure>
 
 ### Create a COND node
 
 <figure>
-<img src="public/images/screen_formCond.png" width="100" height="100">
+<img src="public/images/screen_formCond.png" width="130" height="200">
   <figcaption>The COND node implements a filter function. In this example we want to distigunish if the requested time of leave is more than 21 day. If so, an additional approvement by the head of department is neccessary. Otherwise the request will be accepted an the Applicant gets informed.</figcaption>
 </figure>
 
 ### Create a TER node
 
 <figure>
-<img src="public/images/screen_formTer.png" width="100" height="100">
+<img src="public/images/screen_formTer.png" width="130" height="200">
   <figcaption>A TER node identifies the end of an execution branch to let the processing engine know, when to finisch processing.</figcaption>
 </figure>
 
@@ -135,63 +135,63 @@ There are two options for how the START node can be triggered:
 2. **Via Testrunner** from the flexible-approval platfrom:
 You can access the Testrunner directly from the scenario diagramm.
 <figure>
-<img src="public/images/screen_scenarioRunner.png" width="100" height="100">
+<img src="public/images/screen_scenarioRunner.png" width="130" height="90">
   <figcaption>You need to provide the concrete context information to the testrunner. The format has to match the Context Data Description as set in the START node definition! </figcaption>
 </figure>
 
 Once the scenario is started, you will immediately see a graphical visualization of the current state.
 
 <figure>
-<img src="public/images/screen_runStepAction.png" width="250" height="100">
+<img src="public/images/screen_runStepAction.png" width="500" height="200">
   <figcaption>The START node has been triggerd. The following ACTION node is waiting for the teamsupervisor response. The workflow is on-hold at this stage.</figcaption>
 </figure>
 
 ### Responding to ACTIONs
 
-The Approver, as configured in the ACTION definition - receives an Email with an Link to respond, either **reject** or **apporve**
+The Approver, as configured in the ACTION definition - receives an Email with an Link to respond, either **reject** or **approve**
 
 <figure>
-<img src="public/images/screen_emailAction.png" width="250" height="100">
+<img src="public/images/screen_emailAction.png" width="375" height="130">
   <figcaption>The Link will lead to dedicated response page</figcaption>
 </figure>
 
 <figure>
-<img src="public/images/screen_loginAction.png" width="250" height="100">
+<img src="public/images/screen_loginAction.png" width="375" height="150">
   <figcaption>The approver needs to authenitcate</figcaption>
 </figure>
 
 <figure>
-<img src="public/images/screen_respondAction.png" width="250" height="100">
+<img src="public/images/screen_respondAction.png" width="375" height="150">
   <figcaption>The approver is asked to approve or reject</figcaption>
 </figure>
 
 <figure>
-<img src="public/images/screen_confirmAction.png" width="250" height="100">
+<img src="public/images/screen_confirmAction.png" width="375" height="150">
   <figcaption>Once the Approver has responded, the link gets invalidated</figcaption>
 </figure>
 
 ### Analyzing process steps
 
 <figure>
-<img src="public/images/screen_runStepAction2.png" width="250" height="100">
+<img src="public/images/screen_runStepAction2.png" width="375" height="150">
   <figcaption>
 Once the initial ACTION has received approval, the subsequent COND evaluates to true, indicating a leave period exceeding 21 days. We are currently awaiting a response from the Department Head. The timestamps on the right can be utilized to assess the workflow's efficiency.  </figcaption>
 </figure>
 
 <figure>
-<img src="public/images/screen_runStepComplete.png" width="250" height="150">
+<img src="public/images/screen_runStepComplete.png" width="375" height="150">
   <figcaption>After the second ACTION has been approved (by the department head). The EVENT has executed which triggerd an Email sent to the Applicant. The Workflow has endet at this stage.</figcaption>
 </figure>
 
 <figure>
-<img src="public/images/screen_emailEvent.png" width="250" height="100">
+<img src="public/images/screen_emailEvent.png" width="375" height="130">>
   <figcaption>Ultimately, the applicant receives notification confirming the successful approval of their holiday request. 🙂</figcaption>
 </figure>
 
 ### Execution history
 
 <figure>
-<img src="public/images/screen_executionHistory.png" width="350" height="160">
+<img src="public/images/screen_executionHistory.png" width="525" height="170">
   <figcaption>You can view the comprehensive logs of previous executions by accessing the Scenario History Tab.</figcaption>
 </figure>
 
