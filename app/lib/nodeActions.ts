@@ -149,7 +149,6 @@ async function createNodeStart(
   };
 
   const updatedHeader = await updateScenarioHeader(headerUpdate);
-  console.log('updatedHeader: ', updatedHeader);
   if (!updatedHeader) {
     throw `Err on updating Scenario Header: ${headerUpdate.scenarioId}`;
   }

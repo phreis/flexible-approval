@@ -70,11 +70,11 @@ For every Node, you need to configure its settings. For Example a Event Node req
 
 To create a scenario got to **Scenarios** and select **Create a new scenario**
 
-You alway begin a Scenario with a START node. Enter the description of your Scenario in the corresponding form field.
+You always begin a Scenario with a START node. Enter the description of your Scenario in the corresponding form field.
 
 ### Context Data Description
 
-The Context Data Description basically describes the data you want to approve within this scenario. It has to be in JSON format. In case of the Holiday approval wokflow example, this could look like the following definition:
+The Context Data Description basically describes the data you want to approve. It has to be in JSON format. In case of the Holiday approval wokflow example, this could look like the following definition:
 
 ```
 {
@@ -88,6 +88,18 @@ The Context Data Description basically describes the data you want to approve wi
 - `requestoEmail` Email address of the person who makes the request
 - `startDate`, `endDate` Dates, when they want to go on holiday
 - `duration` days off in total
+
+<figure>
+<img src="public/images/screen_formStart.png" width="100" height="100">
+  <figcaption>Create and configure the START node with the Context Data Description </figcaption>
+</figure>
+
+### Create an ACTION node
+
+<figure>
+<img src="public/images/screen_formAction.png" width="300" height="100">
+  <figcaption>Create and configure the START node with the Context Data Description </figcaption>
+</figure>
 
 ## Development
 
