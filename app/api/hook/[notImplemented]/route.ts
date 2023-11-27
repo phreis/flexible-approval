@@ -4,10 +4,7 @@ export type Error = {
   error: string;
 };
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Record<string, string | string[]> },
-): Promise<NextResponse<Error>> {
+export async function GET(): Promise<NextResponse<Error>> {
   return NextResponse.json(
     {
       error: `not implemented`,

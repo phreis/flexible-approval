@@ -8,7 +8,7 @@ export default function RegisterForm() {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(registerUser, initialState);
   return (
-    <section className={`${styles.loginContainer}`}>
+    <div className={styles.loginContainer}>
       <h1>Sign up</h1>
       <form action={dispatch}>
         <span className={styles.formElement}>
@@ -29,6 +29,6 @@ export default function RegisterForm() {
       <a className={styles.signUp} href="/login">
         I ALREADY HAVE AN ACCOUNT
       </a>
-    </section>
+    </div>
   );
 }

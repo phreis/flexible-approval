@@ -21,7 +21,7 @@ export default function ActionForm(props: Props) {
   );
 
   return (
-    <section className={`${styles.formContainer}`}>
+    <div className={`${styles.formContainer}`}>
       {!state?.message ? (
         <>
           <h1>Please respond!</h1>
@@ -52,6 +52,6 @@ export default function ActionForm(props: Props) {
       <p
         className={styles.small}
       >{`scenarioEntityId: ${props.scenarioEntity.scenarioEntityId}`}</p>
-    </section>
+    </div>
   );
 }

@@ -10,7 +10,7 @@ export default function LoginForm(props: Props) {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(loginUser, initialState);
   return (
-    <section className={`${styles.loginContainer}`}>
+    <div className={styles.loginContainer}>
       <h1>Sign in</h1>
       <form action={dispatch}>
         <span className={styles.formElement}>
@@ -33,6 +33,6 @@ export default function LoginForm(props: Props) {
       <a className={styles.signUp} href="/register">
         Create an account
       </a>
-    </section>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 import { getScenarioEntityHistoryLatest } from '../database/scenarioEntityHistory';
-import { ScenarioHeaderType } from '../migrations/00001-createTableScenarioHeader';
-import { ScenarioItemType } from '../migrations/00003-createTableScenarioItems';
-import { ScenarioEntityType } from '../migrations/00015-createTablescenarioEntities';
+import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
+import { ScenarioItemType } from '../migrations/00005-createTableScenarioItems';
+import { ScenarioEntityType } from '../migrations/00016-createTablescenarioEntities';
 import {
   processAction,
   processCondition,
@@ -56,63 +56,66 @@ export default class ScenarioTree {
         this.scenarioEntity.scenarioEntityId,
         node.stepId,
       );
-      const lastHistory = lastHistoryArr[0];
-      // If the current step, is PENDING (E.g. awaiting User Interaction, we must stop the processing here)
-      if (lastHistory?.state === 'PENDING') {
-        return;
-      }
 
-      // If the current step, is already done, proceed with the following steps (children)
-      // if (lastHistory?.state !== 'DONE') {
-      // console.log('Done:', node.taskType);
-      // node?.children?.forEach((step) => this.process(step));
-
-      if (node.taskType === 'EVENT') {
-        await processEvent(node, this.scenarioEntity, lastHistory);
-      }
-      if (node.taskType === 'START') {
-        await processStart(node, this.scenarioEntity, lastHistory);
-      }
-      if (node.taskType === 'TER') {
-        await processTer(node, this.scenarioEntity, lastHistory);
-      }
-
-      if (node.taskType === 'ACTION') {
-        const actionResult = await processAction(
-          node,
-          this.scenarioEntity,
-          lastHistory,
-        );
-
-        console.log('after process Action: ', actionResult);
-
-        if (actionResult) {
-          // ACTION option (successor) is one of the (two) children
-          const actionOption = node.children?.find(
-            (actionOpt) => actionOpt.actionStepResult === actionResult,
-          );
-          if (actionOption) {
-            await this.process(actionOption);
-          }
+      if (lastHistoryArr) {
+        const lastHistory = lastHistoryArr[0];
+        // If the current step, is PENDING (E.g. awaiting User Interaction, we must stop the processing here)
+        if (lastHistory?.state === 'PENDING') {
           return;
-        } else {
-          return; // PENDING, Stop here, because we need to await Approvers response
         }
-      }
 
-      if (node?.taskType === 'COND') {
-        const condResult = await processCondition(
-          node,
-          this.scenarioEntity,
-          lastHistory,
-        );
-        // COND option (successor) is one of the (two) children
-        const condOption = node.children?.find(
-          (condOpt) => condOpt.condStepResult === condResult,
-        );
-        if (condOption) await this.process(condOption);
-      } else {
-        node.children?.forEach((step) => this.process(step));
+        // If the current step, is already done, proceed with the following steps (children)
+        // if (lastHistory?.state !== 'DONE') {
+        // console.log('Done:', node.taskType);
+        // node?.children?.forEach((step) => this.process(step));
+
+        if (node.taskType === 'EVENT') {
+          await processEvent(node, this.scenarioEntity, lastHistory);
+        }
+        if (node.taskType === 'START') {
+          await processStart(node, this.scenarioEntity, lastHistory);
+        }
+        if (node.taskType === 'TER') {
+          await processTer(node, this.scenarioEntity, lastHistory);
+        }
+
+        if (node.taskType === 'ACTION') {
+          const actionResult = await processAction(
+            node,
+            this.scenarioEntity,
+            lastHistory,
+          );
+
+          console.log('after process Action: ', actionResult);
+
+          if (actionResult) {
+            // ACTION option (successor) is one of the (two) children
+            const actionOption = node.children?.find(
+              (actionOpt) => actionOpt.actionStepResult === actionResult,
+            );
+            if (actionOption) {
+              await this.process(actionOption);
+            }
+            return;
+          } else {
+            return; // PENDING, Stop here, because we need to await Approvers response
+          }
+        }
+
+        if (node?.taskType === 'COND') {
+          const condResult = await processCondition(
+            node,
+            this.scenarioEntity,
+            lastHistory,
+          );
+          // COND option (successor) is one of the (two) children
+          const condOption = node.children?.find(
+            (condOpt) => condOpt.condStepResult === condResult,
+          );
+          if (condOption) await this.process(condOption);
+        } else {
+          node.children?.forEach((step) => this.process(step));
+        }
       }
     }
   }

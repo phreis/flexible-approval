@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createScenarioEntity } from '../../../database/scenarioEntities';
 import { getScenarioHeaderById } from '../../../database/scenarios';
-import { ScenarioHeaderType } from '../../../migrations/00001-createTableScenarioHeader';
+import { ScenarioHeaderType } from '../../../migrations/00003-createTableScenarioHeader';
 import { processScenarioEntity } from '../../lib/processor';
 
 export type Error = {
@@ -19,32 +19,14 @@ type ScenarioIdResponseBodyGet =
   | Error;
 type ScenarioIdResponseBodyPost = ScenarioEntityType | Error;
 
-const ScenarioEntitySchema = z.object({
+const scenarioEntitySchema = z.object({
   eventName: z.string(),
   scenarioId: z.string(),
   context: z.string().optional(),
 });
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Record<string, string | string[]> },
-): Promise<NextResponse<ScenarioIdResponseBodyGet>> {
-  console.log(params);
-
-  // Check if params.scenarioID exits
-
-  /*   const scenarioId = await getScenarioById(params.scenarioId);
-
-  if (!scenarioId) {
-    return NextResponse.json(
-      {
-        error: `scenarioId: ${params.scenarioId} not found`,
-      },
-      { status: 404 },
-    );
-  }
- */
-  return NextResponse.json({ scenarioId: 4711 });
+export async function GET(): Promise<NextResponse<ScenarioIdResponseBodyGet>> {
+  return await NextResponse.json({ error: 'not implemented' });
 }
 
 export async function POST(
@@ -52,7 +34,7 @@ export async function POST(
 ): Promise<NextResponse<ScenarioIdResponseBodyPost>> {
   const body = await request.json();
 
-  const result = ScenarioEntitySchema.safeParse(body);
+  const result = scenarioEntitySchema.safeParse(body);
 
   if (!result.success) {
     // zod send you details about the error
@@ -119,7 +101,7 @@ export async function POST(
   const scenarioEntiy = await createScenarioEntity({
     scenarioId: Number(result.data.scenarioId),
     context: result.data.context,
-    orgId: 1, //TODO: retrieve Organization from Request (authentication)
+    orgId: 1, // TODO: retrieve Organization from Request (authentication)
   });
 
   if (!scenarioEntiy) {
