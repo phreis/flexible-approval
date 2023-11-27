@@ -1,16 +1,16 @@
 # flexible-approval
 
-<img src="public/images/flexible-approval-logo.png" width="200" height="200">
+<img src="public/images/flexible-approval-logo.png" width="200" >
 
-An open-source digital workplace platform were you can define and run you approval workflows. Build on [Next.js](https://nextjs.org/) with [Typescript](https://www.typescriptlang.org/) and [Postgres]()
+An open-source digital workplace platform were you can define and run your approval workflows. Build on [Next.js](https://nextjs.org/) with [Typescript](https://www.typescriptlang.org/) and [Postgres](https://www.postgresql.org/)
 
 ## Disclamer
 
-At this stage, this project is for educational purposes only. It is not intendet to be used as a real world application in productive environments yet.
+At this stage, this project is for educational purposes only. It is not intended to be used as a real-world application in productive environments yet.
 
 ## Introduction
 
-flexible-approval can be understood as a proof of concept of a no-code Integration platform as a service (iPaaS). It allowes you to manage your approval workflows from this single platform.
+Flexible-approval can be regarded as a proof of concept for a no-code Integration Platform as a Service (iPaaS). It enables the management of approval workflows from this singular platform.
 
 Examples for approval processes are:
 
@@ -40,7 +40,7 @@ Get automatically notified in case of an error (comming soon!)
 
 ## Scenarios and Nodes
 
-In order to automate your approval process, you have to create a scenario. A scenario consits of a series of connected Nodes that indicate how the context data is processed.
+To automate your approval process, you need to create a scenario. A scenario consists of a series of connected nodes that indicate how the context data is processed.
 
 Currently there are five types of Nodes:
 
@@ -64,7 +64,7 @@ The applicant can be notified with information concerning the ongoing workflow
 
 Indicates the workflow to terminate.
 
-For every Node, you need to configure its settings. For Example a Event Node requires you to specify a description, a receiver and a Text Template.
+For every node, you need to configure its settings. For example, an Event Node requires you to specify a description, a receiver, and a text template.
 
 ## Create an Scenario
 
@@ -100,21 +100,21 @@ The Context Data Description basically describes the data you want to approve. I
 
 <figure>
 <img src="public/images/screen_formAction.png" width="400" >
-  <figcaption>Except from the START node, every node has to be associated with one parent. In this case, we want the ACTION node to be associated with the START node, therefor we will have to enter its node number in the configuration. In this example: 13. </figcaption>
+  <figcaption>Except for the START node, every node has to be associated with one parent. In this case, we want the ACTION node to be associated with the START node, so we will have to enter its node number in the configuration. In this example: 13. </figcaption>
 </figure>
 
 ### Create an EVENT node
 
 <figure>
 <img src="public/images/screen_formEvent.png" width="130" >
-  <figcaption>An EVENT is basically a notification sent to the Applicant, with information concerning the ongoing workflow. In this exapmle, we want the EVENT to get executed, when the previous ACTION is rejected. Therefore we have to set 'on action Result' as 'rejected'. </figcaption>
+  <figcaption>An EVENT is essentially a notification sent to the applicant with information about the ongoing workflow. In this example, we want the EVENT to be executed when the previous ACTION is rejected. Therefore, we have to set 'on action Result' to 'rejected </figcaption>
 </figure>
 
 ### Create a COND node
 
 <figure>
 <img src="public/images/screen_formCond.png" width="130" >
-  <figcaption>The COND node implements a filter function. In this example we want to distigunish if the requested time of leave is more than 21 day. If so, an additional approvement by the head of department is neccessary. Otherwise the request will be accepted an the Applicant gets informed.</figcaption>
+  <figcaption>The COND node implements a filter function. In this example, we want to distinguish if the requested time of leave is more than 21 days. If so, additional approval by the Head of Department is necessary. Otherwise, the request will be accepted, and the applicant gets informed.</figcaption>
 </figure>
 
 ### Create a TER node
@@ -126,7 +126,7 @@ The Context Data Description basically describes the data you want to approve. I
 
 ## Running a scenario
 
-Once the scenario is completly defined, it is ready to get used.
+After the scenario is fully defined, it is ready to get used.
 There are two options for how the START node can be triggered:
 
 1. **Via External service**
@@ -142,7 +142,7 @@ You can access the Testrunner directly from the scenario diagramm.
 Once the scenario is started, you will immediately see a graphical visualization of the current state.
 
 <figure>
-<img src="public/images/screen_runStepAction.png" width="500" h>
+<img src="public/images/screen_runStepAction.png" >
   <figcaption>The START node has been triggerd. The following ACTION node is waiting for the teamsupervisor response. The workflow is on-hold at this stage.</figcaption>
 </figure>
 
@@ -173,13 +173,13 @@ The Approver, as configured in the ACTION definition - receives an Email with an
 ### Analyzing process steps
 
 <figure>
-<img src="public/images/screen_runStepAction2.png" width="375" >
+<img src="public/images/screen_runStepAction2.png"  >
   <figcaption>
 Once the initial ACTION has received approval, the subsequent COND evaluates to true, indicating a leave period exceeding 21 days. We are currently awaiting a response from the Department Head. The timestamps on the right can be utilized to assess the workflow's efficiency.  </figcaption>
 </figure>
 
 <figure>
-<img src="public/images/screen_runStepComplete.png" width="375" >
+<img src="public/images/screen_runStepComplete.png"  >
   <figcaption>After the second ACTION has been approved (by the department head). The EVENT has executed which triggerd an Email sent to the Applicant. The Workflow has endet at this stage.</figcaption>
 </figure>
 
@@ -193,6 +193,42 @@ Once the initial ACTION has received approval, the subsequent COND evaluates to 
 <figure>
 <img src="public/images/screen_executionHistory.png"  >
   <figcaption>You can view the comprehensive logs of previous executions by accessing the Scenario History Tab.</figcaption>
+</figure>
+
+## Organization, Team and User
+
+Whenever a new User signs up to the platform, a new Organization is created automatically. The new User is then assignet to this Organization. Additional Users can be added to the Organization via invitations.
+
+### Invite a new User
+
+1. Got to the **Organization** section and select the Team tab
+2. Click **Invite a new user**
+3. In the dialog that opens, fill the details for the user:
+
+- Username
+- Email
+- Role
+
+4. Click **Invite**
+
+<figure>
+<img src="public/images/screen_invite_a_new_user.png"  >
+  <figcaption>As long as the new user has not accepted their invitation, the initation is in state 'PENDING'</figcaption>
+</figure>
+
+The new user receives an email with a link to set their password
+
+<figure>
+<img src="public/images/screen_emailInvite.png"  >
+</figure>
+
+<figure>
+<img src="public/images/screen_inviteNewPassword.png" width="275" >
+</figure>
+
+<figure>
+<img src="public/images/screen_inviteUserList.png"  >
+  <figcaption>Once the user has set their password, they are logged in automatically. The new user shows up on the Team list. </figcaption>
 </figure>
 
 ## Development
