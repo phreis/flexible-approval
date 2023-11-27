@@ -22,9 +22,8 @@ export default function ScenarioBuilder(props: Props) {
   const [state, dispatch] = useFormState(scenarioBuilderAction, initialState);
   const [taskType, setTaskType] = useState('START');
 
-  function subFormRenderer(taskType: WfNode['taskType']) {
-    console.log(taskType);
-    switch (taskType) {
+  function subFormRenderer(tskType: WfNode['taskType']) {
+    switch (tskType) {
       case 'START':
         return <FieldGroupFormStart />;
       case 'COND':

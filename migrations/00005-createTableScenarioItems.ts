@@ -1,5 +1,6 @@
 import { Sql } from 'postgres';
-import { ScenarioHeaderType } from './00001-createTableScenarioHeader';
+import { OrganizationType } from './00001-createTableOrganizations';
+import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
 
 export type ScenarioItemType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
@@ -9,6 +10,7 @@ export type ScenarioItemType = {
   taskId: number | null;
   condStepResult: boolean | null;
   actionStepResult: string | null;
+  orgId: OrganizationType['orgId'];
 };
 
 export async function up(sql: Sql) {

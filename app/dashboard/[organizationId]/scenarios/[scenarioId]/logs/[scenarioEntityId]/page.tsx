@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import React from 'react';
 import { getScenarioHeaderById } from '../../../../../../../database/scenarios';
 import { TabType } from '../../../../PageHeaderTabs';
@@ -16,10 +15,7 @@ type Props = {
   searchParams: { [key: string]: string | undefined };
 };
 
-export default async function ScenarioEntityHistoryPage({
-  params,
-  searchParams,
-}: Props) {
+export default async function ScenarioEntityHistoryPage({ params }: Props) {
   const tabs: TabType[] = [
     {
       tabTitle: 'Diagram',
@@ -48,11 +44,13 @@ export default async function ScenarioEntityHistoryPage({
     Number(params.scenarioId),
   );
 
-  const scenarioId = scenarioHeaderData.scenarioId;
-
   return (
     <DashboardPage
-      heading={scenarioHeaderData.description || 'No descrition'}
+      heading={
+        scenarioHeaderData?.description
+          ? scenarioHeaderData.description
+          : 'No description'
+      }
       tabs={tabs}
       activeTab="t2"
     >

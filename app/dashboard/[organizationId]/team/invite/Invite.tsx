@@ -1,21 +1,16 @@
 'use client';
 import React, { useRef } from 'react';
 import { useFormState } from 'react-dom';
-import { OrganizationType } from '../../../../../migrations/00001-createTableOrganizations';
 import { preRegisterUserAction } from '../../../../lib/actions';
 import styles from './Invite.module.scss';
 
-type Props = {
-  orgId: OrganizationType['orgId'];
-};
-
-export default function Inviter(props: Props) {
+export default function Inviter() {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(preRegisterUserAction, initialState);
   const ref = useRef<HTMLFormElement>(null);
 
   return (
-    <div className={`${styles.loginContainer}`}>
+    <div className={styles.loginContainer}>
       <form
         /* to clear the form fields after submit */
         ref={ref}

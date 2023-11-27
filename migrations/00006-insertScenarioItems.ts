@@ -1,4 +1,3 @@
-import { Andada_Pro } from 'next/font/google';
 import { Sql } from 'postgres';
 
 const basicApprovalItems = [
@@ -331,15 +330,15 @@ const basicApprovalItems4 = [
   },
 ];
 const scenarioitems = [
-  /*   ...basicApprovalItems,
+  ...basicApprovalItems,
   ...basicApprovalItems2,
   ...basicApprovalItems3,
-  ...basicApprovalItems4, */
+  ...basicApprovalItems4,
 ];
 
-export async function up(sql: Sql) {
-  for (const item of scenarioitems) {
-    await sql`
+export async function up() {
+  /*   for (const item of scenarioitems) {
+       await sql`
       INSERT INTO
         scenarioitems (
           org_id,
@@ -363,7 +362,7 @@ export async function up(sql: Sql) {
           ${item.actionStepResult}
         )
     `;
-  }
+  } */
 }
 
 export async function down(sql: Sql) {

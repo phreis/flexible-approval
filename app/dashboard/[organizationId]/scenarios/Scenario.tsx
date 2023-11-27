@@ -15,7 +15,6 @@ type Props = {
   scenarioEntityId?: ScenarioEntityType['scenarioEntityId'];
 };
 
-//export default async function Scenario({ node }: { node: WfNode }) {
 export default async function Scenario({ node, scenarioEntityId }: Props) {
   let lastHistoryForNodeArr: ScenarioEntityHistoryType[] | undefined;
   let lastHistoryForNode: ScenarioEntityHistoryType | undefined;

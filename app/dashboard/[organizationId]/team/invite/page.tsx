@@ -9,7 +9,7 @@ type Props = {
   searchParams: { [key: string]: string | undefined };
 };
 
-export default async function InvitePage({ params, searchParams }: Props) {
+export default function InvitePage({ params, searchParams }: Props) {
   const tabs: TabType[] = [
     {
       tabTitle: 'Team',
@@ -27,7 +27,7 @@ export default async function InvitePage({ params, searchParams }: Props) {
       activeTab={searchParams.tab}
     >
       <div className={styles.basicGridDivider}>
-        <Invite orgId={params.organizationId} />
+        <Invite />
         <InvitedList />
       </div>
     </DashboardPage>

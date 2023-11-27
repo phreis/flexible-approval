@@ -49,10 +49,7 @@ export const getOrganizationByUserName = cache(
 
 export async function getOrganizationLoggedIn() {
   const userLoggedIn = await getUserLoggedIn();
-  let organizationLoggedIn;
   if (userLoggedIn) {
-    return (organizationLoggedIn = await getOrganizationByUserName(
-      userLoggedIn.username,
-    ));
+    return await getOrganizationByUserName(userLoggedIn.username);
   }
 }

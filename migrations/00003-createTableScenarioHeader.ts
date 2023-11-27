@@ -1,10 +1,12 @@
 import { Sql } from 'postgres';
+import { OrganizationType } from './00001-createTableOrganizations';
 
 export type ScenarioHeaderType = {
   scenarioId: number;
   description: string;
   contextDataDescription: string | null;
   creationdate: Date;
+  orgId: OrganizationType['orgId'];
 };
 
 export async function up(sql: Sql) {

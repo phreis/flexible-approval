@@ -1,6 +1,5 @@
 import { cache } from 'react';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
-import { ActionDefinitionType } from '../migrations/00012-createTableActionDefinitions';
 import { EventDefinitionType } from '../migrations/00019-createTableEventDefinitions';
 import { sql } from './connect';
 

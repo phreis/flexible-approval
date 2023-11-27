@@ -11,14 +11,6 @@ type CreateInvitationType = {
   role: User['role'];
 };
 
-export async function getInvitedUsers(): Promise<InvitationType[] | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-  if (orgId) {
-    return getInvitedUsersByOrgId(orgId);
-  }
-}
-
 export const getInvitedUsersByOrgId = cache(
   async (orgId: OrganizationType['orgId']) => {
     const invitations = await sql<InvitationType[]>`
@@ -34,7 +26,13 @@ export const getInvitedUsersByOrgId = cache(
     return invitations;
   },
 );
-
+export async function getInvitedUsers(): Promise<InvitationType[] | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getInvitedUsersByOrgId(orgId);
+  }
+}
 export const getInvitationById = cache(
   async (invitationId: InvitationType['invitationId']) => {
     const [invitation] = await sql<InvitationType[]>`
@@ -79,16 +77,6 @@ export async function acceptInvitation(
   return accepted;
 }
 
-export async function createInvitation(
-  invitation: CreateInvitationType,
-): Promise<InvitationType | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-  if (orgId) {
-    return createInvitationWithOrgId(invitation, orgId);
-  }
-}
-
 const createInvitationWithOrgId = cache(
   async (
     invitation: CreateInvitationType,
@@ -116,3 +104,12 @@ const createInvitationWithOrgId = cache(
     return invite;
   },
 );
+export async function createInvitation(
+  invitation: CreateInvitationType,
+): Promise<InvitationType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return createInvitationWithOrgId(invitation, orgId);
+  }
+}

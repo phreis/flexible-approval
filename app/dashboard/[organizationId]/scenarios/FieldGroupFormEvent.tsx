@@ -1,15 +1,11 @@
 import React from 'react';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
-import { User } from '../../../../migrations/00007-createTableUsers';
 import { getContextAttributeNames } from '../../../lib/utilsClient';
-import { WfNode } from '../../../ScenarioTree';
 import styles from './FieldGroupsForm.module.scss';
 
 type Props = {
-  node?: WfNode;
   description?: string;
   textTemplate?: string;
-  recipient?: string;
   scenario: ScenarioHeaderType;
 };
 
@@ -36,7 +32,11 @@ export default function FieldGroupFormEvent(props: Props) {
         <label htmlFor="recipient">Recipient</label>
         <select id="recipient" name="recipient">
           {contextAttributeNames.map((attrName) => {
-            return <option value={attrName}>{attrName}</option>;
+            return (
+              <option key={`key-${attrName}`} value={attrName}>
+                {attrName}
+              </option>
+            );
           })}
         </select>
       </span>
@@ -51,7 +51,7 @@ export default function FieldGroupFormEvent(props: Props) {
       </span>
       <span>
         <label htmlFor="condStepResult">on conditional Result</label>
-        <select id="condStepResult" name="condStepResult" defaultValue={'NULL'}>
+        <select id="condStepResult" name="condStepResult" defaultValue="NULL">
           <option value="TRUE">true</option>
           <option value="FALSE">false</option>
           <option value="NULL">not used</option>
@@ -59,7 +59,7 @@ export default function FieldGroupFormEvent(props: Props) {
       </span>
       <span>
         <label htmlFor="actionStepResult">on action Result</label>
-        <select id="actionStepResult" name="actionStepResult" defaultValue={''}>
+        <select id="actionStepResult" name="actionStepResult" defaultValue="">
           <option value="approved">approved</option>
           <option value="rejected">rejected</option>
           <option value="">not used</option>

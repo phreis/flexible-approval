@@ -1,6 +1,5 @@
 import 'server-only';
 import { cache } from 'react';
-import { OrganizationType } from '../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
 import { ConditionHeaderType } from '../migrations/00008-createTableConditionHeader';
 import { ConditionItemType } from '../migrations/00010-createTableConditionItems';
@@ -50,22 +49,8 @@ export type CreateConditionHeaderType = {
   description: string;
 };
 
-export async function createConditionHeader(
-  condHeader: CreateConditionHeaderType,
-): Promise<ConditionHeaderType | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-
-  if (orgId) {
-    return createConditionHeaderWithOrgId(condHeader, orgId);
-  }
-}
-
 const createConditionHeaderWithOrgId = cache(
-  async (
-    condHeader: CreateConditionHeaderType,
-    orgId: OrganizationType['orgId'],
-  ) => {
+  async (condHeader: CreateConditionHeaderType) => {
     const { scenarioId, description } = condHeader;
     const [condition] = await sql<ConditionHeaderType[]>`
       INSERT INTO
@@ -82,7 +67,16 @@ const createConditionHeaderWithOrgId = cache(
     return condition;
   },
 );
+export async function createConditionHeader(
+  condHeader: CreateConditionHeaderType,
+): Promise<ConditionHeaderType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
 
+  if (orgId) {
+    return createConditionHeaderWithOrgId(condHeader);
+  }
+}
 export type CreateConditionItemType = {
   conditionId: ConditionHeaderType['conditionId'];
   contextAttributeName: ConditionItemType['contextAttributeName'];
@@ -90,6 +84,7 @@ export type CreateConditionItemType = {
   compConstant: ConditionItemType['compConstant'];
   linkConditionNext: 'AND' | 'OR' | null;
 };
+
 export const createConditionItem = cache(
   async (condItem: CreateConditionItemType) => {
     const {
@@ -99,7 +94,7 @@ export const createConditionItem = cache(
       compConstant,
       linkConditionNext,
     } = condItem;
-    const [conditionItem] = await sql<ConditionHeaderType[]>`
+    const [conditionItem] = await sql<ConditionItemType[]>`
       INSERT INTO
         conditionitems (
           condition_id,
@@ -115,7 +110,7 @@ export const createConditionItem = cache(
           ${comperator},
           ${compConstant},
           ${linkConditionNext}
-        )
+        ) RETURNING *
     `;
     return conditionItem;
   },

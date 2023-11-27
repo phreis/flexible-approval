@@ -1,9 +1,8 @@
 import { Sql } from 'postgres';
 import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
-import { ScenarioItemType } from './00005-createTableScenarioItems';
 
 export type ConditionHeaderType = {
-  conditionId: ScenarioItemType['taskId'];
+  conditionId: number;
   scenarioId: ScenarioHeaderType['scenarioId'];
   description: string;
   creationdate: Date;

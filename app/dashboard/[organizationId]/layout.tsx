@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import React from 'react';
 import { getOrganizationLoggedIn } from '../../../database/organizations';
 import { getValidSessionByToken } from '../../../database/sessions';
-import SideBar from '../../SideBar';
 
 export default async function Layout({
   children,
@@ -33,13 +32,9 @@ export default async function Layout({
   if (!organizationLoggedIn) {
     return;
   }
-  if (Number(params.organizationId) !== organizationLoggedIn?.orgId) {
-    redirect(`/dashboard/${organizationLoggedIn?.orgId}`);
+  if (Number(params.organizationId) !== organizationLoggedIn.orgId) {
+    redirect(`/dashboard/${organizationLoggedIn.orgId}`);
   }
 
-  return (
-    <>
-      <main>{children}</main>
-    </>
-  );
+  return <main>{children}</main>;
 }

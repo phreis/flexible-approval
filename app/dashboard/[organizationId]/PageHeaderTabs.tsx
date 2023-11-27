@@ -30,7 +30,7 @@ export default function PageHeadeTabs(props: Props) {
             className={`${styles.navLink} ${
               tab.tabId === activeTab && styles.navLinkActive
             }`}
-            href={`${tab.href}`}
+            href={tab.href}
           >
             {tab.tabTitle}
           </a>

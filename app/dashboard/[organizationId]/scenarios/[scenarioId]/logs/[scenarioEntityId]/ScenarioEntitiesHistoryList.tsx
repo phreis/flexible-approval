@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { getScenarioEntityHistoriesById } from '../../../../../../../database/scenarioEntityHistory';
-import { OrganizationType } from '../../../../../../../migrations/00000-createTableOrganizations';
-import { ScenarioEntityType } from '../../../../../../../migrations/00015-createTablescenarioEntities';
+import { ScenarioEntityType } from '../../../../../../../migrations/00016-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../../../../../../../migrations/00017-createTablescenarioEntityHistory';
 import styles from './ScenarioEntitiesHistoryList.module.scss';
 
@@ -53,8 +52,8 @@ export default async function ScenarioEntitiesHistoryList(props: Props) {
                 {ent.condResult === true
                   ? 'true'
                   : ent.condResult === false
-                  ? 'false'
-                  : '-'}
+                    ? 'false'
+                    : '-'}
               </span>
               <span>{ent.actionResult}</span>
               <span>{ent.state}</span>

@@ -3,8 +3,8 @@ import {
   getScenarioEntitiesListByScenarioId,
   ScenarioEntityListType,
 } from '../../../../../../database/scenarioEntities';
-import { OrganizationType } from '../../../../../../migrations/00000-createTableOrganizations';
-import { ScenarioHeaderType } from '../../../../../../migrations/00001-createTableScenarioHeader';
+import { OrganizationType } from '../../../../../../migrations/00001-createTableOrganizations';
+import { ScenarioHeaderType } from '../../../../../../migrations/00003-createTableScenarioHeader';
 import styles from './ScenarioEntitiesList.module.scss';
 
 type Props = {
@@ -34,7 +34,9 @@ export default async function ScenarioEntitiesList(props: Props) {
       <span>
         <strong>MESSAGE</strong>
       </span>
-      <span></span>
+      <span>
+        <strong>DETAILS</strong>
+      </span>
 
       {scenarioEntities.map((ent: ScenarioEntityListType) => {
         return (

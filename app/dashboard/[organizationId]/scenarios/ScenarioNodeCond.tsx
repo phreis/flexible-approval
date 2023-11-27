@@ -6,7 +6,6 @@ import {
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNode } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
-import ScenarioNodeCondForm from './ScenarioNodeCondForm';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 
 export default async function ScenarioNodeCond(props: {
@@ -31,8 +30,7 @@ export default async function ScenarioNodeCond(props: {
         )}
       </div>
       <div className={styles.genericData}>
-        {<span className={styles.description}>{condHeader?.description}</span>}
-        {/*         <ScenarioNodeCondForm condHeader={condHeader} node={props.node} /> */}
+        <span className={styles.description}>{condHeader?.description}</span>
         <span className={styles.conditionExpression}>
           <code>{condItems?.contextAttributeName}</code>
           <code>{condItems?.comperator}</code>

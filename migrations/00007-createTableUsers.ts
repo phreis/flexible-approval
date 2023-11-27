@@ -15,8 +15,8 @@ export async function up(sql: Sql) {
         id INTEGER GENERATED ALWAYS AS IDENTITY,
         username VARCHAR(80) NOT NULL UNIQUE,
         org_id INTEGER NOT NULL,
-        email VARCHAR(40),
-        role VARCHAR(10),
+        email VARCHAR(40) NOT NULL,
+        role VARCHAR(10) NOT NULL,
         password_hash VARCHAR(80) NOT NULL,
         PRIMARY KEY (id)
       );

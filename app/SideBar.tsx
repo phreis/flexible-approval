@@ -9,7 +9,10 @@ export default async function SideBar() {
   return (
     <aside>
       <div className={styles.sideBarTopLogo}>
-        <img src="/images/flexible-approval-logo.png" />
+        <img
+          src="/images/flexible-approval-logo.png"
+          alt="flexible-approval-logo"
+        />
       </div>
       <nav className={styles.nav}>
         <div className={styles.sideBarTop}>

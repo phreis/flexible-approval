@@ -35,16 +35,6 @@ export const createScenarioEntity = cache(
   },
 );
 
-export async function getScenarioEntityById(
-  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
-): Promise<ScenarioEntityType[] | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-  if (orgId) {
-    return getScenarioEntityByIdOrgId(scenarioEntityId, orgId);
-  }
-}
-
 const getScenarioEntityByIdOrgId = cache(
   async (
     scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
@@ -61,7 +51,15 @@ const getScenarioEntityByIdOrgId = cache(
     `;
   },
 );
-
+export async function getScenarioEntityById(
+  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
+): Promise<ScenarioEntityType[] | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getScenarioEntityByIdOrgId(scenarioEntityId, orgId);
+  }
+}
 export type ScenarioEntityListType = {
   scenarioId: ScenarioEntityType['scenarioId'];
   scenarioEntityId: ScenarioEntityType['scenarioEntityId'];
@@ -69,6 +67,7 @@ export type ScenarioEntityListType = {
   context: ScenarioEntityType['context'];
   state: ScenarioEntityHistoryType['state'] | string;
   message: ScenarioEntityHistoryType['message'];
+  orgId: OrganizationType['orgId'];
 };
 
 // Selects all entityItems of on specific scenarioId with its latest history state and message

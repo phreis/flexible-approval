@@ -1,6 +1,7 @@
 import { Sql } from 'postgres';
+import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
 
-const scenarioHeader = [
+const scenarioHeader: ScenarioHeaderType[] = [
   /*   {
     orgId: 1,
     scenarioId: 1,

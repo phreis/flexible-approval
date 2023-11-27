@@ -1,12 +1,8 @@
-import Link from 'next/link';
 import { PropsWithChildren } from 'react';
 import styles from './PageHeader.module.scss';
 
 type Props = {
   heading: string;
-  elementTopRight?: React.ComponentType<{
-    text?: string;
-  }>;
 };
 
 export default function PageHeader(props: PropsWithChildren<Props>) {

@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { NextRequest } from 'next/server';
-import { LibraryResponse, SendEmailV3_1 } from 'node-mailjet';
+import { SendEmailV3_1 } from 'node-mailjet';
 import { getUserByUsername } from '../../database/users';
 import { User } from '../../migrations/00007-createTableUsers';
 import { ActionDefinitionType } from '../../migrations/00012-createTableActionDefinitions';
@@ -131,7 +131,7 @@ export async function sendEmailEvent(
           Name: 'Reporter',
         },
         TemplateLanguage: true,
-        Subject: 'flexible-approval: Please respond!',
+        Subject: 'flexible-approval: Information',
         HTMLPart: `        <h3>
           Hello!
         </h3><br>

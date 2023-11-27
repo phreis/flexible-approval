@@ -1,5 +1,5 @@
 import { getOrganizationLoggedIn } from '../../../../database/organizations';
-import PageHeaderTabs, { TabType } from '../PageHeaderTabs';
+import { TabType } from '../PageHeaderTabs';
 import DashboardPage from '../scenarios/DashboardPage';
 import TeamList from './TeamList';
 import styles from './TeamList.module.scss';
@@ -28,7 +28,7 @@ export default async function TeamPage({ params, searchParams }: Props) {
   return (
     <DashboardPage
       heading={
-        organizationLoggedIn?.name
+        organizationLoggedIn.name
           ? organizationLoggedIn.name
           : 'My Organisation'
       }

@@ -1,5 +1,4 @@
 import React from 'react';
-import { getActionDefinitionById } from '../../../../database/actionDefinitions';
 import { getEventDefinitionById } from '../../../../database/eventDefinitions';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNode } from '../../../ScenarioTree';

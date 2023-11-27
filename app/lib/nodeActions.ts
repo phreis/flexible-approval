@@ -1,19 +1,12 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { NextURL } from 'next/dist/server/web/next-url';
-import { headers } from 'next/headers';
-import { NextRequest } from 'next/server';
 import { z } from 'zod';
 import {
   createActionDefinition,
   CreateActionDefinitionType,
 } from '../../database/actionDefinitions';
-import {
-  createConditionHeader,
-  createConditionItem,
-  CreateConditionItemType,
-} from '../../database/conditions';
+import { createConditionHeader } from '../../database/conditions';
 import {
   createEventDefinition,
   CreateEventDefinitionType,
@@ -28,7 +21,6 @@ import {
 import { OrganizationType } from '../../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../../migrations/00003-createTableScenarioHeader';
 import { ScenarioItemType } from '../../migrations/00005-createTableScenarioItems';
-import { getContextAttributeName } from './utils';
 
 type ScenarioBuilderNodeGenericType = {
   orgId: OrganizationType['orgId'];
@@ -63,7 +55,7 @@ export async function scenarioBuilderAction(
     };
   }
 
-  const { scenarioId, taskType, parentStepId } = validatedBuilderFields.data;
+  const { scenarioId, taskType } = validatedBuilderFields.data;
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (!orgId) {
@@ -77,35 +69,33 @@ export async function scenarioBuilderAction(
     scenarioId: scenarioId,
     taskType: taskType,
   };
-  try {
-    switch (taskType) {
-      case 'START':
-        await createNodeStart(nodeGeneric, formData);
-        break;
-      case 'COND':
-        await createNodeCond(nodeGeneric, formData);
-        break;
-      case 'ACTION':
-        await createNodeAction(nodeGeneric, formData);
-        break;
-      case 'EVENT':
-        await createNodeEvent(nodeGeneric, formData);
-        break;
-      case 'TER':
-        await createNodeTer(nodeGeneric, formData);
-        break;
-      default:
-      // return <></>;
-    }
-  } catch (e: any) {
+  let error;
+
+  switch (taskType) {
+    case 'START':
+      error = await createNodeStart(nodeGeneric, formData);
+      break;
+    case 'COND':
+      error = await createNodeCond(nodeGeneric, formData);
+      break;
+    case 'ACTION':
+      error = await createNodeAction(nodeGeneric, formData);
+      break;
+    case 'EVENT':
+      error = await createNodeEvent(nodeGeneric, formData);
+      break;
+    case 'TER':
+      error = await createNodeTer(nodeGeneric, formData);
+      break;
+    default:
+    // return <></>;
+  }
+  if (error) {
     return {
-      message: e,
+      message: error.message,
     };
   }
   revalidatePath('/');
-  /*   return {
-    message: `Node Type: ${nodeGeneric.taskType} created on scenarioId: ${nodeGeneric.scenarioId}`,
-  }; */
 }
 
 async function createNodeStart(
@@ -137,7 +127,9 @@ async function createNodeStart(
   try {
     JSON.parse(contextDataDescription);
   } catch (e) {
-    throw `Please provide the Context Data Description as the string representation of an JavaScript Object E.g.: {"attributeName": "string"}`;
+    return {
+      message: `Please provide the Context Data Description as the string representation of an JavaScript Object E.g.: {"attributeName": "string"}`,
+    };
   }
 
   // §1 update scenario w/ description, contextDataDescription
@@ -150,7 +142,9 @@ async function createNodeStart(
 
   const updatedHeader = await updateScenarioHeader(headerUpdate);
   if (!updatedHeader) {
-    throw `Err on updating Scenario Header: ${headerUpdate.scenarioId}`;
+    return {
+      message: `Err on updating Scenario Header: ${headerUpdate.scenarioId}`,
+    };
   }
 
   // §2 create node
@@ -160,7 +154,9 @@ async function createNodeStart(
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
-    throw `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`;
+    return {
+      message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
+    };
   }
 }
 async function createNodeTer(
@@ -183,22 +179,12 @@ async function createNodeTer(
   // If form validation fails, return early. Otherwise, continue.
 
   if (!validatedBuilderFields.success) {
-    throw 'Err on Cond Node input fields';
+    return {
+      message: 'Err on Cond Node input fields',
+    };
   }
   const { parentId, condStepResult, actionStepResult } =
     validatedBuilderFields.data;
-
-  function getCondResultBool(condStepResult: string | undefined) {
-    if (condStepResult === 'NULL') {
-      return null;
-    }
-    if (condStepResult === 'TRUE') {
-      return true;
-    }
-    if (condStepResult === 'FALSE') {
-      return false;
-    }
-  }
 
   // §2 create node
   const newItem: CreateScenarioItemType = {
@@ -210,7 +196,9 @@ async function createNodeTer(
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
-    throw `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`;
+    return {
+      message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
+    };
   }
 }
 async function createNodeCond(
@@ -242,17 +230,12 @@ async function createNodeCond(
   // If form validation fails, return early. Otherwise, continue.
 
   if (!validatedBuilderFields.success) {
-    throw 'Err on Cond Node input fields';
+    return {
+      message: 'Err on Cond Node input fields',
+    };
   }
-  const {
-    parentId,
-    description,
-    contextAttributeName,
-    operator,
-    compConstant,
-    condStepResult,
-    actionStepResult,
-  } = validatedBuilderFields.data;
+  const { parentId, description, condStepResult, actionStepResult } =
+    validatedBuilderFields.data;
 
   // §1 create condtion definition
   const newConditionHeader = await createConditionHeader({
@@ -261,27 +244,9 @@ async function createNodeCond(
   });
 
   if (!newConditionHeader) {
-    throw `Err on creating Scenario Definition Header`;
-  }
-  const condItemNew: CreateConditionItemType = {
-    conditionId: newConditionHeader.conditionId,
-    contextAttributeName: contextAttributeName,
-    comperator: operator,
-    compConstant: compConstant,
-    linkConditionNext: null,
-  };
-  const newConditionItem = await createConditionItem(condItemNew);
-
-  function getCondResultBool(condStepResult: string | undefined) {
-    if (condStepResult === 'NULL') {
-      return null;
-    }
-    if (condStepResult === 'TRUE') {
-      return true;
-    }
-    if (condStepResult === 'FALSE') {
-      return false;
-    }
+    return {
+      message: `Err on creating Scenario Definition Header`,
+    };
   }
 
   // §2 create node
@@ -295,7 +260,9 @@ async function createNodeCond(
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
-    throw `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`;
+    return {
+      message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
+    };
   }
 }
 
@@ -326,7 +293,9 @@ async function createNodeAction(
   // If form validation fails, return early. Otherwise, continue.
 
   if (!validatedBuilderFields.success) {
-    throw 'Err on Cond Node input fields';
+    return {
+      message: 'Err on Action Node input fields',
+    };
   }
   const {
     parentId,
@@ -345,18 +314,6 @@ async function createNodeAction(
   };
   const newActionItem = await createActionDefinition(actionNew);
 
-  function getCondResultBool(condStepResult: string | undefined) {
-    if (condStepResult === 'NULL') {
-      return null;
-    }
-    if (condStepResult === 'TRUE') {
-      return true;
-    }
-    if (condStepResult === 'FALSE') {
-      return false;
-    }
-  }
-
   // §2 create node
   const newItem: CreateScenarioItemType = {
     scenarioId: nodeGeneric.scenarioId,
@@ -368,7 +325,9 @@ async function createNodeAction(
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
-    throw `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`;
+    return {
+      message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
+    };
   }
 }
 
@@ -399,7 +358,9 @@ async function createNodeEvent(
   // If form validation fails, return early. Otherwise, continue.
 
   if (!validatedBuilderFields.success) {
-    throw 'Err on Cond Node input fields';
+    return {
+      message: 'Err on Cond Node input fields',
+    };
   }
   const {
     parentId,
@@ -418,18 +379,6 @@ async function createNodeEvent(
   };
   const newEventItem = await createEventDefinition(eventNew);
 
-  function getCondResultBool(condStepResult: string | undefined) {
-    if (condStepResult === 'NULL') {
-      return null;
-    }
-    if (condStepResult === 'TRUE') {
-      return true;
-    }
-    if (condStepResult === 'FALSE') {
-      return false;
-    }
-  }
-
   // §2 create node
   const newItem: CreateScenarioItemType = {
     scenarioId: nodeGeneric.scenarioId,
@@ -441,20 +390,19 @@ async function createNodeEvent(
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
-    throw `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`;
+    return {
+      message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
+    };
   }
 }
-
-export async function startNodeFormAction(prevState: any, formData: FormData) {
-  console.log('startNodeFormAction: ', formData);
-  return {
-    message: `Successfully`,
-  };
-}
-export async function condNodeFormAction(formData: FormData) {
-  console.log('condNodeFormAction: ', formData);
-  console.log(JSON.parse(formData.get('node')));
-  return {
-    message: `Successfully`,
-  };
+function getCondResultBool(cndStepResult: string | undefined) {
+  if (cndStepResult === 'NULL') {
+    return null;
+  }
+  if (cndStepResult === 'TRUE') {
+    return true;
+  }
+  if (cndStepResult === 'FALSE') {
+    return false;
+  }
 }

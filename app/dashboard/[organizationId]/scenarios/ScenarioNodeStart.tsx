@@ -1,10 +1,8 @@
-import Image from 'next/image';
 import React from 'react';
 import { getScenarioHeaderById } from '../../../../database/scenarios';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNode } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
-import ScenarioNodeStartForm from './ScenarioNodeStartForm';
 import { getStatusIcon } from './scenarioNodeUtils';
 
 export default async function ScenarioNodeStart(props: {
@@ -28,10 +26,6 @@ export default async function ScenarioNodeStart(props: {
         </span>
         <span> Context data description:</span>
         <code>{scenarioHeader?.contextDataDescription}</code>
-        {/*         <ScenarioNodeStartForm
-          node={props.node}
-          scenarioHeader={scenarioHeader}
-        /> */}
       </div>
     </div>
   );

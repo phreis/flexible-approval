@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { getInvitedUsers } from '../../../../../database/invitations';
-import { OrganizationType } from '../../../../../migrations/00000-createTableOrganizations';
 import { InvitationType } from '../../../../../migrations/00018-createTableInvitations';
 import styles from './Invite.module.scss';
 

@@ -1,16 +1,12 @@
 'use client';
 import React from 'react';
 import { useFormState } from 'react-dom';
-import { OrganizationType } from '../../../../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
-import { ScenarioEntityType } from '../../../../migrations/00016-createTablescenarioEntities';
 import { processScenarioNewAction } from '../../../lib/actions';
 import styles from './ScenarioStarter.module.scss';
 
 type Props = {
   scenarioId: ScenarioHeaderType['scenarioId'];
-  context: ScenarioEntityType['context'];
-  organizationId: OrganizationType['orgId'];
 };
 
 export default function ScenarioStarter(props: Props) {
@@ -39,23 +35,12 @@ export default function ScenarioStarter(props: Props) {
           name="context"
           rows={7}
           cols={40}
-          defaultValue={''}
+          defaultValue=""
         />
 
         <button>Run once</button>
       </form>
-      <p>
-        {state?.message}{' '}
-        {!state?.errors && state?.message ? (
-          <a
-            href={`/dashboard/${organizationId}/scenarios/${props.scenarioId}/logs/${state?.scenarioEntityId}`}
-          >
-            DETAILS
-          </a>
-        ) : (
-          state?.errors
-        )}
-      </p>
+      <p>{state?.message}</p>
     </div>
   );
 }

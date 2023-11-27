@@ -1,11 +1,6 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { cookies, headers } from 'next/headers';
-import { getValidSessionByToken } from '../database/sessions';
-import { getUserBySessionToken } from '../database/users';
-import LoginForm from './(auth)/login/LoginForm';
-import SideBar from './SideBar';
 
 const inter = Inter({ subsets: ['latin'] });
 

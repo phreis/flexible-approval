@@ -1,9 +1,5 @@
-import { notFound } from 'next/navigation';
 import React from 'react';
-import {
-  getScenarioHeaderById,
-  getScenarioItems,
-} from '../../../../../database/scenarios';
+import { getScenarioHeaderById } from '../../../../../database/scenarios';
 import { TabType } from '../../PageHeaderTabs';
 import DashboardPage from '../DashboardPage';
 import { ScenarioDiagram } from '../ScenarioDiagram';
@@ -44,21 +40,21 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
     Number(params.scenarioId),
   );
 
-  const scenarioId = scenarioHeaderData.scenarioId;
+  const scenarioId = scenarioHeaderData?.scenarioId;
   if (scenarioId) {
     return (
       <DashboardPage
-        heading={scenarioHeaderData.description || 'No description'}
+        heading={
+          scenarioHeaderData.description
+            ? scenarioHeaderData.description
+            : 'No description'
+        }
         tabs={tabs}
         activeTab={searchParams.tab}
       >
         <div className={styles.basicGridDivider}>
           <ScenarioDiagram scenarioId={scenarioId} />
-          <ScenarioStarter
-            scenarioId={scenarioId}
-            organizationId={params.organizationId}
-            context={`{"amountToApprove":500}`}
-          />
+          <ScenarioStarter scenarioId={scenarioId} />
         </div>
       </DashboardPage>
     );

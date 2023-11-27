@@ -1,10 +1,9 @@
 import { Sql } from 'postgres';
 import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
-import { ScenarioItemType } from './00005-createTableScenarioItems';
 import { User } from './00007-createTableUsers';
 
 export type ActionDefinitionType = {
-  actionId: ScenarioItemType['taskId'];
+  actionId: number;
   scenarioId: ScenarioHeaderType['scenarioId'];
   description: string;
   textTemplate: string;
@@ -16,13 +15,11 @@ export async function up(sql: Sql) {
   await sql`
     CREATE TABLE
       actiondefinitions (
-        action_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+        action_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY NOT NULL,
         scenario_id INTEGER NOT NULL,
         description VARCHAR(100) NOT NULL,
         text_template VARCHAR(1000) NOT NULL,
-        approver VARCHAR(80) NOT NULL REFERENCES users (
-          username
-        ),
+        approver VARCHAR(80) NOT NULL,
         creationdate TIMESTAMP NOT NULL DEFAULT NOW ()
       );
   `;

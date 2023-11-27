@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import React from 'react';
-import { getActionDefinitionById } from '../../../../database/actionDefinitions';
 import { getInvitationById } from '../../../../database/invitations';
 import RsvpForm from './RsvpForm';
 

@@ -1,13 +1,15 @@
 import { Sql } from 'postgres';
-import { ScenarioHeaderType } from './00001-createTableScenarioHeader';
-import { ScenarioItemType } from './00003-createTableScenarioItems';
-import { User } from './00005-createTableUsers';
-import { ScenarioEntityType } from './00015-createTablescenarioEntities';
+import { OrganizationType } from './00001-createTableOrganizations';
+import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
+import { ScenarioItemType } from './00005-createTableScenarioItems';
+import { User } from './00007-createTableUsers';
+import { ScenarioEntityType } from './00016-createTablescenarioEntities';
 
 export type ScenarioEntityHistoryType = {
   historyId: string;
   scenarioEntityId: ScenarioEntityType['scenarioEntityId'];
   scenarioId: ScenarioHeaderType['scenarioId'];
+  orgId: OrganizationType['orgId'];
   stepId: ScenarioItemType['stepId'];
   taskType: ScenarioItemType['taskType'];
   taskId: ScenarioItemType['taskId'] | null;

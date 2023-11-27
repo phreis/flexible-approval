@@ -1,22 +1,10 @@
 import 'server-only';
-import { Andada_Pro } from 'next/font/google';
-import { headers } from 'next/headers';
 import { cache } from 'react';
 import { OrganizationType } from '../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
 import { ScenarioItemType } from '../migrations/00005-createTableScenarioItems';
 import { sql } from './connect';
 import { getOrganizationLoggedIn } from './organizations';
-
-export async function getScenarioHeaderById(
-  scenarioId: ScenarioHeaderType['scenarioId'],
-): Promise<ScenarioHeaderType | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-  if (orgId) {
-    return getScenarioHeaderByIdOrgId(scenarioId, orgId);
-  }
-}
 
 const getScenarioHeaderByIdOrgId = cache(
   async (
@@ -35,14 +23,13 @@ const getScenarioHeaderByIdOrgId = cache(
     return scenario;
   },
 );
-
-export async function getScenarioHeaders(): Promise<
-  ScenarioHeaderType[] | undefined
-> {
+export async function getScenarioHeaderById(
+  scenarioId: ScenarioHeaderType['scenarioId'],
+): Promise<ScenarioHeaderType | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return getScenarioHeadersByOrgId(orgId);
+    return getScenarioHeaderByIdOrgId(scenarioId, orgId);
   }
 }
 
@@ -58,14 +45,13 @@ const getScenarioHeadersByOrgId = cache(
     `;
   },
 );
-
-export async function getScenarioItems(
-  scenarioId: ScenarioHeaderType['scenarioId'],
-): Promise<ScenarioItemType[] | undefined> {
+export async function getScenarioHeaders(): Promise<
+  ScenarioHeaderType[] | undefined
+> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return getScenarioItemsByOrgId(scenarioId, orgId);
+    return getScenarioHeadersByOrgId(orgId);
   }
 }
 
@@ -88,20 +74,18 @@ export const getScenarioItemsByOrgId = cache(
     `;
   },
 );
-
-type CreateScenarioHeaderType = {
-  description: ScenarioHeaderType['description'];
-};
-
-export async function createScenario(
-  scenarioHeader: CreateScenarioHeaderType,
-): Promise<ScenarioHeaderType | undefined> {
+export async function getScenarioItems(
+  scenarioId: ScenarioHeaderType['scenarioId'],
+): Promise<ScenarioItemType[] | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return createScenarioWithOrgId(scenarioHeader, orgId);
+    return getScenarioItemsByOrgId(scenarioId, orgId);
   }
 }
+type CreateScenarioHeaderType = {
+  description: ScenarioHeaderType['description'];
+};
 
 const createScenarioWithOrgId = cache(
   async (
@@ -124,7 +108,15 @@ const createScenarioWithOrgId = cache(
     return scenario;
   },
 );
-
+export async function createScenario(
+  scenarioHeader: CreateScenarioHeaderType,
+): Promise<ScenarioHeaderType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return createScenarioWithOrgId(scenarioHeader, orgId);
+  }
+}
 export type UpdateScenarioHeaderType = {
   orgId: OrganizationType['orgId'];
   scenarioId: ScenarioHeaderType['scenarioId'];
@@ -157,16 +149,6 @@ export type CreateScenarioItemType = {
   condStepResult?: boolean | null;
   actionStepResult?: string | null;
 };
-
-export async function createScenarioItem(
-  scenarioItem: CreateScenarioItemType,
-): Promise<ScenarioItemType | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-  if (orgId) {
-    return createScenarioItemWithOrgId(scenarioItem, orgId);
-  }
-}
 
 const createScenarioItemWithOrgId = cache(
   async (
@@ -207,20 +189,18 @@ const createScenarioItemWithOrgId = cache(
   },
 );
 
+export async function createScenarioItem(
+  scenarioItem: CreateScenarioItemType,
+): Promise<ScenarioItemType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return createScenarioItemWithOrgId(scenarioItem, orgId);
+  }
+}
 type DeleteScenarioType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
 };
-
-export async function deleteScenario(
-  scenarioHeader: DeleteScenarioType,
-): Promise<ScenarioHeaderType | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-
-  if (orgId) {
-    return deleteScenarioWithOrgId(scenarioHeader, orgId);
-  }
-}
 
 const deleteScenarioWithOrgId = cache(
   async (
@@ -239,3 +219,13 @@ const deleteScenarioWithOrgId = cache(
     return scenario;
   },
 );
+export async function deleteScenario(
+  scenarioHeader: DeleteScenarioType,
+): Promise<ScenarioHeaderType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+
+  if (orgId) {
+    return deleteScenarioWithOrgId(scenarioHeader, orgId);
+  }
+}

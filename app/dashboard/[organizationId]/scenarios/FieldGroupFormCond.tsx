@@ -1,14 +1,10 @@
 import React from 'react';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
-import { ConditionHeaderType } from '../../../../migrations/00008-createTableConditionHeader';
 import { ConditionItemType } from '../../../../migrations/00010-createTableConditionItems';
 import { getContextAttributeNames } from '../../../lib/utilsClient';
-import { WfNode } from '../../../ScenarioTree';
 import styles from './FieldGroupsForm.module.scss';
 
 type Props = {
-  node?: WfNode;
-  condHeader?: ConditionHeaderType;
   condItem?: ConditionItemType;
   scenario: ScenarioHeaderType;
 };
@@ -35,7 +31,11 @@ export default function FieldGroupFormCondition(props: Props) {
           required={true}
         >
           {contextAttributeNames.map((name) => {
-            return <option value={name}>{name}</option>;
+            return (
+              <option key={`key-${name}`} value={name}>
+                {name}
+              </option>
+            );
           })}
         </select>
       </span>
@@ -65,7 +65,7 @@ export default function FieldGroupFormCondition(props: Props) {
       </span>
       <span>
         <label htmlFor="condStepResult">on conditional Result</label>
-        <select id="condStepResult" name="condStepResult" defaultValue={'NULL'}>
+        <select id="condStepResult" name="condStepResult" defaultValue="NULL">
           <option value="TRUE">true</option>
           <option value="FALSE">false</option>
           <option value="NULL">not used</option>
@@ -73,7 +73,7 @@ export default function FieldGroupFormCondition(props: Props) {
       </span>
       <span>
         <label htmlFor="actionStepResult">on action Result</label>
-        <select id="actionStepResult" name="actionStepResult" defaultValue={''}>
+        <select id="actionStepResult" name="actionStepResult" defaultValue="">
           <option value="approved">approved</option>
           <option value="rejected">rejected</option>
           <option value="">not used</option>

@@ -1,4 +1,3 @@
-import util from 'node:util';
 import dynamic from 'next/dynamic';
 import { getScenarioItems } from '../../../../database/scenarios';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
@@ -18,23 +17,27 @@ type Props = {
 
 export async function ScenarioDiagram(props: Props) {
   const sceanarioItemsData = await getScenarioItems(props.scenarioId);
+  if (sceanarioItemsData) {
+    const tree = new ScenarioTree();
 
-  const tree = new ScenarioTree();
-
-  sceanarioItemsData.forEach((item: ScenarioItemType) =>
-    tree.insertNode({ ...item, children: null }),
-  );
-
-  const rootNode = tree.getNodes();
-  // console.log(util.inspect(rootNode, false, null, true /* enable colors */));
-
-  if (rootNode) {
-    return (
-      <div className={styles.tree}>
-        <ul>
-          <Scenario node={rootNode} scenarioEntityId={props.scenarioEntityId} />
-        </ul>
-      </div>
+    sceanarioItemsData.forEach((item: ScenarioItemType) =>
+      tree.insertNode({ ...item, children: null }),
     );
+
+    const rootNode = tree.getNodes();
+    // console.log(util.inspect(rootNode, false, null, true /* enable colors */));
+
+    if (rootNode) {
+      return (
+        <div className={styles.tree}>
+          <ul>
+            <Scenario
+              node={rootNode}
+              scenarioEntityId={props.scenarioEntityId}
+            />
+          </ul>
+        </div>
+      );
+    }
   }
 }

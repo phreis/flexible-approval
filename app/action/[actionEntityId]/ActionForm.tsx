@@ -21,7 +21,7 @@ export default function ActionForm(props: Props) {
   );
 
   return (
-    <div className={`${styles.formContainer}`}>
+    <div className={styles.formContainer}>
       {!state?.message ? (
         <>
           <h1>Please respond!</h1>

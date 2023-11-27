@@ -9,8 +9,8 @@ import {
   getScenarioEntityHistoryLatest,
 } from '../../database/scenarioEntityHistory';
 import { getScenarioItems } from '../../database/scenarios';
-import { ScenarioItemType } from '../../migrations/00003-createTableScenarioItems';
-import { ScenarioEntityType } from '../../migrations/00015-createTablescenarioEntities';
+import { ScenarioItemType } from '../../migrations/00005-createTableScenarioItems';
+import { ScenarioEntityType } from '../../migrations/00016-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../../migrations/00017-createTablescenarioEntityHistory';
 import ScenarioTree, { WfNode } from '../ScenarioTree';
 import { sendEmailAction, sendEmailEvent } from './email';
@@ -30,7 +30,7 @@ export async function processScenarioEntity(
   scenarioItems.forEach((item: ScenarioItemType) =>
     tree.insertNode({ ...item, children: null }),
   );
-  tree.process();
+  await tree.process();
 }
 
 export async function processCondition(
@@ -39,7 +39,7 @@ export async function processCondition(
   lastHistory: ScenarioEntityHistoryType | undefined,
 ): Promise<boolean> {
   let returnValue: boolean = false;
-  let state,
+  let state = 'DONE',
     errorMessage = '';
 
   const conditionItems = await getConditionItems(node.taskId || 0);
@@ -91,9 +91,6 @@ export async function processCondition(
     await createScenarioEntityHistory(historyEntry);
   }
 
-  console.log(
-    `${scenarioEntity.scenarioEntityId} processCondition result: ${returnValue}`,
-  );
   return returnValue;
 }
 
@@ -126,11 +123,13 @@ export async function processAction(
     };
     const pendingHistoryEntry = await createScenarioEntityHistory(historyEntry);
 
-    const status = await sendEmailAction(
-      actionDefinition?.approver,
-      actionDefinition?.textTemplate,
-      pendingHistoryEntry[0]?.historyId,
-    );
+    if (actionDefinition && pendingHistoryEntry && pendingHistoryEntry[0]) {
+      await sendEmailAction(
+        actionDefinition.approver,
+        actionDefinition.textTemplate,
+        pendingHistoryEntry[0]?.historyId,
+      );
+    }
 
     /*    console.log(
       `Email to: ${actionDefinition?.approver} \nText: ${actionDefinition?.textTemplate} Please use the following link: \n http://localhost:3000/action/${pendingHistoryEntry[0]?.historyId}`,
@@ -189,11 +188,11 @@ export async function processEvent(
   try {
     const contextObj = JSON.parse(scenarioEntity.context || '');
     if (contextObj && eventDefinition?.recipient) {
-      const mailTo = contextObj[eventDefinition?.recipient];
-      await sendEmailEvent(mailTo, eventDefinition?.textTemplate);
+      const mailTo = contextObj[eventDefinition.recipient];
+      await sendEmailEvent(mailTo, eventDefinition.textTemplate);
     }
   } catch (e) {
-    //TODO: react on err
+    // TODO: react on err
   }
 }
 export async function processTer(
@@ -227,44 +226,49 @@ export async function processActionResult(
 ) {
   const scenarioEntityHistoryArr =
     await getScenarioEntityHistoryByHistoryId(historyId);
+  if (scenarioEntityHistoryArr && scenarioEntityHistoryArr[0]) {
+    const scenarioEntityHistory = scenarioEntityHistoryArr[0];
 
-  const scenarioEntityHistory = scenarioEntityHistoryArr[0];
-  // Does the history entry really exist?
-  if (!scenarioEntityHistory) {
+    // Check, with getScenarioEntityHistoryLatest(scenarioEntityId) if the history set to be processed, is (still) the latest(?)
+    const scenarioEntityHistoryLatestArr = await getScenarioEntityHistoryLatest(
+      scenarioEntityHistory.scenarioId,
+      scenarioEntityHistory.scenarioEntityId,
+      scenarioEntityHistory.stepId,
+    );
+    if (scenarioEntityHistoryLatestArr && scenarioEntityHistoryLatestArr[0]) {
+      const scenarioEntityHistoryLatest = scenarioEntityHistoryLatestArr[0];
+      // Check if history entry is processable E.g. state is PENDING && actionResult is empty
+      if (
+        !(
+          scenarioEntityHistory.state === 'PENDING' &&
+          !scenarioEntityHistory.actionResult
+        ) ||
+        scenarioEntityHistoryLatest.historyId !==
+          scenarioEntityHistory.historyId
+      ) {
+        throw new Error(
+          `History entry ${historyId} cannot processed (anymore)`,
+        );
+      }
+      // TODO:Check Authorization - user -> throw error
+
+      // create new history entry
+      const historyEntry: CreateScenarioEntityHistoryType = {
+        ...scenarioEntityHistory,
+        state: 'CONTINUE',
+        actionResult: actionResult,
+      };
+      await createScenarioEntityHistory(historyEntry);
+
+      // Continue with processing
+      const scenarioEntity = await getScenarioEntityById(
+        scenarioEntityHistory.scenarioEntityId,
+      );
+      if (scenarioEntity && scenarioEntity[0]) {
+        await processScenarioEntity(scenarioEntity[0]);
+      }
+    }
+  } else {
     throw new Error(`History entry ${historyId} does not exist`);
   }
-
-  // Check, with getScenarioEntityHistoryLatest(scenarioEntityId) if the history set to be processed, is (still) the latest(?)
-  const scenarioEntityHistoryLatestArr = await getScenarioEntityHistoryLatest(
-    scenarioEntityHistory.scenarioId,
-    scenarioEntityHistory.scenarioEntityId,
-    scenarioEntityHistory.stepId,
-  );
-
-  const scenarioEntityHistoryLatest = scenarioEntityHistoryLatestArr[0];
-  // Check if history entry is processable E.g. state is PENDING && actionResult is empty
-  if (
-    !(
-      scenarioEntityHistory.state === 'PENDING' &&
-      !scenarioEntityHistory.actionResult
-    ) ||
-    scenarioEntityHistoryLatest?.historyId !== scenarioEntityHistory.historyId
-  ) {
-    throw new Error(`History entry ${historyId} cannot processed (anymore)`);
-  }
-  // TODO:Check Authorization - user -> throw error
-
-  // create new history entry
-  const historyEntry: CreateScenarioEntityHistoryType = {
-    ...scenarioEntityHistory,
-    state: 'CONTINUE',
-    actionResult: actionResult,
-  };
-  await createScenarioEntityHistory(historyEntry);
-
-  // Continue with processing
-  const scenarioEntity = await getScenarioEntityById(
-    scenarioEntityHistory.scenarioEntityId,
-  );
-  if (scenarioEntity[0]) await processScenarioEntity(scenarioEntity[0]);
 }

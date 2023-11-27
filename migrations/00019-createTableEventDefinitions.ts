@@ -1,10 +1,8 @@
 import { Sql } from 'postgres';
 import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
-import { ScenarioItemType } from './00005-createTableScenarioItems';
-import { User } from './00007-createTableUsers';
 
 export type EventDefinitionType = {
-  eventId: ScenarioItemType['taskId'];
+  eventId: number;
   scenarioId: ScenarioHeaderType['scenarioId'];
   description: string;
   textTemplate: string;

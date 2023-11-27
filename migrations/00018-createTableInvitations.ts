@@ -1,15 +1,13 @@
 import { Sql } from 'postgres';
-import { OrganizationType } from './00000-createTableOrganizations';
-import { User } from './00005-createTableUsers';
 
 export type InvitationType = {
   invitationId: string;
-  orgId: OrganizationType['orgId'];
-  email: User['email'];
-  username: User['username'];
-  role: User['role'];
+  orgId: number;
+  email: string;
+  username: string;
+  role: string;
   inviteSent: Date;
-  inviteAccepted: Date | undefined;
+  inviteAccepted: Date | null;
 };
 
 export async function up(sql: Sql) {

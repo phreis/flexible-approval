@@ -1,5 +1,5 @@
 import { Sql } from 'postgres';
-import { OrganizationType } from './00000-createTableOrganizations';
+import { OrganizationType } from './00001-createTableOrganizations';
 
 export type Session = {
   id: number;

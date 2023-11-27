@@ -4,10 +4,10 @@ import { ConditionHeaderType } from './00008-createTableConditionHeader';
 export type ConditionItemType = {
   conditionId: ConditionHeaderType['conditionId'];
   conditionItemId: number;
-  contextAttributeName: string;
-  comperator: '<' | '>' | '=';
-  compConstant: number;
-  linkConditionNext: 'AND' | 'OR' | null;
+  contextAttributeName: string | null;
+  comperator: string | null;
+  compConstant: number | null;
+  linkConditionNext: string | null;
 };
 
 export async function up(sql: Sql) {

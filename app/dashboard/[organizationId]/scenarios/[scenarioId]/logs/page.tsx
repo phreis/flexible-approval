@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation';
 import React from 'react';
 import { getScenarioHeaderById } from '../../../../../../database/scenarios';
 import { TabType } from '../../../PageHeaderTabs';
@@ -49,7 +48,11 @@ export default async function ScenarioEntityPage({
 
   return (
     <DashboardPage
-      heading={scenarioHeaderData.description || 'No descrition'}
+      heading={
+        scenarioHeaderData?.description
+          ? scenarioHeaderData.description
+          : 'No description'
+      }
       tabs={tabs}
       activeTab={activeTab}
     >

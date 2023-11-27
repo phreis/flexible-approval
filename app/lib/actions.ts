@@ -24,7 +24,7 @@ import {
   getUserByUsername,
   getUserWithPasswordHashByUsername,
 } from '../../database/users';
-import { sendEmail, sendEmailRsvp } from './email';
+import { sendEmailRsvp } from './email';
 import { processActionResult, processScenarioEntity } from './processor';
 import { getSafeReturnToPath, secureCookieOptions } from './utils';
 
@@ -172,15 +172,12 @@ export async function preRegisterUserAction(
 
   // Kick off EMail...
   if (inv) {
-    const status = await sendEmailRsvp(
-      inv?.username,
-      inv?.email,
-      inv.invitationId,
-    );
-  } else
+    await sendEmailRsvp(inv.username, inv.email, inv.invitationId);
+  } else {
     return {
       message: `Err: On creating th invitation`,
     };
+  }
 
   revalidatePath('/');
 }
@@ -428,10 +425,11 @@ export async function processScenarioNewAction(
         `/dashboard/${orgLoggedIn.orgId}/scenarios/${scenarioId}/logs/${scenarioEntiy.scenarioEntityId}`,
       );
     }
-  } else
+  } else {
     return {
       errors: `Err: Organization ID missing.`,
     };
+  }
 }
 
 export async function processActionResultAction(

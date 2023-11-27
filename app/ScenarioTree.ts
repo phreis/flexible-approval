@@ -30,7 +30,8 @@ export default class ScenarioTree {
   scenarioEntity: ScenarioEntityType | undefined;
 
   insertNode(newNode: WfNode) {
-    this.nodes = [...(this.nodes || []), newNode];
+    // this.nodes = [...(this.nodes || []), newNode];
+    this.nodes = [...this.nodes, newNode];
     if (!this.root) {
       this.root = newNode;
     } else {
@@ -102,7 +103,7 @@ export default class ScenarioTree {
           }
         }
 
-        if (node?.taskType === 'COND') {
+        if (node.taskType === 'COND') {
           const condResult = await processCondition(
             node,
             this.scenarioEntity,

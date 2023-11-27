@@ -1,10 +1,7 @@
 import { Route } from 'next';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { getOrganizationByUserName } from '../../database/organizations';
 import { getUserBySessionToken } from '../../database/users';
-import { ScenarioHeaderType } from '../../migrations/00003-createTableScenarioHeader';
-import { ScenarioEntityHistoryType } from '../../migrations/00017-createTablescenarioEntityHistory';
 
 // nullish coalescing operator
 export function getCookie(name: string) {

@@ -1,4 +1,3 @@
-import { Andada_Pro } from 'next/font/google';
 import { cache } from 'react';
 import { getUserLoggedIn } from '../app/lib/utils';
 import { OrganizationType } from '../migrations/00001-createTableOrganizations';
@@ -20,23 +19,6 @@ export type CreateScenarioEntityHistoryType = {
   state: ScenarioEntityHistoryType['state'];
   message: ScenarioEntityHistoryType['message'];
 };
-
-export async function getScenarioEntityHistoryLatest(
-  scenarioId: ScenarioHeaderType['scenarioId'],
-  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
-  stepId: number,
-): Promise<ScenarioEntityHistoryType[] | undefined> {
-  const orgLoggedIn = await getOrganizationLoggedIn();
-  const orgId = orgLoggedIn?.orgId;
-  if (orgId) {
-    return getScenarioEntityHistoryLatestByOrgId(
-      scenarioId,
-      scenarioEntityId,
-      stepId,
-      orgId,
-    );
-  }
-}
 
 const getScenarioEntityHistoryLatestByOrgId = cache(
   async (
@@ -62,15 +44,18 @@ const getScenarioEntityHistoryLatestByOrgId = cache(
     `;
   },
 );
-
-export async function createScenarioEntityHistory(
-  createScenarioEntityHistoryParam: CreateScenarioEntityHistoryType,
+export async function getScenarioEntityHistoryLatest(
+  scenarioId: ScenarioHeaderType['scenarioId'],
+  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
+  stepId: number,
 ): Promise<ScenarioEntityHistoryType[] | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return createScenarioEntityHistoryWithOrgId(
-      createScenarioEntityHistoryParam,
+    return getScenarioEntityHistoryLatestByOrgId(
+      scenarioId,
+      scenarioEntityId,
+      stepId,
       orgId,
     );
   }
@@ -127,14 +112,16 @@ export const createScenarioEntityHistoryWithOrgId = cache(
     `;
   },
 );
-
-export async function getScenarioEntityHistoriesById(
-  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
+export async function createScenarioEntityHistory(
+  createScenarioEntityHistoryParam: CreateScenarioEntityHistoryType,
 ): Promise<ScenarioEntityHistoryType[] | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return getScenarioEntityHistoriesByIdWithOrgId(scenarioEntityId, orgId);
+    return createScenarioEntityHistoryWithOrgId(
+      createScenarioEntityHistoryParam,
+      orgId,
+    );
   }
 }
 
@@ -154,14 +141,13 @@ const getScenarioEntityHistoriesByIdWithOrgId = cache(
     `;
   },
 );
-
-export async function getScenarioEntityHistoryByHistoryId(
-  historyId: ScenarioEntityHistoryType['historyId'],
+export async function getScenarioEntityHistoriesById(
+  scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
 ): Promise<ScenarioEntityHistoryType[] | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return getScenarioEntityHistoryByHistoryIdWithOrgId(historyId, orgId);
+    return getScenarioEntityHistoriesByIdWithOrgId(scenarioEntityId, orgId);
   }
 }
 
@@ -181,3 +167,12 @@ const getScenarioEntityHistoryByHistoryIdWithOrgId = cache(
     `;
   },
 );
+export async function getScenarioEntityHistoryByHistoryId(
+  historyId: ScenarioEntityHistoryType['historyId'],
+): Promise<ScenarioEntityHistoryType[] | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+  if (orgId) {
+    return getScenarioEntityHistoryByHistoryIdWithOrgId(historyId, orgId);
+  }
+}
