@@ -27,17 +27,17 @@ export async function ScenarioDiagram(props: Props) {
     const rootNode = tree.getNodes();
     // console.log(util.inspect(rootNode, false, null, true /* enable colors */));
 
-    if (rootNode) {
-      return (
-        <div className={styles.tree}>
+    return (
+      <div className={styles.tree}>
+        {rootNode && (
           <ul>
             <Scenario
               node={rootNode}
               scenarioEntityId={props.scenarioEntityId}
             />
           </ul>
-        </div>
-      );
-    }
+        )}
+      </div>
+    );
   }
 }

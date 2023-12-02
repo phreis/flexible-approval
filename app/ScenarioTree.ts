@@ -2,6 +2,7 @@ import { getScenarioEntityHistoryLatest } from '../database/scenarioEntityHistor
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
 import { ScenarioItemType } from '../migrations/00005-createTableScenarioItems';
 import { ScenarioEntityType } from '../migrations/00016-createTablescenarioEntities';
+import { ScenarioEntityHistoryType } from '../migrations/00017-createTablescenarioEntityHistory';
 import {
   processAction,
   processCondition,
@@ -18,6 +19,7 @@ export type WfNode = {
   taskId: number | null;
   condStepResult: boolean | null;
   actionStepResult: string | null;
+  // lastHistory: ScenarioEntityHistoryType;
   children: WfNode[] | null;
 };
 
