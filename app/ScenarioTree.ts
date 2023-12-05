@@ -76,7 +76,6 @@ class WfNodeCond extends WfNode {
     if (this.node.taskId) {
       this.condHeader = await getCondtitionHeaderById(this.node.taskId);
       this.condItems = await getConditionItems(this.node.taskId);
-      console.log('this.condItems', this.node.taskId);
     }
   }
   getTsx() {
