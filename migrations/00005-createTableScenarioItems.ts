@@ -2,14 +2,15 @@ import { Sql } from 'postgres';
 import { OrganizationType } from './00001-createTableOrganizations';
 import { ScenarioHeaderType } from './00003-createTableScenarioHeader';
 
+export type PreStepcomparativeValue = string | null;
+
 export type ScenarioItemType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
   stepId: number;
   parentStepId: ScenarioItemType['stepId'] | null;
   taskType: string;
   taskId: number | null;
-  condStepResult: boolean | null;
-  actionStepResult: string | null;
+  preStepComparativeValue: PreStepcomparativeValue;
   orgId: OrganizationType['orgId'];
 };
 
@@ -23,8 +24,7 @@ export async function up(sql: Sql) {
         parent_step_id INTEGER,
         task_type VARCHAR(30) NOT NULL,
         task_id INTEGER,
-        cond_step_result BOOLEAN,
-        action_step_result VARCHAR(30),
+        pre_step_comparative_value VARCHAR(30),
         PRIMARY KEY (
           org_id,
           scenario_id,

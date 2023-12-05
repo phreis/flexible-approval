@@ -1,5 +1,6 @@
 import React from 'react';
 import { getScenarioHeaderById } from '../../../../../database/scenarios';
+import ScenarioTree from '../../../../ScenarioTree';
 import { TabType } from '../../PageHeaderTabs';
 import DashboardPage from '../DashboardPage';
 import { ScenarioDiagram } from '../ScenarioDiagram';
@@ -42,6 +43,7 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
 
   const scenarioId = scenarioHeaderData?.scenarioId;
   if (scenarioId) {
+    const rootNode = await new ScenarioTree(scenarioId).getNodes();
     return (
       <DashboardPage
         heading={
@@ -53,7 +55,7 @@ export default async function ScenarioPage({ params, searchParams }: Props) {
         activeTab={searchParams.tab}
       >
         <div className={styles.basicGridDivider}>
-          <ScenarioDiagram scenarioId={scenarioId} />
+          {rootNode && <ScenarioDiagram rootNode={rootNode} />}
           <ScenarioStarter scenarioId={scenarioId} />
         </div>
       </DashboardPage>

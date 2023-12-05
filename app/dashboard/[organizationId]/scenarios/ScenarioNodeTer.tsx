@@ -1,11 +1,11 @@
 import React from 'react';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../../ScenarioTree';
+import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 
 export default function ScenarioNodeCond(props: {
-  node: WfNode;
+  node: WfNodeType;
   lastHistory?: ScenarioEntityHistoryType;
 }) {
   return (

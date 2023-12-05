@@ -27,7 +27,7 @@ const getScenarioEntityHistoryLatestByOrgId = cache(
     stepId: number,
     orgId: OrganizationType['orgId'],
   ) => {
-    return await sql<ScenarioEntityHistoryType[]>`
+    const [historyEntry] = await sql<ScenarioEntityHistoryType[]>`
       SELECT
         *
       FROM
@@ -42,17 +42,18 @@ const getScenarioEntityHistoryLatestByOrgId = cache(
       LIMIT
         1
     `;
+    return historyEntry;
   },
 );
 export async function getScenarioEntityHistoryLatest(
   scenarioId: ScenarioHeaderType['scenarioId'],
   scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
   stepId: number,
-): Promise<ScenarioEntityHistoryType[] | undefined> {
+) {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
-    return getScenarioEntityHistoryLatestByOrgId(
+    return await getScenarioEntityHistoryLatestByOrgId(
       scenarioId,
       scenarioEntityId,
       stepId,
