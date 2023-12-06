@@ -2,7 +2,10 @@ import { cache } from 'react';
 import { getUserLoggedIn } from '../app/lib/utils';
 import { OrganizationType } from '../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
-import { ScenarioItemType } from '../migrations/00005-createTableScenarioItems';
+import {
+  PreStepcomparativeValue,
+  ScenarioItemType,
+} from '../migrations/00005-createTableScenarioItems';
 import { ScenarioEntityType } from '../migrations/00016-createTablescenarioEntities';
 import { ScenarioEntityHistoryType } from '../migrations/00017-createTablescenarioEntityHistory';
 import { sql } from './connect';
@@ -14,8 +17,7 @@ export type CreateScenarioEntityHistoryType = {
   stepId: ScenarioItemType['stepId'];
   taskType: ScenarioItemType['taskType'];
   taskId: ScenarioItemType['taskId'] | null;
-  condResult: ScenarioItemType['condStepResult'] | null;
-  actionResult: ScenarioItemType['actionStepResult'] | null;
+  preStepComparativeValue: PreStepcomparativeValue;
   state: ScenarioEntityHistoryType['state'];
   message: ScenarioEntityHistoryType['message'];
 };
@@ -74,12 +76,11 @@ export const createScenarioEntityHistoryWithOrgId = cache(
       stepId,
       taskType,
       taskId,
-      condResult,
-      actionResult,
+      preStepComparativeValue,
       state,
       message,
     } = createScenarioEntityHistoryParam;
-    return await sql<ScenarioEntityHistoryType[]>`
+    const [historyEntry] = await sql<ScenarioEntityHistoryType[]>`
       INSERT INTO
         scenarioentityhistory (
           history_id,
@@ -89,8 +90,7 @@ export const createScenarioEntityHistoryWithOrgId = cache(
           step_id,
           task_type,
           task_id,
-          cond_result,
-          action_result,
+          pre_step_comparative_value,
           state,
           message,
           username
@@ -104,18 +104,18 @@ export const createScenarioEntityHistoryWithOrgId = cache(
           ${stepId},
           ${taskType},
           ${taskId},
-          ${condResult},
-          ${actionResult},
+          ${preStepComparativeValue},
           ${state},
           ${message},
           ${user?.username || ''}
         ) RETURNING *
     `;
+    return historyEntry;
   },
 );
 export async function createScenarioEntityHistory(
   createScenarioEntityHistoryParam: CreateScenarioEntityHistoryType,
-): Promise<ScenarioEntityHistoryType[] | undefined> {
+): Promise<ScenarioEntityHistoryType | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {
@@ -157,7 +157,7 @@ const getScenarioEntityHistoryByHistoryIdWithOrgId = cache(
     historyId: ScenarioEntityHistoryType['historyId'],
     orgId: OrganizationType['orgId'],
   ) => {
-    return await sql<ScenarioEntityHistoryType[]>`
+    const [scenarioHistory] = await sql<ScenarioEntityHistoryType[]>`
       SELECT
         *
       FROM
@@ -166,11 +166,12 @@ const getScenarioEntityHistoryByHistoryIdWithOrgId = cache(
         history_id = ${historyId}
         AND org_id = ${orgId}
     `;
+    return scenarioHistory;
   },
 );
 export async function getScenarioEntityHistoryByHistoryId(
   historyId: ScenarioEntityHistoryType['historyId'],
-): Promise<ScenarioEntityHistoryType[] | undefined> {
+): Promise<ScenarioEntityHistoryType | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {

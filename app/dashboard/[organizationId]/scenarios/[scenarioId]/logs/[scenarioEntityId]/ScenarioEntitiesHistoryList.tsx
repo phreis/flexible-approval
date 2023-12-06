@@ -25,10 +25,7 @@ export default async function ScenarioEntitiesHistoryList(props: Props) {
           <strong>TASK ID</strong>
         </span>
         <span>
-          <strong>COND RESULT</strong>
-        </span>
-        <span>
-          <strong>ACTION RESULT</strong>
+          <strong>RESULT VALUE</strong>
         </span>
         <span>
           <strong>STATE</strong>
@@ -48,14 +45,7 @@ export default async function ScenarioEntitiesHistoryList(props: Props) {
               <span>{ent.stepId}</span>
               <span>{ent.taskType}</span>
               <span>{ent.taskId}</span>
-              <span>
-                {ent.condResult === true
-                  ? 'true'
-                  : ent.condResult === false
-                    ? 'false'
-                    : '-'}
-              </span>
-              <span>{ent.actionResult}</span>
+              <span>{ent.preStepComparativeValue}</span>
               <span>{ent.state}</span>
               <span>{ent.message}</span>
               <span>{ent.username}</span>

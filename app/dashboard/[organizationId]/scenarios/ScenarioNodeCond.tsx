@@ -12,8 +12,6 @@ export default function ScenarioNodeCond(props: {
   condItems: ConditionItemType[];
   lastHistory?: ScenarioEntityHistoryType;
 }) {
-  console.log('condItems: ', props.condItems);
-
   return (
     <div className={styles.nodeContainer}>
       {renderTopBox(props.node)}

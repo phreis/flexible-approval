@@ -33,7 +33,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint-config-next": "14.0.3",
-    "eslint-config-upleveled": "^7.3.3",
+    "eslint-config-upleveled": "^7.3.4",
     "libpg-query": "^15.0.2",
     "prettier-plugin-embed": "0.3.0-rc.2",
     "prettier-plugin-sql": "^0.16.0",

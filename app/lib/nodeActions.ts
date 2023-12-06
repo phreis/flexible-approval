@@ -6,7 +6,11 @@ import {
   createActionDefinition,
   CreateActionDefinitionType,
 } from '../../database/actionDefinitions';
-import { createConditionHeader } from '../../database/conditions';
+import {
+  createConditionHeader,
+  createConditionItem,
+  CreateConditionItemType,
+} from '../../database/conditions';
 import {
   createEventDefinition,
   CreateEventDefinitionType,
@@ -165,15 +169,13 @@ async function createNodeTer(
 ) {
   const scenarioBuilderNodeTerSchema = z.object({
     parentId: z.number(),
-    condStepResult: z.string().optional(),
-    actionStepResult: z.string().optional(),
+    onResult: z.string().optional(),
   });
 
   // Field Validation
   const validatedBuilderFields = scenarioBuilderNodeTerSchema.safeParse({
     parentId: Number(formData.get('parentStepId')),
-    condStepResult: formData.get('condStepResult'),
-    actionStepResult: formData.get('actionStepResult'),
+    onResult: formData.get('onResult'),
   });
 
   // If form validation fails, return early. Otherwise, continue.
@@ -183,16 +185,14 @@ async function createNodeTer(
       message: 'Err on Cond Node input fields',
     };
   }
-  const { parentId, condStepResult, actionStepResult } =
-    validatedBuilderFields.data;
+  const { parentId, onResult } = validatedBuilderFields.data;
 
   // §2 create node
   const newItem: CreateScenarioItemType = {
     scenarioId: nodeGeneric.scenarioId,
     taskType: nodeGeneric.taskType,
     parentStepId: parentId,
-    condStepResult: getCondResultBool(condStepResult),
-    actionStepResult: actionStepResult,
+    preStepComparativeValue: onResult,
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
@@ -211,8 +211,7 @@ async function createNodeCond(
     contextAttributeName: z.string(),
     operator: z.string(),
     compConstant: z.number(),
-    condStepResult: z.string().optional(),
-    actionStepResult: z.string().optional(),
+    onResult: z.string().optional(),
   });
 
   // Field Validation
@@ -223,8 +222,7 @@ async function createNodeCond(
     contextAttributeName: formData.get('contextAttributeName'),
     operator: formData.get('operator'),
     compConstant: Number(formData.get('compConstant')),
-    condStepResult: formData.get('condStepResult'),
-    actionStepResult: formData.get('actionStepResult'),
+    onResult: formData.get('onResult'),
   });
 
   // If form validation fails, return early. Otherwise, continue.
@@ -234,8 +232,14 @@ async function createNodeCond(
       message: 'Err on Cond Node input fields',
     };
   }
-  const { parentId, description, condStepResult, actionStepResult } =
-    validatedBuilderFields.data;
+  const {
+    parentId,
+    description,
+    contextAttributeName,
+    operator,
+    compConstant,
+    onResult,
+  } = validatedBuilderFields.data;
 
   // §1 create condtion definition
   const newConditionHeader = await createConditionHeader({
@@ -248,15 +252,21 @@ async function createNodeCond(
       message: `Err on creating Scenario Definition Header`,
     };
   }
-
+  const condItemNew: CreateConditionItemType = {
+    conditionId: newConditionHeader.conditionId,
+    contextAttributeName: contextAttributeName,
+    comperator: operator,
+    compConstant: compConstant,
+    linkConditionNext: null,
+  };
+  await createConditionItem(condItemNew);
   // §2 create node
   const newItem: CreateScenarioItemType = {
     scenarioId: nodeGeneric.scenarioId,
     taskType: nodeGeneric.taskType,
     parentStepId: parentId,
     taskId: newConditionHeader.conditionId,
-    condStepResult: getCondResultBool(condStepResult),
-    actionStepResult: actionStepResult,
+    preStepComparativeValue: onResult,
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
@@ -275,8 +285,7 @@ async function createNodeAction(
     description: z.string(),
     approver: z.string(),
     textTemplate: z.string(),
-    condStepResult: z.string().optional(),
-    actionStepResult: z.string().optional(),
+    onResult: z.string().optional(),
   });
 
   // Field Validation
@@ -286,8 +295,7 @@ async function createNodeAction(
 
     textTemplate: formData.get('textTemplate'),
     approver: formData.get('approver'),
-    condStepResult: formData.get('condStepResult'),
-    actionStepResult: formData.get('actionStepResult'),
+    onResult: formData.get('onResult'),
   });
 
   // If form validation fails, return early. Otherwise, continue.
@@ -297,14 +305,8 @@ async function createNodeAction(
       message: 'Err on Action Node input fields',
     };
   }
-  const {
-    parentId,
-    description,
-    textTemplate,
-    approver,
-    condStepResult,
-    actionStepResult,
-  } = validatedBuilderFields.data;
+  const { parentId, description, textTemplate, approver, onResult } =
+    validatedBuilderFields.data;
 
   const actionNew: CreateActionDefinitionType = {
     scenarioId: nodeGeneric.scenarioId,
@@ -320,8 +322,7 @@ async function createNodeAction(
     taskType: nodeGeneric.taskType,
     parentStepId: parentId,
     taskId: newActionItem?.actionId,
-    condStepResult: getCondResultBool(condStepResult),
-    actionStepResult: actionStepResult,
+    preStepComparativeValue: onResult,
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
@@ -340,8 +341,7 @@ async function createNodeEvent(
     description: z.string(),
     recipient: z.string(),
     textTemplate: z.string(),
-    condStepResult: z.string().optional(),
-    actionStepResult: z.string().optional(),
+    onResult: z.string().optional(),
   });
 
   // Field Validation
@@ -351,8 +351,7 @@ async function createNodeEvent(
 
     textTemplate: formData.get('textTemplate'),
     recipient: formData.get('recipient'),
-    condStepResult: formData.get('condStepResult'),
-    actionStepResult: formData.get('actionStepResult'),
+    onResult: formData.get('onResult'),
   });
 
   // If form validation fails, return early. Otherwise, continue.
@@ -362,14 +361,8 @@ async function createNodeEvent(
       message: 'Err on Cond Node input fields',
     };
   }
-  const {
-    parentId,
-    description,
-    textTemplate,
-    recipient,
-    condStepResult,
-    actionStepResult,
-  } = validatedBuilderFields.data;
+  const { parentId, description, textTemplate, recipient, onResult } =
+    validatedBuilderFields.data;
 
   const eventNew: CreateEventDefinitionType = {
     scenarioId: nodeGeneric.scenarioId,
@@ -385,24 +378,12 @@ async function createNodeEvent(
     taskType: nodeGeneric.taskType,
     parentStepId: parentId,
     taskId: newEventItem?.eventId,
-    condStepResult: getCondResultBool(condStepResult),
-    actionStepResult: actionStepResult,
+    preStepComparativeValue: onResult,
   };
   const item = await createScenarioItem(newItem);
   if (!item) {
     return {
       message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
     };
-  }
-}
-function getCondResultBool(cndStepResult: string | undefined) {
-  if (cndStepResult === 'NULL') {
-    return null;
-  }
-  if (cndStepResult === 'TRUE') {
-    return true;
-  }
-  if (cndStepResult === 'FALSE') {
-    return false;
   }
 }

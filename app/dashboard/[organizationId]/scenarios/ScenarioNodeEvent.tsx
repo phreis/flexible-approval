@@ -5,7 +5,7 @@ import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 
-export default async function ScenarioNodeEvent(props: {
+export default function ScenarioNodeEvent(props: {
   node: WfNodeType;
   eventDefinition: EventDefinitionType;
   lastHistory?: ScenarioEntityHistoryType;

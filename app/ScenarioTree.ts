@@ -4,7 +4,11 @@ import {
   getCondtitionHeaderById,
 } from '../database/conditions';
 import { getEventDefinitionById } from '../database/eventDefinitions';
-import { getScenarioEntityHistoryLatest } from '../database/scenarioEntityHistory';
+import {
+  createScenarioEntityHistory,
+  CreateScenarioEntityHistoryType,
+  getScenarioEntityHistoryLatest,
+} from '../database/scenarioEntityHistory';
 import { getScenarioHeaderById, getScenarioItems } from '../database/scenarios';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
 import {
@@ -22,6 +26,7 @@ import ScenarioNodeCond from './dashboard/[organizationId]/scenarios/ScenarioNod
 import ScenarioNodeEvent from './dashboard/[organizationId]/scenarios/ScenarioNodeEvent';
 import ScenarioNodeStart from './dashboard/[organizationId]/scenarios/ScenarioNodeStart';
 import ScenarioNodeTer from './dashboard/[organizationId]/scenarios/ScenarioNodeTer';
+import { sendEmailAction, sendEmailEvent } from './lib/email';
 
 export type WfNodeType = {
   scenarioId: ScenarioHeaderType['scenarioId'];
@@ -32,31 +37,53 @@ export type WfNodeType = {
   preStepComparativeValue: PreStepcomparativeValue;
   children: WfNode[] | null;
 };
+
+type LogEntryParam = {
+  preStepComparativeValue?: PreStepcomparativeValue;
+  state?: ScenarioEntityHistoryType['state'];
+  message?: ScenarioEntityHistoryType['message'];
+};
+
 export abstract class WfNode {
   node: WfNodeType;
   protected lastHistory: ScenarioEntityHistoryType | undefined;
-  protected scenarioEntityId:
-    | ScenarioEntityType['scenarioEntityId']
-    | undefined;
+  protected scenarioEntity: ScenarioEntityType | undefined;
   abstract process(): Promise<PreStepcomparativeValue>;
   abstract readDb(): Promise<void>;
   abstract getTsx(): React.ReactNode;
 
-  constructor(
-    node: WfNodeType,
-    scenarioEntityId?: ScenarioEntityType['scenarioEntityId'],
-  ) {
+  constructor(node: WfNodeType, scenarioEntity?: ScenarioEntityType) {
     this.node = node;
-    if (scenarioEntityId) {
-      this.scenarioEntityId = scenarioEntityId;
+    if (scenarioEntity) {
+      this.scenarioEntity = scenarioEntity;
+    }
+  }
+
+  protected async logHistory({
+    preStepComparativeValue = null,
+    message = null,
+    state = 'DONE',
+  }: LogEntryParam = {}) {
+    if (this.scenarioEntity) {
+      const historyEntry: CreateScenarioEntityHistoryType = {
+        scenarioEntityId: this.scenarioEntity.scenarioEntityId,
+        scenarioId: this.scenarioEntity.scenarioId,
+        stepId: this.node.stepId,
+        taskType: this.node.taskType,
+        taskId: this.node.taskId,
+        preStepComparativeValue: preStepComparativeValue,
+        state: state,
+        message: message,
+      };
+      return await createScenarioEntityHistory(historyEntry);
     }
   }
 
   async getLastHistory() {
-    if (this.scenarioEntityId) {
+    if (this.scenarioEntity) {
       return await getScenarioEntityHistoryLatest(
         this.node.scenarioId,
-        this.scenarioEntityId,
+        this.scenarioEntity.scenarioEntityId,
         this.node.stepId,
       );
     }
@@ -67,8 +94,59 @@ class WfNodeCond extends WfNode {
   condHeader: ConditionHeaderType | undefined;
   condItems: ConditionItemType[] | undefined;
   async process(): Promise<PreStepcomparativeValue> {
-    console.log('WfNodeCond.process()');
     await this.readDb();
+
+    let resultBoolean: boolean = false;
+    let state = 'DONE',
+      message = '';
+
+    if (this.scenarioEntity && this.node.taskId) {
+      const conditionItems = await getConditionItems(this.node.taskId || 0);
+
+      const contextObj = JSON.parse(this.scenarioEntity.context || '');
+      conditionItems.forEach(
+        (item) => {
+          if (item.contextAttributeName && item.compConstant) {
+            try {
+              const compVariable = contextObj[item.contextAttributeName];
+              if (compVariable) {
+                switch (item.comperator) {
+                  case '<':
+                    resultBoolean = compVariable < item.compConstant;
+                    break;
+                  case '>':
+                    resultBoolean = compVariable > item.compConstant;
+                    break;
+                  default:
+                    throw new Error(
+                      `Error: Operator ${item.comperator} not (yet) implemented`,
+                    );
+                }
+              } else {
+                throw new Error(
+                  `Error: Attr ${item.contextAttributeName} not found in context-data`,
+                );
+              }
+            } catch (err: any) {
+              state = 'ERROR';
+              message = err.message;
+            }
+          }
+        },
+        // TODO: implement, multiple condition steps ()
+      );
+
+      if (this.lastHistory?.state !== 'DONE') {
+        await this.logHistory({
+          state: state,
+          message: message,
+          preStepComparativeValue: resultBoolean ? 'TRUE' : 'FALSE',
+        });
+      }
+
+      return resultBoolean ? 'TRUE' : 'FALSE';
+    }
+
     return null;
   }
   async readDb() {
@@ -94,8 +172,35 @@ class WfNodeAction extends WfNode {
   actionDefinition: ActionDefinitionType | undefined;
 
   async process(): Promise<PreStepcomparativeValue> {
-    console.log('WfNodeAction.process()');
     await this.readDb();
+
+    if (this.lastHistory?.state === 'CONTINUE') {
+      // CONTINUE and actionResult has been set by user-interaction
+      // give back actionResult to processing chain
+      // no additonal history entry at this stage!
+      return await this.lastHistory.preStepComparativeValue;
+    } else {
+      if (this.scenarioEntity && this.node.taskId) {
+        const actionDefinition = await getActionDefinitionById(
+          this.node.taskId,
+        );
+
+        const pendingHistoryEntry = await this.logHistory({ state: 'PENDING' });
+
+        if (actionDefinition && pendingHistoryEntry) {
+          try {
+            await sendEmailAction(
+              actionDefinition.approver,
+              actionDefinition.textTemplate,
+              pendingHistoryEntry.historyId,
+            );
+          } catch (e: any) {
+            // TODO: update logHistory w/ state = 'ERROR'; message = e;
+          }
+        }
+      }
+    }
+
     return null;
   }
   async readDb() {
@@ -119,8 +224,31 @@ class WfNodeEvent extends WfNode {
   eventDefinition: EventDefinitionType | undefined;
 
   async process() {
-    console.log('WfNodeEvent.process()');
+    let state = 'DONE',
+      message = '';
+
     await this.readDb();
+    if (this.lastHistory?.state === 'DONE') return null;
+    if (this.scenarioEntity && this.node.taskId) {
+      const eventDefinition = await getEventDefinitionById(this.node.taskId);
+      // get the recipient email address from context
+      try {
+        const contextObj = JSON.parse(this.scenarioEntity.context || '');
+        if (contextObj && eventDefinition?.recipient) {
+          const mailTo = contextObj[eventDefinition.recipient];
+          const status = await sendEmailEvent(
+            mailTo,
+            eventDefinition.textTemplate,
+          );
+          message = status.Status;
+        }
+      } catch (e: any) {
+        state = 'ERROR';
+        message = e;
+      }
+      await this.logHistory({ state: state, message: message });
+    }
+
     return null;
   }
   async readDb() {
@@ -144,8 +272,9 @@ class WfNodeStart extends WfNode {
   scenarioHeader: ScenarioHeaderType | undefined;
 
   async process() {
-    console.log('WfNodeStart.process()');
     await this.readDb();
+    if (this.lastHistory?.state === 'DONE') return null;
+    await this.logHistory();
     return null;
   }
   async readDb() {
@@ -166,8 +295,9 @@ class WfNodeStart extends WfNode {
 }
 class WfNodeTer extends WfNode {
   async process() {
-    console.log('WfNodeTer.process()');
     await this.readDb();
+    if (this.lastHistory?.state === 'DONE') return null;
+    await this.logHistory();
     return null;
   }
   async readDb() {
@@ -183,19 +313,19 @@ class WfNodeTer extends WfNode {
 
 export function getNodeInstance(
   node: WfNodeType,
-  scenarioEntityId?: ScenarioEntityType['scenarioEntityId'],
+  scenarioEntity?: ScenarioEntityType,
 ): WfNode {
   switch (node.taskType) {
     case 'START':
-      return new WfNodeStart(node, scenarioEntityId);
+      return new WfNodeStart(node, scenarioEntity);
     case 'COND':
-      return new WfNodeCond(node, scenarioEntityId);
+      return new WfNodeCond(node, scenarioEntity);
     case 'ACTION':
-      return new WfNodeAction(node, scenarioEntityId);
+      return new WfNodeAction(node, scenarioEntity);
     case 'EVENT':
-      return new WfNodeEvent(node, scenarioEntityId);
+      return new WfNodeEvent(node, scenarioEntity);
     case 'TER':
-      return new WfNodeTer(node, scenarioEntityId);
+      return new WfNodeTer(node, scenarioEntity);
     default:
       throw new Error(`Unkonw task type: ',${node.taskType}`);
   }
@@ -238,7 +368,10 @@ export default class ScenarioTree {
     if (sceanarioItemsData) {
       await Promise.all(
         sceanarioItemsData.map(async (item: ScenarioItemType) => {
-          const newNode = getNodeInstance({ ...item, children: null });
+          const newNode = getNodeInstance(
+            { ...item, children: null },
+            this.scenarioEntity,
+          );
           this.insertNode(newNode);
           await newNode.readDb();
         }),
@@ -251,7 +384,6 @@ export default class ScenarioTree {
     if (this.scenarioEntity && nodePrc) {
       const node = nodePrc.node;
       console.log('start process: ', node.stepId, '/', node.taskType);
-
       const lastHistory = await nodePrc.getLastHistory();
       // If the current step, is PENDING (E.g. awaiting User Interaction, we must stop the processing here)
       if (lastHistory?.state === 'PENDING') {
@@ -263,7 +395,14 @@ export default class ScenarioTree {
         case 'EVENT':
         case 'TER':
           await nodePrc.process();
-          node.children?.forEach((step) => this.process(step));
+          if (node.children) {
+            await Promise.all(
+              node.children.map(async (step) => {
+                await this.process(step);
+              }),
+            );
+          }
+
           break;
         case 'COND':
         case 'ACTION':

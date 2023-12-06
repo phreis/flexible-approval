@@ -1,5 +1,5 @@
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode, WfNodeType } from '../../../ScenarioTree';
+import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 
 export function getStatusIcon(state: ScenarioEntityHistoryType['state']) {

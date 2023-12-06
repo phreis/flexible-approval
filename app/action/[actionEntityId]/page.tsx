@@ -19,11 +19,9 @@ type Props = {
 };
 
 export default async function ActionEntiyPage(props: Props) {
-  const scenarioEntityHistoryArr = await getScenarioEntityHistoryByHistoryId(
+  const scenarioEntityHistory = await getScenarioEntityHistoryByHistoryId(
     props.params.actionEntityId,
   );
-
-  const scenarioEntityHistory = scenarioEntityHistoryArr[0];
 
   if (!scenarioEntityHistory) {
     return <main>{`${props.params.actionEntityId} does not exitst`}</main>;
@@ -36,10 +34,9 @@ export default async function ActionEntiyPage(props: Props) {
         scenarioEntityHistory.taskId,
       );
 
-      const scenarioEntityArr = await getScenarioEntityById(
+      const scenarioEntity = await getScenarioEntityById(
         scenarioEntityHistory.scenarioEntityId,
       );
-      const scenarioEntity = scenarioEntityArr[0];
 
       if (!actionDefinition) {
         return (
@@ -51,18 +48,18 @@ export default async function ActionEntiyPage(props: Props) {
       }
 
       if (scenarioEntity) {
-        const scenarioEntityHistoryLatestArr =
+        const scenarioEntityHistoryLatest =
           await getScenarioEntityHistoryLatest(
             scenarioEntityHistory.scenarioId,
             scenarioEntityHistory.scenarioEntityId,
             scenarioEntityHistory.stepId,
           );
-        const scenarioEntityHistoryLatest = scenarioEntityHistoryLatestArr[0];
+
         // Check if history entry is processable E.g. state is PENDING && actionResult is empty
         if (
           !(
             scenarioEntityHistory.state === 'PENDING' &&
-            !scenarioEntityHistory.actionResult
+            !scenarioEntityHistory.preStepComparativeValue
           ) ||
           scenarioEntityHistoryLatest?.historyId !==
             scenarioEntityHistory.historyId

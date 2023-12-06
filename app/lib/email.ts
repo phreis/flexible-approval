@@ -114,7 +114,7 @@ export async function sendEmailAction(
 export async function sendEmailEvent(
   mailTo: string,
   textTemplate: EventDefinitionType['textTemplate'],
-): Promise<SendEmailV3_1.ResponseMessage[] | undefined> {
+): Promise<SendEmailV3_1.ResponseMessage> {
   const data: SendEmailV3_1.Body = {
     Messages: [
       {
