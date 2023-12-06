@@ -1,15 +1,15 @@
 import React from 'react';
-import { getActionDefinitionById } from '../../../../database/actionDefinitions';
+import { ActionDefinitionType } from '../../../../migrations/00012-createTableActionDefinitions';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../../ScenarioTree';
+import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 
-export default async function ScenarioNodeAction(props: {
-  node: WfNode;
+export default function ScenarioNodeAction(props: {
+  node: WfNodeType;
+  actionDefinition: ActionDefinitionType;
   lastHistory?: ScenarioEntityHistoryType;
 }) {
-  const actionDefintion = await getActionDefinitionById(props.node.taskId);
   return (
     <div className={styles.nodeContainer}>
       {renderTopBox(props.node)}
@@ -23,9 +23,9 @@ export default async function ScenarioNodeAction(props: {
       </div>
       <div className={styles.genericData}>
         <span className={styles.description}>
-          {actionDefintion?.description}
+          {props.actionDefinition.description}
         </span>
-        <span>Approver: {actionDefintion?.approver}</span>
+        <span>Approver: {props.actionDefinition.approver}</span>
       </div>
     </div>
   );

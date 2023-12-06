@@ -1,16 +1,15 @@
 import React from 'react';
-import { getScenarioHeaderById } from '../../../../database/scenarios';
+import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../../ScenarioTree';
+import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon } from './scenarioNodeUtils';
 
-export default async function ScenarioNodeStart(props: {
-  node: WfNode;
+export default function ScenarioNodeStart(props: {
+  node: WfNodeType;
+  scenarioHeader: ScenarioHeaderType;
   lastHistory?: ScenarioEntityHistoryType;
 }) {
-  const scenarioHeader = await getScenarioHeaderById(props.node.scenarioId);
-
   return (
     <div className={styles.nodeContainer}>
       <div className={styles.headLine}>
@@ -22,10 +21,10 @@ export default async function ScenarioNodeStart(props: {
       </div>
       <div className={styles.genericData}>
         <span className={styles.description}>
-          {scenarioHeader?.description}
+          {props.scenarioHeader.description}
         </span>
         <span> Context data description:</span>
-        <code>{scenarioHeader?.contextDataDescription}</code>
+        <code>{props.scenarioHeader.contextDataDescription}</code>
       </div>
     </div>
   );

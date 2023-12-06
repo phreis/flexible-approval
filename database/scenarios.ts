@@ -2,7 +2,10 @@ import 'server-only';
 import { cache } from 'react';
 import { OrganizationType } from '../migrations/00001-createTableOrganizations';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
-import { ScenarioItemType } from '../migrations/00005-createTableScenarioItems';
+import {
+  PreStepcomparativeValue,
+  ScenarioItemType,
+} from '../migrations/00005-createTableScenarioItems';
 import { sql } from './connect';
 import { getOrganizationLoggedIn } from './organizations';
 
@@ -146,8 +149,7 @@ export type CreateScenarioItemType = {
   parentStepId?: ScenarioItemType['stepId'] | null;
   taskType: string;
   taskId?: number | null;
-  condStepResult?: boolean | null;
-  actionStepResult?: string | null;
+  preStepComparativeValue?: PreStepcomparativeValue;
 };
 
 const createScenarioItemWithOrgId = cache(
@@ -160,8 +162,7 @@ const createScenarioItemWithOrgId = cache(
       parentStepId,
       taskType,
       taskId,
-      condStepResult,
-      actionStepResult,
+      preStepComparativeValue,
     } = scenarioItem;
     const [item] = await sql<ScenarioItemType[]>`
       INSERT INTO
@@ -171,8 +172,7 @@ const createScenarioItemWithOrgId = cache(
           parent_step_id,
           task_type,
           task_id,
-          cond_step_result,
-          action_step_result
+          pre_step_comparative_value
         )
       VALUES
         (
@@ -181,8 +181,7 @@ const createScenarioItemWithOrgId = cache(
           ${parentStepId},
           ${taskType},
           ${taskId},
-          ${condStepResult},
-          ${actionStepResult}
+          ${preStepComparativeValue}
         ) RETURNING *
     `;
     return item;

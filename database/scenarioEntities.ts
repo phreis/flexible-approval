@@ -40,7 +40,7 @@ const getScenarioEntityByIdOrgId = cache(
     scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
     orgId: OrganizationType['orgId'],
   ) => {
-    return await sql<ScenarioEntityType[]>`
+    const [scenarioEntity] = await sql<ScenarioEntityType[]>`
       SELECT
         *
       FROM
@@ -49,11 +49,12 @@ const getScenarioEntityByIdOrgId = cache(
         scenario_entity_id = ${scenarioEntityId}
         AND org_id = ${orgId}
     `;
+    return scenarioEntity;
   },
 );
 export async function getScenarioEntityById(
   scenarioEntityId: ScenarioEntityType['scenarioEntityId'],
-): Promise<ScenarioEntityType[] | undefined> {
+): Promise<ScenarioEntityType | undefined> {
   const orgLoggedIn = await getOrganizationLoggedIn();
   const orgId = orgLoggedIn?.orgId;
   if (orgId) {

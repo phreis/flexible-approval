@@ -1,16 +1,15 @@
 import React from 'react';
-import { getEventDefinitionById } from '../../../../database/eventDefinitions';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../../ScenarioTree';
+import { EventDefinitionType } from '../../../../migrations/00019-createTableEventDefinitions';
+import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 
-export default async function ScenarioNodeEvent(props: {
-  node: WfNode;
+export default function ScenarioNodeEvent(props: {
+  node: WfNodeType;
+  eventDefinition: EventDefinitionType;
   lastHistory?: ScenarioEntityHistoryType;
 }) {
-  const eventDefintion = await getEventDefinitionById(props.node.taskId);
-
   return (
     <div className={styles.nodeContainer}>
       {renderTopBox(props.node)}
@@ -24,9 +23,9 @@ export default async function ScenarioNodeEvent(props: {
       </div>
       <div className={styles.genericData}>
         <span className={styles.description}>
-          {eventDefintion?.description}
+          {props.eventDefinition.description}
         </span>
-        <span>Recipient: {eventDefintion?.recipient}</span>
+        <span>Recipient: {props.eventDefinition.recipient}</span>
       </div>
     </div>
   );

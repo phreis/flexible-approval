@@ -13,8 +13,7 @@ export type ScenarioEntityHistoryType = {
   stepId: ScenarioItemType['stepId'];
   taskType: ScenarioItemType['taskType'];
   taskId: ScenarioItemType['taskId'] | null;
-  condResult: ScenarioItemType['condStepResult'] | null;
-  actionResult: ScenarioItemType['actionStepResult'] | null;
+  preStepComparativeValue: string | null;
   state: 'DONE' | 'ERROR' | 'PENDING' | 'CONTINUE' | string | null;
   message: string | null;
   username: User['username'];
@@ -34,8 +33,7 @@ export async function up(sql: Sql) {
         step_id INTEGER NOT NULL,
         task_type VARCHAR(30) NOT NULL,
         task_id INTEGER,
-        cond_result BOOLEAN,
-        action_result VARCHAR(30),
+        pre_step_comparative_value VARCHAR(30),
         state VARCHAR(20),
         message VARCHAR(1000),
         username VARCHAR(80) NOT NULL,

@@ -1,5 +1,7 @@
 import React from 'react';
+import { getScenarioEntityById } from '../../../../../../../database/scenarioEntities';
 import { getScenarioHeaderById } from '../../../../../../../database/scenarios';
+import ScenarioTree from '../../../../../../ScenarioTree';
 import { TabType } from '../../../../PageHeaderTabs';
 import DashboardPage from '../../../DashboardPage';
 import { ScenarioDiagram } from '../../../ScenarioDiagram';
@@ -44,6 +46,11 @@ export default async function ScenarioEntityHistoryPage({ params }: Props) {
     Number(params.scenarioId),
   );
 
+  const scenarioEntity = await getScenarioEntityById(params.scenarioEntityId);
+  const rootNode = await new ScenarioTree(
+    Number(params.scenarioId),
+    scenarioEntity,
+  ).getNodes();
   return (
     <DashboardPage
       heading={
@@ -55,10 +62,7 @@ export default async function ScenarioEntityHistoryPage({ params }: Props) {
       activeTab="t2"
     >
       <div className={styles.basicGridDivider}>
-        <ScenarioDiagram
-          scenarioId={Number(params.scenarioId)}
-          scenarioEntityId={params.scenarioEntityId}
-        />
+        {rootNode && <ScenarioDiagram rootNode={rootNode} />}
         <ScenarioEntitiesHistoryList
           scenarioEntityId={params.scenarioEntityId}
         />

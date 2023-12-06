@@ -8,7 +8,7 @@ import { getOrganizationLoggedIn } from './organizations';
 
 export const getCondtitionHeaderById = cache(
   async (conditionId: ConditionHeaderType['conditionId']) => {
-    return await sql<ConditionHeaderType[]>`
+    const [condHeader] = await sql<ConditionHeaderType[]>`
       SELECT
         *
       FROM
@@ -16,6 +16,7 @@ export const getCondtitionHeaderById = cache(
       WHERE
         condition_id = ${conditionId};
     `;
+    return condHeader;
   },
 );
 

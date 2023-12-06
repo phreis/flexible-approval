@@ -1,5 +1,5 @@
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
-import { WfNode } from '../../../ScenarioTree';
+import { WfNodeType } from '../../../ScenarioTree';
 import styles from './ScenarioNode.module.scss';
 
 export function getStatusIcon(state: ScenarioEntityHistoryType['state']) {
@@ -15,19 +15,19 @@ export function getStatusIcon(state: ScenarioEntityHistoryType['state']) {
     // return <></>;
   }
 }
-export function renderTopBox(node: WfNode) {
-  const constStepResult =
+export function renderTopBox(node: WfNodeType) {
+  /*   const constStepResult =
     node.condStepResult !== null &&
     (node.condStepResult === true ? 'TRUE' : 'FALSE');
 
   const actionStepResult =
-    node.actionStepResult !== null && node.actionStepResult;
+    node.actionStepResult !== null && node.actionStepResult; */
 
-  if (constStepResult || actionStepResult) {
+  if (node.preStepComparativeValue) {
     return (
       <div className={styles.topBox}>
-        <span>{constStepResult}</span>
-        <span>{actionStepResult}</span>
+        <span>{node.preStepComparativeValue}</span>
+        {/*         <span>{actionStepResult}</span> */}
       </div>
     );
   }
