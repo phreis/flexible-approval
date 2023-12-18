@@ -1,19 +1,20 @@
 import React from 'react';
+import { WfNodeType } from '../../../ScenarioTree';
+import FieldGroupFormPreStepResult from './FieldGroupFormPreStepResult';
 import styles from './FieldGroupsForm.module.scss';
 
-export default function FieldGroupFormTerminate() {
+type Props = {
+  actual: WfNodeType;
+  directChildNodes: WfNodeType[] | null;
+};
+
+export default function FieldGroupFormTerminate(props: Props) {
   return (
     <div className={styles.fieldGroupContainer}>
-      <span>
-        <label htmlFor="onResult">on Result</label>
-        <select id="onResult" name="onResult" defaultValue="">
-          <option value="TRUE">true</option>
-          <option value="FALSE">false</option>
-          <option value="approved">approved</option>
-          <option value="rejected">rejected</option>
-          <option value="">not used</option>
-        </select>
-      </span>
+      <FieldGroupFormPreStepResult
+        actual={props.actual}
+        directChildNodes={props.directChildNodes}
+      />
     </div>
   );
 }

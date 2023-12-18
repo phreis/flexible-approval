@@ -1,4 +1,4 @@
-.basicGridDivider {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
+.basicFlexDivider {
+  display: flex;
+  justify-content: center;
 }

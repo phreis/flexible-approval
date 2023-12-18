@@ -8,13 +8,14 @@ import styles from './Scenario.module.scss';
 
 type Props = {
   rootNode: WfNode;
+  createMode?: boolean;
 };
 
-export function ScenarioDiagram({ rootNode }: Props) {
+export function ScenarioDiagram({ rootNode, createMode = false }: Props) {
   return (
     <div className={styles.tree}>
       <ul>
-        <Scenario node={rootNode} />
+        <Scenario node={rootNode} createMode={createMode} />
       </ul>
     </div>
   );

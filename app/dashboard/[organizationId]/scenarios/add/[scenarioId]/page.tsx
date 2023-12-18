@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import {
   createScenario,
   getScenarioHeaderById,
+  getScenarioItems,
 } from '../../../../../../database/scenarios';
 import { getUserByOrganization } from '../../../../../../database/users';
 import { ScenarioHeaderType } from '../../../../../../migrations/00003-createTableScenarioHeader';
@@ -10,7 +11,7 @@ import { TabType } from '../../../PageHeaderTabs';
 import DashboardPage from '../../DashboardPage';
 import { ScenarioDiagram } from '../../ScenarioDiagram';
 import styles from './NewScenarioPage.module.scss';
-import ScenarioBuilder from './ScenarioBuilder';
+import ScenarioBuilderStart from './ScenarioBuilderStart';
 
 type Props = {
   params: { scenarioId: string; organizationId: number };
@@ -42,6 +43,8 @@ export default async function NewScenarioPage({ params, searchParams }: Props) {
       redirect(`/dashboard/${params.organizationId}/scenarios/add/new`);
     }
   }
+
+  const items = await getScenarioItems(Number(params.scenarioId));
   const users = await getUserByOrganization(params.organizationId);
 
   const rootNode = await new ScenarioTree(newScenario.scenarioId).getNodes();
@@ -52,9 +55,11 @@ export default async function NewScenarioPage({ params, searchParams }: Props) {
       tabs={tabs}
       activeTab={searchParams.tab}
     >
-      <div className={styles.basicGridDivider}>
-        <ScenarioBuilder scenario={newScenario} users={users} />
-        {rootNode && <ScenarioDiagram rootNode={rootNode} />}
+      <div className={styles.basicFlexDivider}>
+        {items?.length === 0 && (
+          <ScenarioBuilderStart scenario={newScenario} users={users} />
+        )}
+        {rootNode && <ScenarioDiagram createMode={true} rootNode={rootNode} />}
       </div>
     </DashboardPage>
   );
