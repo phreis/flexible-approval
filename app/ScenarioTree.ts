@@ -4,17 +4,20 @@ import {
   getCondtitionHeaderById,
 } from '../database/conditions';
 import { getEventDefinitionById } from '../database/eventDefinitions';
+import { getOrganizationLoggedIn } from '../database/organizations';
 import {
   createScenarioEntityHistory,
   CreateScenarioEntityHistoryType,
   getScenarioEntityHistoryLatest,
 } from '../database/scenarioEntityHistory';
 import { getScenarioHeaderById, getScenarioItems } from '../database/scenarios';
+import { getUserByOrganization } from '../database/users';
 import { ScenarioHeaderType } from '../migrations/00003-createTableScenarioHeader';
 import {
   PreStepcomparativeValue,
   ScenarioItemType,
 } from '../migrations/00005-createTableScenarioItems';
+import { User } from '../migrations/00007-createTableUsers';
 import { ConditionHeaderType } from '../migrations/00008-createTableConditionHeader';
 import { ConditionItemType } from '../migrations/00010-createTableConditionItems';
 import { ActionDefinitionType } from '../migrations/00012-createTableActionDefinitions';
@@ -36,6 +39,7 @@ export type WfNodeType = {
   taskId: number | null;
   preStepComparativeValue: PreStepcomparativeValue;
   children: WfNode[] | null;
+  parent: WfNode | null;
 };
 
 type LogEntryParam = {
@@ -46,6 +50,8 @@ type LogEntryParam = {
 
 export abstract class WfNode {
   node: WfNodeType;
+  scenario: ScenarioHeaderType | undefined;
+  users: User[] | undefined;
   protected lastHistory: ScenarioEntityHistoryType | undefined;
   protected scenarioEntity: ScenarioEntityType | undefined;
   abstract process(): Promise<PreStepcomparativeValue>;
@@ -93,6 +99,7 @@ export abstract class WfNode {
 class WfNodeCond extends WfNode {
   condHeader: ConditionHeaderType | undefined;
   condItems: ConditionItemType[] | undefined;
+
   async process(): Promise<PreStepcomparativeValue> {
     await this.readDb();
 
@@ -151,6 +158,8 @@ class WfNodeCond extends WfNode {
   }
   async readDb() {
     this.lastHistory = await this.getLastHistory();
+    this.scenario = await getScenarioHeaderById(this.node.scenarioId);
+    this.users = await getUserByOrganization(this.scenario?.orgId);
     if (this.node.taskId) {
       this.condHeader = await getCondtitionHeaderById(this.node.taskId);
       this.condItems = await getConditionItems(this.node.taskId);
@@ -205,6 +214,8 @@ class WfNodeAction extends WfNode {
   }
   async readDb() {
     this.lastHistory = await this.getLastHistory();
+    this.scenario = await getScenarioHeaderById(this.node.scenarioId);
+    this.users = await getUserByOrganization(this.scenario?.orgId);
     if (this.node.taskId) {
       this.actionDefinition = await getActionDefinitionById(this.node.taskId);
     }
@@ -229,6 +240,8 @@ class WfNodeEvent extends WfNode {
 
     await this.readDb();
     if (this.lastHistory?.state === 'DONE') return null;
+    this.scenario = await getScenarioHeaderById(this.node.scenarioId);
+    this.users = await getUserByOrganization(this.scenario?.orgId);
     if (this.scenarioEntity && this.node.taskId) {
       const eventDefinition = await getEventDefinitionById(this.node.taskId);
       // get the recipient email address from context
@@ -253,6 +266,8 @@ class WfNodeEvent extends WfNode {
   }
   async readDb() {
     this.lastHistory = await this.getLastHistory();
+    this.scenario = await getScenarioHeaderById(this.node.scenarioId);
+    this.users = await getUserByOrganization(this.scenario?.orgId);
     if (this.node.taskId) {
       this.eventDefinition = await getEventDefinitionById(this.node.taskId);
     }
@@ -279,6 +294,8 @@ class WfNodeStart extends WfNode {
   }
   async readDb() {
     this.lastHistory = await this.getLastHistory();
+    this.scenario = await getScenarioHeaderById(this.node.scenarioId);
+    this.users = await getUserByOrganization(this.scenario?.orgId);
     if (this.node.scenarioId) {
       this.scenarioHeader = await getScenarioHeaderById(this.node.scenarioId);
     }
@@ -302,6 +319,8 @@ class WfNodeTer extends WfNode {
   }
   async readDb() {
     this.lastHistory = await this.getLastHistory();
+    this.scenario = await getScenarioHeaderById(this.node.scenarioId);
+    this.users = await getUserByOrganization(this.scenario?.orgId);
   }
   getTsx() {
     return ScenarioNodeTer({
@@ -353,6 +372,7 @@ export default class ScenarioTree {
         (node) => node.node.stepId === newNode.node.parentStepId,
       );
       if (parentNode) {
+        newNode.node.parent = parentNode;
         // we take up to two children
         if (!parentNode.node.children || parentNode.node.children.length < 2) {
           parentNode.node.children = [
@@ -369,7 +389,7 @@ export default class ScenarioTree {
       await Promise.all(
         sceanarioItemsData.map(async (item: ScenarioItemType) => {
           const newNode = getNodeInstance(
-            { ...item, children: null },
+            { ...item, children: null, parent: null },
             this.scenarioEntity,
           );
           this.insertNode(newNode);

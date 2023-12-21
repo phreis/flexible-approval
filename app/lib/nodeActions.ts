@@ -19,6 +19,8 @@ import { getOrganizationLoggedIn } from '../../database/organizations';
 import {
   createScenarioItem,
   CreateScenarioItemType,
+  deleteScenarioItem,
+  DeleteScenarioItemType,
   updateScenarioHeader,
   UpdateScenarioHeaderType,
 } from '../../database/scenarios';
@@ -100,6 +102,7 @@ export async function scenarioBuilderAction(
     };
   }
   revalidatePath('/');
+  return { actionProcessed: true };
 }
 
 async function createNodeStart(
@@ -132,7 +135,7 @@ async function createNodeStart(
     JSON.parse(contextDataDescription);
   } catch (e) {
     return {
-      message: `Please provide the Context Data Description as the string representation of an JavaScript Object E.g.: {"attributeName": "string"}`,
+      message: `Please provide the Input Data Description as the string representation of an JavaScript Object E.g.: {"attributeName": "string"}`,
     };
   }
 
@@ -173,16 +176,17 @@ async function createNodeTer(
   });
 
   // Field Validation
+
   const validatedBuilderFields = scenarioBuilderNodeTerSchema.safeParse({
     parentId: Number(formData.get('parentStepId')),
-    onResult: formData.get('onResult'),
+    onResult: formData.get('onResult') || undefined,
   });
 
   // If form validation fails, return early. Otherwise, continue.
 
   if (!validatedBuilderFields.success) {
     return {
-      message: 'Err on Cond Node input fields',
+      message: 'Err on Ter Node input fields',
     };
   }
   const { parentId, onResult } = validatedBuilderFields.data;
@@ -222,7 +226,7 @@ async function createNodeCond(
     contextAttributeName: formData.get('contextAttributeName'),
     operator: formData.get('operator'),
     compConstant: Number(formData.get('compConstant')),
-    onResult: formData.get('onResult'),
+    onResult: formData.get('onResult') || undefined,
   });
 
   // If form validation fails, return early. Otherwise, continue.
@@ -295,7 +299,7 @@ async function createNodeAction(
 
     textTemplate: formData.get('textTemplate'),
     approver: formData.get('approver'),
-    onResult: formData.get('onResult'),
+    onResult: formData.get('onResult') || undefined,
   });
 
   // If form validation fails, return early. Otherwise, continue.
@@ -351,14 +355,14 @@ async function createNodeEvent(
 
     textTemplate: formData.get('textTemplate'),
     recipient: formData.get('recipient'),
-    onResult: formData.get('onResult'),
+    onResult: formData.get('onResult') || undefined,
   });
 
   // If form validation fails, return early. Otherwise, continue.
 
   if (!validatedBuilderFields.success) {
     return {
-      message: 'Err on Cond Node input fields',
+      message: 'Err on Event Node input fields',
     };
   }
   const { parentId, description, textTemplate, recipient, onResult } =
@@ -386,4 +390,42 @@ async function createNodeEvent(
       message: `Err on creation Node Type ${nodeGeneric.taskType} on Scenario ${nodeGeneric.scenarioId}`,
     };
   }
+}
+
+export async function scenarioItemDeleteAction(
+  prevState: any,
+  formData: FormData,
+) {
+  const scenarioBuilderNodeEventSchema = z.object({
+    scenarioId: z.number(),
+    stepId: z.number(),
+  });
+
+  // Field Validation
+  const validatedBuilderFields = scenarioBuilderNodeEventSchema.safeParse({
+    scenarioId: Number(formData.get('scenarioId')),
+    stepId: Number(formData.get('stepId')),
+  });
+
+  // If form validation fails, return early. Otherwise, continue.
+
+  if (!validatedBuilderFields.success) {
+    return {
+      message: 'Err on Node Deleter input fields',
+    };
+  }
+  const { scenarioId, stepId } = validatedBuilderFields.data;
+
+  const itemToDelete: DeleteScenarioItemType = {
+    scenarioId: scenarioId,
+    stepId: stepId,
+  };
+
+  const deletedItem = await deleteScenarioItem(itemToDelete);
+  if (!deletedItem) {
+    return {
+      message: `Err on deleting Node`,
+    };
+  }
+  revalidatePath('/');
 }

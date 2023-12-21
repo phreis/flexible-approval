@@ -98,10 +98,7 @@ const createScenarioWithOrgId = cache(
     const { description } = scenarioHeader;
     const [scenario] = await sql<ScenarioHeaderType[]>`
       INSERT INTO
-        scenarioheader (
-          org_id,
-          description
-        )
+        scenarioheader (org_id, description)
       VALUES
         (
           ${orgId},
@@ -226,5 +223,38 @@ export async function deleteScenario(
 
   if (orgId) {
     return deleteScenarioWithOrgId(scenarioHeader, orgId);
+  }
+}
+
+export type DeleteScenarioItemType = {
+  scenarioId: ScenarioItemType['scenarioId'];
+  stepId: ScenarioItemType['stepId'];
+};
+
+const deleteScenarioItemWithOrgId = cache(
+  async (
+    scenarioItem: DeleteScenarioItemType,
+    orgId: OrganizationType['orgId'],
+  ) => {
+    const { scenarioId, stepId } = scenarioItem;
+    const [scenario] = await sql<ScenarioItemType[]>`
+      DELETE FROM scenarioitems
+      WHERE
+        org_id = ${orgId}
+        AND scenario_id = ${scenarioId}
+        AND step_id = ${stepId} RETURNING *
+    `;
+
+    return scenario;
+  },
+);
+export async function deleteScenarioItem(
+  scenarioItem: DeleteScenarioItemType,
+): Promise<ScenarioItemType | undefined> {
+  const orgLoggedIn = await getOrganizationLoggedIn();
+  const orgId = orgLoggedIn?.orgId;
+
+  if (orgId) {
+    return deleteScenarioItemWithOrgId(scenarioItem, orgId);
   }
 }

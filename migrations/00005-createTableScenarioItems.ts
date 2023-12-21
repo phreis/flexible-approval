@@ -10,7 +10,7 @@ export type ScenarioItemType = {
   parentStepId: ScenarioItemType['stepId'] | null;
   taskType: string;
   taskId: number | null;
-  preStepComparativeValue: PreStepcomparativeValue;
+  preStepComparativeValue: string | null;
   orgId: OrganizationType['orgId'];
 };
 
@@ -25,11 +25,7 @@ export async function up(sql: Sql) {
         task_type VARCHAR(30) NOT NULL,
         task_id INTEGER,
         pre_step_comparative_value VARCHAR(30),
-        PRIMARY KEY (
-          org_id,
-          scenario_id,
-          step_id
-        )
+        PRIMARY KEY (org_id, scenario_id, step_id)
       );
   `;
 }

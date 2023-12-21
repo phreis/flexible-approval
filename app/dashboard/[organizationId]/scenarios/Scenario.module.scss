@@ -150,3 +150,10 @@ ul.first li.first::after {
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
 }
+
+.toolBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+}
