@@ -4,6 +4,7 @@ import { ScenarioHeaderType } from '../../../../../../migrations/00003-createTab
 import { User } from '../../../../../../migrations/00007-createTableUsers';
 import { WfNodeType } from '../../../../../ScenarioTree';
 import Modal from '../../Modal';
+import styles from '../../ScenarioNode.module.scss';
 import ScenarioBuilderModal from './ScenarioBuilderModal';
 
 type Props = {
@@ -35,7 +36,12 @@ export default function NodeAdder(props: Props) {
   if (isVisible()) {
     return (
       <>
-        <button onClick={() => setModal(true)}>+</button>
+        <button
+          className={styles.iconCreate}
+          title="add node"
+          onClick={() => setModal(true)}
+        />
+
         <Modal openModal={modal} closeModal={() => setModal(false)}>
           <ScenarioBuilderModal
             scenario={props.scenario}

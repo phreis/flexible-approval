@@ -6,8 +6,7 @@ import { ScenarioItemType } from '../../../../../../migrations/00005-createTable
 import { User } from '../../../../../../migrations/00007-createTableUsers';
 import { scenarioItemDeleteAction } from '../../../../../lib/nodeActions';
 import { WfNodeType } from '../../../../../ScenarioTree';
-import Modal from '../../Modal';
-import ScenarioBuilderModal from './ScenarioBuilderModal';
+import styles from '../../ScenarioNode.module.scss';
 
 type Props = {
   scenarioId: ScenarioItemType['scenarioId'];
@@ -37,7 +36,7 @@ export default function NodeDeleter(props: Props) {
           hidden={true}
           readOnly={true}
         />
-        <button>-</button>
+        <button className={styles.iconDelete} title="delete node" />
         {state?.message && <p>{state?.message}</p>}
       </form>
     );

@@ -68,3 +68,21 @@
     background-size: 100% 100%;
   }
 }
+.iconCreate {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(/icons/iconCreate.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border: none;
+}
+.iconDelete {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(/icons/iconDelete.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border: none;
+}
