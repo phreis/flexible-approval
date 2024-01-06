@@ -25,9 +25,7 @@ export async function up(sql: Sql) {
     CREATE TABLE
       scenarioentityhistory (
         history_id VARCHAR(36) NOT NULL,
-        scenario_entity_id VARCHAR(36) NOT NULL REFERENCES scenarioentities (
-          scenario_entity_id
-        ) ON DELETE CASCADE,
+        scenario_entity_id VARCHAR(36) NOT NULL REFERENCES scenarioentities (scenario_entity_id) ON DELETE CASCADE,
         org_id INTEGER NOT NULL,
         scenario_id INTEGER NOT NULL,
         step_id INTEGER NOT NULL,
@@ -38,9 +36,7 @@ export async function up(sql: Sql) {
         message VARCHAR(1000),
         username VARCHAR(80) NOT NULL,
         creationdate TIMESTAMP NOT NULL DEFAULT NOW (),
-        PRIMARY KEY (
-          history_id
-        )
+        PRIMARY KEY (history_id)
       );
   `;
 }

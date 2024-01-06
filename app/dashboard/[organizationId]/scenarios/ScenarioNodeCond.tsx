@@ -3,7 +3,6 @@ import { ConditionHeaderType } from '../../../../migrations/00008-createTableCon
 import { ConditionItemType } from '../../../../migrations/00010-createTableConditionItems';
 import { ScenarioEntityHistoryType } from '../../../../migrations/00017-createTablescenarioEntityHistory';
 import { WfNodeType } from '../../../ScenarioTree';
-import NodeAdder from './add/[scenarioId]/NodeAdder';
 import styles from './ScenarioNode.module.scss';
 import { getStatusIcon, renderTopBox } from './scenarioNodeUtils';
 

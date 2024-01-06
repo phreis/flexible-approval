@@ -17,10 +17,7 @@ export async function up(sql: Sql) {
         token VARCHAR(150) NOT NULL UNIQUE,
         expiry_timestamp TIMESTAMP NOT NULL DEFAULT NOW () + INTERVAL '24 hours',
         user_id INTEGER NOT NULL,
-        PRIMARY KEY (
-          id,
-          org_id
-        ),
+        PRIMARY KEY (id, org_id),
         FOREIGN KEY (user_id) REFERENCES users (id)
       );
   `;

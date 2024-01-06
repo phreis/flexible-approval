@@ -102,9 +102,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
             WHERE
               creationdate = (
                 SELECT
-                  MAX(
-                    creationdate
-                  )
+                  MAX(creationdate)
                 FROM
                   scenarioentityhistory
                 WHERE
@@ -116,9 +114,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
         WHERE
           scenarioentities.scenario_id = ${scenarioId}
           AND scenarioentities.org_id = ${orgId}
-          AND (
-            history.state <> 'DONE'
-          )
+          AND (history.state <> 'DONE')
         ORDER BY
           creationdate DESC
       `;
@@ -145,9 +141,7 @@ export const getScenarioEntitiesListByScenarioId = cache(
             WHERE
               creationdate = (
                 SELECT
-                  MAX(
-                    creationdate
-                  )
+                  MAX(creationdate)
                 FROM
                   scenarioentityhistory
                 WHERE

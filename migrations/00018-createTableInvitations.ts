@@ -21,9 +21,7 @@ export async function up(sql: Sql) {
         role VARCHAR(10) NOT NULL,
         invite_sent TIMESTAMP NOT NULL DEFAULT NOW (),
         invite_accepted TIMESTAMP,
-        PRIMARY KEY (
-          invitation_id
-        )
+        PRIMARY KEY (invitation_id)
       );
   `;
 }

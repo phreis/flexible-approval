@@ -14,9 +14,7 @@ export async function up(sql: Sql) {
   await sql`
     CREATE TABLE
       conditionitems (
-        condition_id INTEGER NOT NULL REFERENCES conditionheader (
-          condition_id
-        ) ON DELETE CASCADE,
+        condition_id INTEGER NOT NULL REFERENCES conditionheader (condition_id) ON DELETE CASCADE,
         condition_item_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
         context_attribute_name VARCHAR(100),
         comperator VARCHAR(10),

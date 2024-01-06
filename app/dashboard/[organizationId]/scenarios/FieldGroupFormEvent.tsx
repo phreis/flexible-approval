@@ -9,7 +9,6 @@ type Props = {
   description?: string;
   textTemplate?: string;
   scenario: ScenarioHeaderType;
-  parent: WfNodeType;
   actual: WfNodeType;
   directChildNodes: WfNodeType[] | null;
 };

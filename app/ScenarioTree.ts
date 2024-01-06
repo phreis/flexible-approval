@@ -4,7 +4,6 @@ import {
   getCondtitionHeaderById,
 } from '../database/conditions';
 import { getEventDefinitionById } from '../database/eventDefinitions';
-import { getOrganizationLoggedIn } from '../database/organizations';
 import {
   createScenarioEntityHistory,
   CreateScenarioEntityHistoryType,
@@ -159,7 +158,9 @@ class WfNodeCond extends WfNode {
   async readDb() {
     this.lastHistory = await this.getLastHistory();
     this.scenario = await getScenarioHeaderById(this.node.scenarioId);
-    this.users = await getUserByOrganization(this.scenario?.orgId);
+    if (this.scenario?.orgId) {
+      this.users = await getUserByOrganization(this.scenario.orgId);
+    }
     if (this.node.taskId) {
       this.condHeader = await getCondtitionHeaderById(this.node.taskId);
       this.condItems = await getConditionItems(this.node.taskId);
@@ -215,7 +216,9 @@ class WfNodeAction extends WfNode {
   async readDb() {
     this.lastHistory = await this.getLastHistory();
     this.scenario = await getScenarioHeaderById(this.node.scenarioId);
-    this.users = await getUserByOrganization(this.scenario?.orgId);
+    if (this.scenario?.orgId) {
+      this.users = await getUserByOrganization(this.scenario.orgId);
+    }
     if (this.node.taskId) {
       this.actionDefinition = await getActionDefinitionById(this.node.taskId);
     }
@@ -241,7 +244,9 @@ class WfNodeEvent extends WfNode {
     await this.readDb();
     if (this.lastHistory?.state === 'DONE') return null;
     this.scenario = await getScenarioHeaderById(this.node.scenarioId);
-    this.users = await getUserByOrganization(this.scenario?.orgId);
+    if (this.scenario?.orgId) {
+      this.users = await getUserByOrganization(this.scenario.orgId);
+    }
     if (this.scenarioEntity && this.node.taskId) {
       const eventDefinition = await getEventDefinitionById(this.node.taskId);
       // get the recipient email address from context
@@ -267,7 +272,9 @@ class WfNodeEvent extends WfNode {
   async readDb() {
     this.lastHistory = await this.getLastHistory();
     this.scenario = await getScenarioHeaderById(this.node.scenarioId);
-    this.users = await getUserByOrganization(this.scenario?.orgId);
+    if (this.scenario?.orgId) {
+      this.users = await getUserByOrganization(this.scenario.orgId);
+    }
     if (this.node.taskId) {
       this.eventDefinition = await getEventDefinitionById(this.node.taskId);
     }
@@ -295,7 +302,9 @@ class WfNodeStart extends WfNode {
   async readDb() {
     this.lastHistory = await this.getLastHistory();
     this.scenario = await getScenarioHeaderById(this.node.scenarioId);
-    this.users = await getUserByOrganization(this.scenario?.orgId);
+    if (this.scenario?.orgId) {
+      this.users = await getUserByOrganization(this.scenario?.orgId);
+    }
     if (this.node.scenarioId) {
       this.scenarioHeader = await getScenarioHeaderById(this.node.scenarioId);
     }
@@ -320,7 +329,9 @@ class WfNodeTer extends WfNode {
   async readDb() {
     this.lastHistory = await this.getLastHistory();
     this.scenario = await getScenarioHeaderById(this.node.scenarioId);
-    this.users = await getUserByOrganization(this.scenario?.orgId);
+    if (this.scenario?.orgId) {
+      this.users = await getUserByOrganization(this.scenario?.orgId);
+    }
   }
   getTsx() {
     return ScenarioNodeTer({

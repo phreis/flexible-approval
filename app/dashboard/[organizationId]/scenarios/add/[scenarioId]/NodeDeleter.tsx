@@ -1,9 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { useFormState } from 'react-dom';
-import { ScenarioHeaderType } from '../../../../../../migrations/00003-createTableScenarioHeader';
 import { ScenarioItemType } from '../../../../../../migrations/00005-createTableScenarioItems';
-import { User } from '../../../../../../migrations/00007-createTableUsers';
 import { scenarioItemDeleteAction } from '../../../../../lib/nodeActions';
 import { WfNodeType } from '../../../../../ScenarioTree';
 import styles from '../../ScenarioNode.module.scss';

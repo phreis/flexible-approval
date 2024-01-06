@@ -19,9 +19,7 @@ export async function up(sql: Sql) {
         scenario_id INTEGER NOT NULL,
         context VARCHAR(1000),
         creationdate TIMESTAMP NOT NULL DEFAULT NOW (),
-        PRIMARY KEY (
-          scenario_entity_id
-        )
+        PRIMARY KEY (scenario_entity_id)
       );
   `;
 }

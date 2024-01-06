@@ -55,10 +55,7 @@ const createConditionHeaderWithOrgId = cache(
     const { scenarioId, description } = condHeader;
     const [condition] = await sql<ConditionHeaderType[]>`
       INSERT INTO
-        conditionheader (
-          scenario_id,
-          description
-        )
+        conditionheader (scenario_id, description)
       VALUES
         (
           ${scenarioId},

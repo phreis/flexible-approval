@@ -9,7 +9,6 @@ import styles from './FieldGroupsForm.module.scss';
 type Props = {
   condItem?: ConditionItemType;
   scenario: ScenarioHeaderType;
-  parent: WfNodeType;
   actual: WfNodeType;
   directChildNodes: WfNodeType[] | null;
 };
@@ -50,7 +49,7 @@ export default function FieldGroupFormCondition(props: Props) {
         <select
           id="operator"
           name="operator"
-          defaultValue={props.condItem?.comperator}
+          defaultValue={props.condItem?.comperator || undefined}
           required={true}
         >
           <option value="<">Less than</option>
@@ -64,7 +63,7 @@ export default function FieldGroupFormCondition(props: Props) {
           id="compConstant"
           name="compConstant"
           type="number"
-          defaultValue={props.condItem?.compConstant}
+          defaultValue={props.condItem?.compConstant || undefined}
           required={true}
         />
       </span>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { WfNodeType } from '../../../ScenarioTree';
-import styles from './FieldGroupsForm.module.scss';
 
 type Props = {
   actual: WfNodeType;

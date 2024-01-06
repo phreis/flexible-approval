@@ -15,11 +15,7 @@ export const createSession = cache(
   async (userId: number, token: string, orgId: OrganizationType['orgId']) => {
     const [session] = await sql<Session[]>`
       INSERT INTO
-        sessions (
-          user_id,
-          token,
-          org_id
-        )
+        sessions (user_id, token, org_id)
       VALUES
         (
           ${userId},

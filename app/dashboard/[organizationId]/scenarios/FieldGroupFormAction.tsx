@@ -8,7 +8,6 @@ type Props = {
   description?: string;
   textTemplate?: string;
   users: User[];
-  parent: WfNodeType;
   actual: WfNodeType;
   directChildNodes: WfNodeType[] | null;
 };
