@@ -45,7 +45,6 @@
 .toolsContainer {
   display: flex;
   justify-content: right;
-  padding-bottom: 1rem;
 
   a {
     height: 2rem;
@@ -53,7 +52,7 @@
     background-color: rgb(74, 72, 72);
     color: white;
     border-radius: 8px;
-    margin-top: 16px;
+    margin-top: 8px;
     cursor: pointer;
     text-decoration: none;
     font-size: 0.8rem;

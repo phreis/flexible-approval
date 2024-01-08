@@ -3,19 +3,17 @@ import styles from './PageHeader.module.scss';
 
 type Props = {
   heading: string;
+  toolBox?: React.ReactNode;
 };
 
 export default function PageHeader(props: PropsWithChildren<Props>) {
   return (
-    <section>
-      <div className={styles.headerContainer}>
-        <div className={styles.headerTop}>
-          <div className={styles.headerTopLeft}>
-            <h1>{props.heading}</h1>
-          </div>
-        </div>
-        <div className={styles.headerBottom}>{props.children}</div>
+    <div className={styles.headerContainer}>
+      <div className={styles.headerTop}>
+        <h1>{props.heading}</h1>
+        {props.toolBox}
       </div>
-    </section>
+      <div className={styles.headerBottom}>{props.children}</div>
+    </div>
   );
 }

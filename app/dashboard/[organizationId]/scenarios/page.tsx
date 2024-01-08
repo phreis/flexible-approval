@@ -24,12 +24,14 @@ export default function ScenariosPage({ params, searchParams }: Props) {
       heading="All Scenarios"
       tabs={tabs}
       activeTab={searchParams.tab}
+      toolBox={
+        <div className={styles.toolsContainer}>
+          <a href={`/dashboard/${params.organizationId}/scenarios/add/new`}>
+            + Create a new scenario
+          </a>
+        </div>
+      }
     >
-      <div className={styles.toolsContainer}>
-        <a href={`/dashboard/${params.organizationId}/scenarios/add/new`}>
-          + Create a new scenario
-        </a>
-      </div>
       <ScenariosHeader />
     </DashboardPage>
   );

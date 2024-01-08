@@ -27,7 +27,7 @@ export default async function Layout({
   return (
     <>
       <SideBar />
-      <main>{children}</main>
+      {children}
     </>
   );
 }

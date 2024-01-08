@@ -6,21 +6,24 @@
 :root {
   --top-heigth: 100px;
 }
+
 body {
   display: flex;
+  justify-content: left;
   margin: 0;
   font-family: Inter, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
   background-color: #f6f6f6f6;
+  width: 100%;
 }
 
 main {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-left: 0px;
+  margin-left: 130px;
   height: 100%;
 }
 
@@ -33,24 +36,8 @@ aside {
   flex-direction: column;
   justify-content: flex-start;
   align-items: left;
-
   width: 130px;
   color: #666666;
-  background-color: #e5e4e2;
-}
-
-main section {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: var(--top-heigth);
-  background-color: white;
-  position: fixed;
-  width: 100%;
-  z-index: 10;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  margin-left: 130px;
 }
 
 h1 {
