@@ -3,6 +3,7 @@ import React from 'react';
 import { useFormState } from 'react-dom';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
 import { deleteScenarioAction } from '../../../lib/actions';
+import styles from './ScenariosHeader.module.scss';
 
 export default function ScenarioDeleter(props: {
   scenarioId: ScenarioHeaderType['scenarioId'];
@@ -11,17 +12,14 @@ export default function ScenarioDeleter(props: {
   const [state, dispatch] = useFormState(deleteScenarioAction, initialState);
 
   return (
-    <>
-      <form action={dispatch}>
-        <button>Delete</button>
-        <input
-          name="scenarioId"
-          value={props.scenarioId || ''}
-          hidden={true}
-          readOnly={true}
-        />
-      </form>
-      <p>{state.message}</p>
-    </>
+    <form action={dispatch}>
+      <button className={styles.iconDelete} title="delete scenario" />
+      <input
+        name="scenarioId"
+        value={props.scenarioId || ''}
+        hidden={true}
+        readOnly={true}
+      />
+    </form>
   );
 }

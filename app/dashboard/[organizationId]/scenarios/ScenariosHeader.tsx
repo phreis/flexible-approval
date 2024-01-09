@@ -8,22 +8,24 @@ export default async function Scenarios() {
   return (
     <div className={styles.container}>
       {scenariosHeader &&
-        scenariosHeader.map((scen) => {
-          return (
-            <div
-              className={styles.containerEntry}
-              key={`key-${scen.scenarioId}`}
-            >
-              <a href={`scenarios/${scen.scenarioId}`}>
-                {scen.description}
-                <span className={styles.subInfo}>
-                  Created on: {scen.creationdate.toLocaleString('de')}
-                </span>
-              </a>
-              <ScenarioDeleter scenarioId={scen.scenarioId} />
-            </div>
-          );
-        })}
+        scenariosHeader
+          .sort((a, b) => b.creationdate.getTime() - a.creationdate.getTime())
+          .map((scen) => {
+            return (
+              <div
+                className={styles.containerEntry}
+                key={`key-${scen.scenarioId}`}
+              >
+                <a href={`scenarios/${scen.scenarioId}`}>
+                  {scen.description}
+                  <span className={styles.subInfo}>
+                    Created on: {scen.creationdate.toLocaleString('de')}
+                  </span>
+                </a>
+                <ScenarioDeleter scenarioId={scen.scenarioId} />
+              </div>
+            );
+          })}
     </div>
   );
 }

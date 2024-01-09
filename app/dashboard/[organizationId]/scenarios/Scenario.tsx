@@ -24,7 +24,7 @@ export default function Scenario({ node, createMode = false }: Props) {
     <li key={`key-${node.node.stepId}`}>
       <span className={styles.box}>
         {node.getTsx()}
-        {createMode && (
+        {createMode && node.scenario && (
           <div className={styles.toolBox}>
             <NodeAdder
               scenario={node.scenario}

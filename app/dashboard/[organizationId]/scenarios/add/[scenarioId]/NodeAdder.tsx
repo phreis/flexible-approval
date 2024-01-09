@@ -9,7 +9,7 @@ import ScenarioBuilderModal from './ScenarioBuilderModal';
 
 type Props = {
   scenario: ScenarioHeaderType;
-  users: User[];
+  users: User[] | undefined;
   parent: WfNodeType | null;
   actual: WfNodeType;
   directChildNodes: WfNodeType[] | null;

@@ -34,12 +34,14 @@ export default async function TeamPage({ params, searchParams }: Props) {
       }
       tabs={tabs}
       activeTab={searchParams.tab}
+      toolBox={
+        <div className={styles.toolsContainer}>
+          <a href={`/dashboard/${params.organizationId}/team/invite`}>
+            + Invite a new user
+          </a>
+        </div>
+      }
     >
-      <div className={styles.toolsContainer}>
-        <a href={`/dashboard/${params.organizationId}/team/invite`}>
-          + Invite a new user
-        </a>
-      </div>
       <TeamList orgId={params.organizationId} />
     </DashboardPage>
   );
