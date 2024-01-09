@@ -46,7 +46,6 @@ export default function NodeAdder(props: Props) {
           <ScenarioBuilderModal
             scenario={props.scenario}
             users={props.users}
-            parent={props.parent}
             actual={props.actual}
             directChildNodes={props.directChildNodes}
           />

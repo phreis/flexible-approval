@@ -12,8 +12,7 @@ import styles from './ScenarioBuilderModal.module.scss';
 
 type Props = {
   scenario: ScenarioHeaderType;
-  users: User[];
-  parent: WfNodeType;
+  users: User[] | undefined;
   actual: WfNodeType;
   directChildNodes: WfNodeType[] | null;
 };
@@ -30,7 +29,6 @@ export default function ScenarioBuilderModal(props: Props) {
           <FieldGroupFormCond
             directChildNodes={props.directChildNodes}
             actual={props.actual}
-            parent={props.parent}
             scenario={props.scenario}
           />
         );
@@ -39,14 +37,12 @@ export default function ScenarioBuilderModal(props: Props) {
           <FieldGroupFormAction
             directChildNodes={props.directChildNodes}
             actual={props.actual}
-            parent={props.parent}
             users={props.users}
           />
         );
       case 'EVENT':
         return (
           <FieldGroupFormEvent
-            parent={props.parent}
             scenario={props.scenario}
             directChildNodes={props.directChildNodes}
             actual={props.actual}
