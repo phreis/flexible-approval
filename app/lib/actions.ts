@@ -467,6 +467,9 @@ export async function processActionResultAction(
 export async function deleteScenarioAction(prevState: any, formData: FormData) {
   if (formData.get('scenarioId')) {
     await deleteScenario({ scenarioId: Number(formData.get('scenarioId')) });
+    /*     return {
+      message: `Scenario deleted!`,
+    }; */
     // TODO: delete corresponding Scenario Items, Actions, Conditions, Events and Ter as well!
     revalidatePath('/');
   }

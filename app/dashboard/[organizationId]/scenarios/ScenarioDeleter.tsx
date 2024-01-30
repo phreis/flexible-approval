@@ -1,25 +1,27 @@
 'use client';
-import React from 'react';
-import { useFormState } from 'react-dom';
+import React, { useState } from 'react';
 import { ScenarioHeaderType } from '../../../../migrations/00003-createTableScenarioHeader';
-import { deleteScenarioAction } from '../../../lib/actions';
+import ScenarioDeleterModal from './ScenarioDeleterModal';
 import styles from './ScenariosHeader.module.scss';
 
 export default function ScenarioDeleter(props: {
   scenarioId: ScenarioHeaderType['scenarioId'];
 }) {
-  const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(deleteScenarioAction, initialState);
+  const [modal, setModal] = useState(false);
 
   return (
-    <form action={dispatch}>
-      <button className={styles.iconDelete} title="delete scenario" />
-      <input
-        name="scenarioId"
-        value={props.scenarioId || ''}
-        hidden={true}
-        readOnly={true}
+    <>
+      <button
+        className={styles.iconDelete}
+        title="delete scenario"
+        onClick={() => setModal(true)}
       />
-    </form>
+
+      <ScenarioDeleterModal
+        openModal={modal}
+        closeModal={() => setModal(false)}
+        scenarioId={props.scenarioId}
+      />
+    </>
   );
 }
